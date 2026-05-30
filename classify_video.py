@@ -49,6 +49,8 @@ def main():
     parser.add_argument("--output", default=None,
                         help="Output xlsx path (default: <crops-dir>.xlsx)")
     parser.add_argument("--smooth-window", type=int, default=5)
+    parser.add_argument("--reject-class", default="unclear",
+                        help="Class name to exclude from reported percentages")
     parser.add_argument("--device", default="mps")
     args = parser.parse_args()
 
@@ -59,7 +61,7 @@ def main():
 
     model = YOLO(args.weights)
     class_names = list(model.names.values())
-    reported_classes = [c for c in class_names if c != "ambiguous"]
+    reported_classes = [c for c in class_names if c != args.reject_class]
 
     rows = []
     for fish_dir in fish_dirs:
@@ -75,7 +77,7 @@ def main():
             "fish_id": fish_dir.name,
             "n_frames": len(smoothed),
             "n_scored": scored,
-            "n_ambiguous": counts.get("ambiguous", 0),
+            "n_rejected": counts.get(args.reject_class, 0),
         }
         for cls in reported_classes:
             row[cls] = 100.0 * counts.get(cls, 0) / scored
@@ -88,7 +90,7 @@ def main():
         "fish_id": "AVERAGE",
         "n_frames": df["n_frames"].sum(),
         "n_scored": df["n_scored"].sum(),
-        "n_ambiguous": df["n_ambiguous"].sum(),
+        "n_rejected": df["n_rejected"].sum(),
     }
     for cls in reported_classes:
         avg[cls] = df[cls].mean()
