@@ -73,7 +73,9 @@ On the Finish page:
 - The cap field defaults to the **smallest non-zero class count** so the
   classes start balanced. Raise it if you have plenty of every class, lower
   it to be more aggressive about balancing.
-- Validation ratio default 0.2 (20% val, 80% train).
+- Validation ratio default 0.2, test ratio default 0.1 (10% held out for
+  benchmarking via `test_classifier.py`). Set test ratio to 0 if you don't
+  want a separate test split.
 - Click **Finalize**. You'll see a summary like:
 
   ```json

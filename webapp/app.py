@@ -117,7 +117,10 @@ def api_finalize():
     data = request.get_json()
     cap = int(data["max_per_class"])
     val_ratio = float(data.get("val_ratio", 0.2))
+    test_ratio = float(data.get("test_ratio", 0.0))
     seed = int(data.get("seed", 42))
+    if val_ratio + test_ratio >= 1.0:
+        return jsonify({"error": "val_ratio + test_ratio must be < 1"}), 400
     rng = random.Random(seed)
 
     if OUT.exists():
@@ -141,12 +144,15 @@ def api_finalize():
             for f in discard:
                 shutil.copy2(f, d / f.name)
 
-        # Train/val split
-        n_val = max(1, int(round(len(keep) * val_ratio))) if len(keep) >= 2 else 0
+        # Train/val/test split
+        n = len(keep)
+        n_val = int(round(n * val_ratio)) if n >= 2 else 0
+        n_test = int(round(n * test_ratio)) if n >= 2 else 0
         val_files = keep[:n_val]
-        train_files = keep[n_val:]
+        test_files = keep[n_val:n_val + n_test]
+        train_files = keep[n_val + n_test:]
 
-        for split_name, split_files in [("train", train_files), ("val", val_files)]:
+        for split_name, split_files in [("train", train_files), ("val", val_files), ("test", test_files)]:
             if not split_files:
                 continue
             split_dir = OUT / split_name / cls
@@ -156,10 +162,11 @@ def api_finalize():
 
         summary[cls] = {
             "total_labeled": len(files),
-            "kept": len(keep),
+            "kept": n,
             "discarded": len(discard),
             "train": len(train_files),
             "val": len(val_files),
+            "test": len(test_files),
         }
 
     return jsonify({"ok": True, "summary": summary,
