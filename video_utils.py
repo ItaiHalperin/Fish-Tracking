@@ -32,8 +32,11 @@ def gather_frame_metadata(video_files: list[Path], num_frames: int) -> list[dict
             fps = 30.0
             print(f"Warning: FPS is not reported for '{video_path}'. Defaulting to 30.0.")
 
-        num_to_select = min(num_frames, total_frames)
-        selected_indices = random.sample(range(total_frames), num_to_select)
+        # Use only the first 90% of reported frames — remuxed MTS files often
+        # over-report their frame count, making the tail unreadable.
+        safe_frames = int(total_frames * 0.9)
+        num_to_select = min(num_frames, safe_frames)
+        selected_indices = random.sample(range(safe_frames), num_to_select)
 
         for idx in selected_indices:
             timestamp = idx / fps
@@ -47,12 +50,15 @@ def gather_frame_metadata(video_files: list[Path], num_frames: int) -> list[dict
     return all_frames_metadata
 
 def extract_and_save_frames(extraction_plan: dict, output_dir: Path) -> int:
-    """Executes the extraction plan, seeking frames efficiently and saving them."""
+    """Executes the extraction plan using direct seeking for robustness.
+    
+    Frames are organized into subfolders by video name, e.g.:
+        output_dir/video1/video1_time_1.234s.jpg
+        output_dir/video2/video2_time_0.500s.jpg
+    """
     extracted_count = 0
 
     for video_path, targets in extraction_plan.items():
-        targets.sort(key=lambda x: x[0])
-
         cap = cv2.VideoCapture(str(video_path))
         if not cap.isOpened():
             print(f"Error: Failed to open '{video_path}' for extraction. Skipping.")
@@ -60,34 +66,25 @@ def extract_and_save_frames(extraction_plan: dict, output_dir: Path) -> int:
 
         video_name = video_path.stem
 
-        target_idx_pointer = 0
-        current_frame = 0
+        # Create a subfolder for this video
+        video_output_dir = output_dir / video_name
+        video_output_dir.mkdir(parents=True, exist_ok=True)
 
-        while target_idx_pointer < len(targets):
-            ret = cap.grab()
+        video_extracted = 0
+        for frame_idx, timestamp in targets:
+            cap.set(cv2.CAP_PROP_POS_FRAMES, frame_idx)
+            ret, frame = cap.read()
             if not ret:
-                print(f"Warning: Reached end of video or failed to grab frame {current_frame} in '{video_name}'.")
-                break
-                
-            expected_idx, timestamp = targets[target_idx_pointer]
+                continue
             
-            if current_frame == expected_idx:
-                ret, frame = cap.retrieve()
-                if not ret:
-                    print(f"Warning: Failed to retrieve frame {current_frame} from '{video_name}'. Skipping.")
-                else:
-                    time_str = f"{timestamp:.3f}s"
-                    filename = f"{video_name}_time_{time_str}.jpg"
-                    # Just dump the image straight into the target folder
-                    save_path = output_dir / filename
-                    cv2.imwrite(str(save_path), frame)
-                    extracted_count += 1
-                
-                target_idx_pointer += 1
-            
-            current_frame += 1
+            time_str = f"{timestamp:.3f}s"
+            filename = f"{video_name}_time_{time_str}.jpg"
+            save_path = video_output_dir / filename
+            cv2.imwrite(str(save_path), frame)
+            video_extracted += 1
+            extracted_count += 1
 
         cap.release()
-        print(f"Processed '{video_name}': extracted {len(targets)} frames.")
+        print(f"  Processed '{video_name}': extracted {video_extracted}/{len(targets)} frames → {video_output_dir}")
 
     return extracted_count

@@ -1,0 +1,8 @@
+videos
+runs
+dataset
+crops
+annotation_samples
+.venv
+dataset.yaml
+yolo11n.pt

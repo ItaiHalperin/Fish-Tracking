@@ -3,13 +3,21 @@
 YOLOv11 Training Script for FishTracking.
 """
 
+import argparse
 import sys
 from ultralytics import YOLO
 
+VALID_MODELS = ["n", "s", "m", "l", "x"]
+
 def main():
-    # Load a pretrained YOLO11 Nano model
-    print("Initializing YOLOv11 model...")
-    model = YOLO("yolo11n.pt")
+    parser = argparse.ArgumentParser(description="Train YOLOv11 on the fish tracking dataset.")
+    parser.add_argument("--model", choices=VALID_MODELS, default="n",
+                        help="Model size: n(ano), s(mall), m(edium), l(arge), x (default: n)")
+    args = parser.parse_args()
+
+    weights = f"yolo11{args.model}.pt"
+    print(f"Initializing YOLOv11-{args.model} from {weights}...")
+    model = YOLO(weights)
 
     # Start the training loop
     print("Starting training...")
@@ -26,7 +34,7 @@ def main():
             # 'runs/detect' folder instead of nesting it!
             name="fish_tracking_model",
             
-            # --- Data Augmentations ---
+            # --- Geometric Augmentations ---
             degrees=10.0,    
             translate=0.1,   
             scale=0.5,       
@@ -34,9 +42,12 @@ def main():
             flipud=0.2,      
             mosaic=1.0,      
             mixup=0.1,       
-            hsv_h=0.015,     
-            hsv_s=0.7,       
-            hsv_v=0.4        
+            erasing=0.3,      # Randomly erase 30% of patches, forces learning from partial views
+
+            # --- Color Augmentations ---
+            hsv_h=0.015,      # Hue shift
+            hsv_s=0.7,        # Saturation shift
+            hsv_v=0.4         # Brightness shift
         )
         print("Training completed successfully!")
     except Exception as e:
