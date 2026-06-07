@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Finalize labels</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; margin: 0; padding: 16px; background: #111; color: #eee; max-width: 720px; }
+    h1 { font-size: 18px; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+    th, td { padding: 6px 10px; border-bottom: 1px solid #333; text-align: left; }
+    th { background: #1a1a1a; font-size: 13px; }
+    .bar { height: 12px; background: #6cf; border-radius: 3px; }
+    .controls { background: #1a1a1a; padding: 12px; border-radius: 6px; margin: 16px 0; }
+    label { display: block; margin: 8px 0 4px; font-size: 13px; color: #aaa; }
+    input { background: #2a2a2a; color: #eee; border: 1px solid #444; padding: 6px 8px; border-radius: 4px; width: 120px; }
+    button { padding: 10px 16px; background: #2a4a2a; color: #eee; border: 1px solid #4a6a4a; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    button:hover { background: #3a5a3a; }
+    a { color: #6cf; }
+    pre { background: #1a1a1a; padding: 12px; border-radius: 4px; font-size: 12px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1><a href="/">&larr; Back to labeling</a> &middot; Finalize</h1>
+
+  <div id="counts">Loading…</div>
+
+  <div class="controls">
+    <label>Max per class (cap)</label>
+    <input type="number" id="cap" value="100" min="1">
+    <label>Validation ratio (0–1)</label>
+    <input type="number" id="val_ratio" value="0.2" min="0" max="0.9" step="0.05">
+    <label>Test ratio (0–1, held-out for benchmarking)</label>
+    <input type="number" id="test_ratio" value="0.1" min="0" max="0.9" step="0.05">
+    <label>Random seed</label>
+    <input type="number" id="seed" value="42">
+    <p>
+      <button onclick="finalize()">Finalize → labels/ + labels_discarded/</button>
+    </p>
+    <p style="font-size: 12px; color: #888;">
+      This wipes any existing <code>labels/</code> and <code>labels_discarded/</code> and rebuilds them.
+      Your raw <code>labels_raw/</code> is untouched, so you can re-finalize with a different cap.
+    </p>
+  </div>
+
+  <div id="result"></div>
+
+<script>
+async function refresh() {
+  const r = await fetch("/api/stats");
+  const j = await r.json();
+  const counts = j.counts;
+  const max = Math.max(1, ...Object.values(counts));
+  const rows = Object.entries(counts).map(([cls, n]) => `
+    <tr>
+      <td>${cls}</td>
+      <td>${n}</td>
+      <td style="width: 100%;"><div class="bar" style="width: ${(n / max * 100).toFixed(0)}%;"></div></td>
+    </tr>
+  `).join("");
+  document.getElementById("counts").innerHTML = `
+    <p>${j.remaining} crops still unlabeled in source.</p>
+    <table>
+      <thead><tr><th>Class</th><th>Labeled</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+  // Suggest a sensible cap: the min of (max-class count, 200)
+  const counts_vals = Object.values(counts).filter(v => v > 0);
+  if (counts_vals.length) {
+    const minCount = Math.min(...counts_vals);
+    document.getElementById("cap").value = minCount;
+  }
+}
+
+async function finalize() {
+  const cap = parseInt(document.getElementById("cap").value, 10);
+  const val_ratio = parseFloat(document.getElementById("val_ratio").value);
+  const test_ratio = parseFloat(document.getElementById("test_ratio").value);
+  const seed = parseInt(document.getElementById("seed").value, 10);
+  const btn = document.querySelector("button");
+  btn.disabled = true; btn.textContent = "Finalizing…";
+
+  const r = await fetch("/api/finalize", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ max_per_class: cap, val_ratio, test_ratio, seed }),
+  });
+  const j = await r.json();
+  btn.disabled = false; btn.textContent = "Finalize → labels/ + labels_discarded/";
+
+  if (j.error) { alert(j.error); return; }
+  document.getElementById("result").innerHTML = `
+    <h2>Done</h2>
+    <p>Output: <code>${j.labels_dir}</code> &middot; Discarded: <code>${j.discarded_dir}</code></p>
+    <pre>${JSON.stringify(j.summary, null, 2)}</pre>
+    <p>Train the classifier:</p>
+    <pre>python train_classifier.py --data labels --epochs 50</pre>
+    <p>Benchmark on the held-out test set:</p>
+    <pre>python test_classifier.py \\
+    --weights runs/classify/fish_position_classifier/weights/best.pt \\
+    --test-dir labels/test --save-errors</pre>
+  `;
+}
+
+refresh();
+</script>
+</body>
+</html>

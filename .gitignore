@@ -1,0 +1,17 @@
+.DS_Store
+.venv/
+__pycache__/
+*.pyc
+
+# Data and model artifacts
+videos/
+dataset/
+dataset.yaml
+crops/
+labels/
+labels_raw/
+labels_discarded/
+annotation_samples/
+runs/
+*.zip
+*.pt
