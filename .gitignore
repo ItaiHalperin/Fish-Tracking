@@ -1,8 +1,17 @@
-videos
-runs
-dataset
-crops
-annotation_samples
-.venv
+.DS_Store
+.venv/
+__pycache__/
+*.pyc
+
+# Data and model artifacts
+videos/
+dataset/
 dataset.yaml
-yolo11n.pt
+crops/
+labels/
+labels_raw/
+labels_discarded/
+annotation_samples/
+runs/
+*.zip
+*.pt

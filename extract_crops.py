@@ -10,7 +10,7 @@ def main():
     parser = argparse.ArgumentParser(description="Extract crops of tracked fish")
     parser.add_argument("--video", required=True, type=str, help="Path to input video")
     parser.add_argument("--weights", default="runs/detect/fish_tracking_model/weights/best.pt", type=str)
-    parser.add_argument("--padding", type=float, default=0.10, help="Padding percentage (e.g. 0.1 for 10%)")
+    parser.add_argument("--padding", type=float, default=0.10, help="Padding percentage (e.g. 0.1 for 10%%)")
     parser.add_argument("--output_dir", type=str, default="crops", help="Base output directory")
     parser.add_argument("--duration", type=int, default=None, help="Only process the first N seconds of the video")
     args = parser.parse_args()

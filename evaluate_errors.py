@@ -49,7 +49,7 @@ def compute_iou(box1, box2):
 
 def main():
     # Load the best weights from your most recent training run
-    model_path = "runs/detect/fish_tracking_model-3/weights/best.pt"
+    model_path = "runs/detect/fish_tracking_model-2/weights/best.pt"
     if not Path(model_path).exists():
         print(f"Error: Could not find {model_path}. Please check the path.")
         return
