@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """
-Train a 6-class fish position classifier on folder-labeled crops.
+Train a fish-position classifier on folder-labeled crops.
 
-Expects this layout (ultralytics ImageFolder convention):
+The class set is whatever subfolders exist under <data>/train/. Expects this
+layout (ultralytics ImageFolder convention):
 
     labels/
       train/
-        1_head_down/*.jpg
-        2_head_up_diag/*.jpg
+        <class_a>/*.jpg
+        <class_b>/*.jpg
         ...
       val/
-        1_head_down/*.jpg
+        <class_a>/*.jpg
         ...
 """
 

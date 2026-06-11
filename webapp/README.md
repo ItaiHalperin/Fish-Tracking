@@ -43,10 +43,15 @@ python flatten_crops.py --crops-dir crops/RGoldies_23_10_25
 ## Run
 
 ```bash
-python webapp/app.py \
-    --source crops/RGoldies_23_10_25_flat \
-    --classes regular head_down head_up diag_down horizontal top_view top_diagonal unclear
+python webapp/app.py --source crops/all_flat
 ```
+
+Classes are auto-derived from the files in `webapp/static/reference/` (one
+class per `<name>.png` / `<name>.jpg`), plus a final `unclear` bin that needs
+no reference image. To override, pass `--classes a b c ...` explicitly.
+
+To change the class taxonomy, just add or remove reference images in
+`webapp/static/reference/`. Restart the app and the new classes appear.
 
 Open <http://127.0.0.1:5050/> in a browser.
 
@@ -80,8 +85,8 @@ On the Finish page:
 
   ```json
   {
-    "regular":      {"total_labeled": 240, "kept": 100, "discarded": 140, "train": 80, "val": 20},
-    "head_down":    {"total_labeled":  35, "kept":  35, "discarded":   0, "train": 28, "val":  7},
+    "regular_facing_right": {"total_labeled": 240, "kept": 100, "discarded": 140, "train": 70, "val": 20, "test": 10},
+    "head_down_facing_left": {"total_labeled":  35, "kept":  35, "discarded":   0, "train": 25, "val":  7, "test": 3},
     ...
   }
   ```
