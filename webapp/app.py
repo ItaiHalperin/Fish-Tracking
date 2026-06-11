@@ -16,6 +16,8 @@ from pathlib import Path
 from flask import Flask, jsonify, render_template, request, send_from_directory
 
 app = Flask(__name__)
+app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.jinja_env.auto_reload = True
 
 # Populated in main()
 SOURCE: Path = Path()
@@ -182,8 +184,11 @@ def main():
     parser.add_argument("--out-dir", default="labels",
                         help="Final train/val output (consumed by train_classifier.py)")
     parser.add_argument("--discarded-dir", default="labels_discarded")
-    parser.add_argument("--classes", nargs="+", required=True,
-                        help="Class names, e.g. --classes regular head_down ... unclear")
+    parser.add_argument("--classes", nargs="+", default=None,
+                        help="Class names. If omitted, derived from webapp/static/reference/<class>.{png,jpg} "
+                             "plus a final 'unclear' bin.")
+    parser.add_argument("--reject-class", default="unclear",
+                        help="Name of the always-appended reject class (no reference image expected).")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=5050)
     args = parser.parse_args()
@@ -193,7 +198,19 @@ def main():
     RAW = Path(args.raw_dir).resolve()
     OUT = Path(args.out_dir).resolve()
     DISCARDED = Path(args.discarded_dir).resolve()
-    CLASSES = list(args.classes)
+
+    if args.classes:
+        CLASSES = list(args.classes)
+    else:
+        ref_dir = Path(__file__).parent / "static" / "reference"
+        derived = sorted({p.stem for p in ref_dir.glob("*")
+                          if p.suffix.lower() in {".png", ".jpg", ".jpeg"}})
+        if not derived:
+            raise SystemExit(f"No --classes given and no reference images in {ref_dir}")
+        if args.reject_class not in derived:
+            derived.append(args.reject_class)
+        CLASSES = derived
+        print(f"Derived {len(CLASSES)} classes from {ref_dir}")
 
     if not SOURCE.is_dir():
         raise SystemExit(f"Source dir not found: {SOURCE}")
