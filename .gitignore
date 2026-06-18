@@ -11,6 +11,8 @@ crops/
 labels/
 labels_raw/
 labels_discarded/
+labels_*_archive/
+best/
 annotation_samples/
 runs/
 *.zip
