@@ -7,10 +7,14 @@ number of frames from each video, and saves them to a single 'raw_frames' folder
 so you can easily upload them to an annotation tool.
 """
 
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 import argparse
 import random
 from pathlib import Path
-from video_utils import find_video_files, gather_frame_metadata, extract_and_save_frames
+from core.video_utils import find_video_files, gather_frame_metadata, extract_and_save_frames
 
 def parse_args():
     parser = argparse.ArgumentParser(
