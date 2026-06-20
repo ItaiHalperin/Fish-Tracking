@@ -31,7 +31,10 @@ def run(run_dir: Path) -> dict:
     if not test_s:
         raise SystemExit(f"No test split at {cfg.data_dir}/test")
 
-    preds = model.predict([s.path for s in test_s])
+    # Models that predict more than roll (e.g. angle_reg) expose predict_roll so
+    # we score only their roll head, comparable to the roll-only classifier.
+    predict_roll = getattr(model, "predict_roll", model.predict)
+    preds = predict_roll([s.path for s in test_s])
     truths = [model.true_roll_name(s.composite) for s in test_s]
     pred_names = [p[0] for p in preds]
 

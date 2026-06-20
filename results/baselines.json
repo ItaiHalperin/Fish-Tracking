@@ -1,0 +1,28 @@
+{
+  "composite": {
+    "task": "composite (16-way)",
+    "n_test": 266,
+    "n_classes": 16,
+    "majority": {
+      "acc": 0.12030075187969924,
+      "macro_f1": 0.015340364333652923
+    },
+    "logreg_pixels": {
+      "acc": 0.5488721804511278,
+      "macro_f1": 0.49387639895824337
+    }
+  },
+  "roll": {
+    "task": "roll (4-way)",
+    "n_test": 266,
+    "n_classes": 4,
+    "majority": {
+      "acc": 0.5150375939849624,
+      "macro_f1": 0.16997518610421836
+    },
+    "logreg_pixels": {
+      "acc": 0.631578947368421,
+      "macro_f1": 0.5295792653931599
+    }
+  }
+}

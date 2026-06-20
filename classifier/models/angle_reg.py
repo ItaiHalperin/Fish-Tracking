@@ -106,7 +106,8 @@ class AngleRegClassifier(Classifier):
             running = 0.0
             for x, hd, rd in train_loader:
                 x = x.to(self._device)
-                hd, rd = hd.to(self._device).float(), rd.to(self._device).float()
+                # cast to float32 BEFORE the device move (MPS rejects float64)
+                hd, rd = hd.float().to(self._device), rd.float().to(self._device)
                 opt.zero_grad()
                 hv, rv = self._net(x)
                 loss = A.angular_loss(hv, hd) + A.angular_loss(rv, rd)
@@ -190,3 +191,21 @@ class AngleRegClassifier(Classifier):
             name, conf = A.snap_to_class(heading, roll, self._angle_map)
             out.append((name, conf))
         return out
+
+    @torch.no_grad()
+    def predict_roll(self, image_paths: Iterable[Path | str]) -> list[tuple[str, float]]:
+        """Roll prediction only — the regressed roll snapped to the nearest roll
+        class. Lets classifier.test_roll compare this model's roll head against
+        the roll-only classifier on the same 4-way label space."""
+        roll_classes = A.roll_vocab(self._angle_map)
+        out = []
+        for p in image_paths:
+            x = self._eval_tf(Image.open(p).convert("RGB")).unsqueeze(0).to(self._device)
+            _, rv = self._net(x)
+            roll = float(A.vec_to_deg(rv)[0])
+            nearest = min(roll_classes, key=lambda r: min((roll - r) % 360, (r - roll) % 360))
+            out.append((A.roll_name(nearest), 1.0))
+        return out
+
+    def true_roll_name(self, composite: str) -> str:
+        return A.roll_name(self._angle_map[composite][1])

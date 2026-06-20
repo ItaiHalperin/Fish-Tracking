@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(PYTHONPATH=. python -m classifier.baselines --data-dir labels_split)"
+    ]
+  }
+}
