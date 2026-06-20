@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Heading annotator</title>
+<style>
+  body { font-family: system-ui, sans-serif; margin: 0; background: #111; color: #eee;
+         display: flex; flex-direction: column; align-items: center; }
+  #bar { padding: 10px; font-size: 14px; }
+  #wrap { position: relative; }
+  canvas { background: #000; cursor: crosshair; image-rendering: pixelated; }
+  #info { margin: 8px; font-size: 15px; }
+  .k { color: #8cf; }
+  #cls { color: #fc8; font-weight: bold; }
+  #heading { color: #8f8; font-weight: bold; font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+  <div id="bar">
+    <span id="progress">…</span> &nbsp;|&nbsp;
+    <span class="k">click</span>=set head dir &nbsp;
+    <span class="k">←/→</span>=nudge 1° &nbsp;
+    <span class="k">Enter</span>=save+next &nbsp;
+    <span class="k">n</span>=skip &nbsp;
+    <span class="k">p</span>=prev
+  </div>
+  <div id="wrap"><canvas id="cv" width="360" height="360"></canvas></div>
+  <div id="info">class <span id="cls">–</span> &nbsp; heading <span id="heading">–</span>°</div>
+
+<script>
+const SIZE = 360;
+const cv = document.getElementById('cv');
+const ctx = cv.getContext('2d');
+let items = [], idx = 0, heading = 0, img = new Image();
+
+function setHeadingFromPoint(x, y) {
+  const cx = SIZE/2, cy = SIZE/2;
+  let deg = Math.atan2(-(y - cy), x - cx) * 180 / Math.PI; // y is down -> negate
+  heading = (deg % 360 + 360) % 360;
+  draw();
+}
+
+function draw() {
+  ctx.clearRect(0, 0, SIZE, SIZE);
+  if (img.complete && img.width) {
+    // contain the crop in the square
+    const s = Math.min(SIZE / img.width, SIZE / img.height);
+    const w = img.width * s, h = img.height * s;
+    ctx.drawImage(img, (SIZE - w)/2, (SIZE - h)/2, w, h);
+  }
+  const cx = SIZE/2, cy = SIZE/2, L = SIZE*0.42;
+  const rad = heading * Math.PI / 180;
+  const ex = cx + L*Math.cos(rad), ey = cy - L*Math.sin(rad);
+  // shaft
+  ctx.strokeStyle = '#1f8'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey); ctx.stroke();
+  // head (arrow tip)
+  const a = 0.4;
+  ctx.fillStyle = '#1f8';
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.lineTo(ex - 14*Math.cos(rad - a), ey + 14*Math.sin(rad - a));
+  ctx.lineTo(ex - 14*Math.cos(rad + a), ey + 14*Math.sin(rad + a));
+  ctx.closePath(); ctx.fill();
+  // center dot
+  ctx.fillStyle = '#f55'; ctx.beginPath(); ctx.arc(cx, cy, 3, 0, 7); ctx.fill();
+  document.getElementById('heading').textContent = heading.toFixed(1);
+}
+
+function show() {
+  if (idx >= items.length) { document.getElementById('cls').textContent = 'DONE 🎉'; return; }
+  const it = items[idx];
+  heading = it.prefill;
+  document.getElementById('cls').textContent = it.cls + (it.done ? ' ✓' : '');
+  document.getElementById('progress').textContent = `${idx+1}/${items.length}`;
+  img = new Image();
+  img.onload = draw;
+  img.src = '/img/' + encodeURIComponent(it.file);
+  draw();
+}
+
+async function saveAndNext() {
+  const it = items[idx];
+  await fetch('/api/save', {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({file: it.file, heading: heading})});
+  it.done = true; it.prefill = heading;
+  idx = Math.min(idx + 1, items.length);
+  show();
+}
+
+cv.addEventListener('mousedown', e => {
+  const r = cv.getBoundingClientRect();
+  setHeadingFromPoint(e.clientX - r.left, e.clientY - r.top);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') { saveAndNext(); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft')  { heading = (heading + 1) % 360; draw(); e.preventDefault(); }
+  else if (e.key === 'ArrowRight') { heading = (heading - 1 + 360) % 360; draw(); e.preventDefault(); }
+  else if (e.key === 'n') { idx = Math.min(idx + 1, items.length); show(); }
+  else if (e.key === 'p') { idx = Math.max(idx - 1, 0); show(); }
+});
+
+fetch('/api/worklist').then(r => r.json()).then(d => {
+  items = d.items;
+  // resume at first un-done crop
+  const first = items.findIndex(it => !it.done);
+  idx = first < 0 ? 0 : first;
+  show();
+});
+</script>
+</body>
+</html>

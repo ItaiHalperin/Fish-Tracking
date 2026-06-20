@@ -1,0 +1,47 @@
+name: multihead_reg
+model_type: multihead
+
+# v2 of multihead_default: moderate regularization + TTA.
+# v1 of this config was too strong (val macroF1 0.769 < baseline 0.799, train loss
+# stuck ~1.1 = underfit), so the knobs below are dialed back to a middle ground.
+data_dir: labels_split
+backbone: resnet34
+
+epochs: 60
+imgsz: 224
+batch: 32
+lr0: 0.0003
+weight_decay: 0.0002     # was 5e-4
+patience: 15
+seed: 42
+device: mps
+num_workers: 4
+
+# Imbalance handling
+loss: class_balanced
+cb_beta: 0.999
+focal_gamma: 2.0
+weighted_sampler: true
+
+# Regularization (overfit control) — moderated from the over-regularized v1
+dropout: 0.2             # was 0.3
+label_smoothing: 0.05
+freeze_epochs: 3         # was 5
+
+# Inference (editable post-hoc; re-run `classifier.test` without retraining)
+tta: true
+abstain_threshold: 0.0   # raise (e.g. 0.4) to route low-confidence to "unclear"
+
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  fliplr: 0.5            # safe: data.py relabels left<->right on flip
+  flipud: 0.0
+  erasing: 0.3           # was 0.4
+  mixup: 0.1             # was 0.2
+
+notes: "Moderate reg + TTA: dropout 0.2, label-smooth 0.05, mixup 0.1, wd 2e-4, freeze 3 ep."

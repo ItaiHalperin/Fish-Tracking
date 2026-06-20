@@ -9,9 +9,10 @@ dataset/
 dataset.yaml
 crops/
 labels/
-labels_raw/
-labels_discarded/
-labels_*_archive/
+labels_*/
+results/*/
+!results/INDEX.md
+
 best/
 annotation_samples/
 runs/

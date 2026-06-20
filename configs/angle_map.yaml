@@ -1,0 +1,32 @@
+# Class -> (heading, roll) in degrees, for the angle-regression model (Option 3).
+#
+# heading: in-plane direction the HEAD points (from the pose).
+#   0 = head points right, 90 = up, 180 = left, 270 = down.
+# roll: rotation about the body's long axis (from the facing).
+#   0 = belly down (upright), 90 = right flank to camera,
+#   180 = belly up (upside down), 270 = left flank to camera.
+#
+# REVIEW THIS TABLE. The values are derived from "facing = which side faces the
+# camera / belly up-down". If any class's real orientation differs, just edit the
+# number here — no code change needed. Both angles wrap at 360.
+
+regular_facing_right:        {heading: 0,   roll: 0}
+regular_facing_left:         {heading: 180, roll: 0}
+
+diag_up_right_facing_down:   {heading: 45,  roll: 0}
+diag_up_right_facing_up:     {heading: 45,  roll: 180}
+diag_up_left_facing_down:    {heading: 135, roll: 0}
+diag_up_left_facing_up:      {heading: 135, roll: 180}
+
+diag_down_right_facing_down: {heading: 315, roll: 0}
+diag_down_right_facing_up:   {heading: 315, roll: 180}
+diag_down_left_facing_down:  {heading: 225, roll: 0}
+diag_down_left_facing_up:    {heading: 225, roll: 180}
+
+head_up_facing_right:        {heading: 90,  roll: 90}
+head_up_facing_left:         {heading: 90,  roll: 270}
+head_down_facing_right:      {heading: 270, roll: 90}
+head_down_facing_left:       {heading: 270, roll: 270}
+
+upside_down_facing_right:    {heading: 0,   roll: 180}
+upside_down_facing_left:     {heading: 180, roll: 180}

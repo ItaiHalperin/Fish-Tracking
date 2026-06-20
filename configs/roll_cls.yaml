@@ -1,0 +1,39 @@
+name: roll_cls
+model_type: roll_cls
+
+# Roll-only classifier: predicts belly_down / right_flank / belly_up / left_flank.
+# Roll targets come from configs/angle_map.yaml via each crop's class, so NO new
+# labeling is needed. Use this to decide whether heading is worth labeling:
+# compare its roll accuracy (via classifier.test_roll) to the joint model's.
+data_dir: labels_split
+angle_map: configs/angle_map.yaml
+backbone: resnet34
+
+epochs: 50
+imgsz: 224
+batch: 32
+lr0: 0.0003
+weight_decay: 0.0002
+patience: 12
+seed: 42
+device: mps
+num_workers: 4
+
+dropout: 0.2
+label_smoothing: 0.05
+loss: class_balanced    # roll is imbalanced (belly_down dominates)
+cb_beta: 0.999
+weighted_sampler: true
+
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  fliplr: 0.5           # flip swaps left/right flank (roll -> 360-r) in data.py
+  flipud: 0.0
+  erasing: 0.3
+
+notes: "Roll-only classifier: 4 roll states from angle_map, class-balanced. Tests whether heading is needed."

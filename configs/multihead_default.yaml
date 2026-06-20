@@ -1,0 +1,38 @@
+name: multihead_default
+model_type: multihead
+
+# Factorized pose+facing classifier. Reads the shared on-disk split in data_dir.
+# Build it with: python -m classifier.data --out labels_split --skip-class unclear
+# NOTE: use labels_split, NOT labels — the webapp /finish step overwrites labels/.
+data_dir: labels_split
+backbone: resnet34
+
+epochs: 50
+imgsz: 224
+batch: 32
+lr0: 0.0003
+weight_decay: 0.0001
+patience: 12
+seed: 42
+device: mps
+num_workers: 4
+
+# Imbalance handling
+loss: class_balanced      # ce | class_balanced | focal
+cb_beta: 0.999
+focal_gamma: 2.0
+weighted_sampler: true
+
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  # Horizontal flip IS safe here: data.py relabels left<->right on flip.
+  fliplr: 0.5
+  flipud: 0.0
+  erasing: 0.3
+
+notes: "Baseline factorized multi-head: resnet34, class-balanced loss + weighted sampler + flip-with-remap."

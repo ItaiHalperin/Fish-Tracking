@@ -6,9 +6,15 @@ Model registry. Add new model types here.
 
 from .base import Classifier
 from .yolo_cls import YoloClsClassifier
+from .multihead import MultiHeadClassifier
+from .angle_reg import AngleRegClassifier
+from .roll_cls import RollClassifier
 
 MODEL_REGISTRY: dict[str, type[Classifier]] = {
     "yolo_cls": YoloClsClassifier,
+    "multihead": MultiHeadClassifier,
+    "angle_reg": AngleRegClassifier,
+    "roll_cls": RollClassifier,
     # "logreg_pixels": LogRegPixelsClassifier,  # Phase 4
 }
 

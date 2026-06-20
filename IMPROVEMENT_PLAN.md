@@ -205,6 +205,256 @@ plateaus and you observe systematic problems with the discretization.
   - small continuous rotation (≤15°) without label change, and
   - cardinal-aligned rotation (45°/90°/...) with label remapping.
 
+## Labeling rounds
+
+### Round 1 — 2026-06-19 (snapshot: `labels_raw_snapshot_2026-06-19/`)
+
+2,820 labels total. **1,950 (69%) are `unclear`** — heavy reject bin.
+Of the ~870 useful labels, the distribution is very skewed.
+
+| Class | Count | Notes |
+|---|---:|---|
+| unclear | 1,950 | dominates — `infer.py` excludes this from reported percentages |
+| regular_facing_right | 169 | |
+| diag_up_left_facing_down | 125 | |
+| regular_facing_left | 119 | |
+| head_up_facing_left | 107 | |
+| diag_down_right_facing_down | 103 | |
+| head_down_facing_right | 70 | |
+| diag_up_right_facing_down | 54 | |
+| head_down_facing_left | 44 | |
+| upside_down_facing_right | 26 | |
+| diag_down_left_facing_down | 21 | |
+| head_up_facing_right | 9 | weak |
+| diag_up_right_facing_up | 8 | weak |
+| upside_down_facing_left | 8 | weak |
+| diag_down_left_facing_up | 6 | weak |
+| diag_up_left_facing_up | 1 | unusable — drop or rebalance |
+| diag_down_right_facing_up | 0 | unusable — drop or skip with `--skip-class` |
+
+**Observations for reasoning later:**
+- 2 classes (`diag_down_right_facing_up`, `diag_up_left_facing_up`) effectively
+  don't exist in our data. Either prune them from the reference set or label
+  more crops of those poses next round.
+- 4 more classes (`head_up_facing_right`, `diag_up_right_facing_up`,
+  `upside_down_facing_left`, `diag_down_left_facing_up`) have <10 samples — too
+  few to validate. Train-set noise.
+- "Upside-down" classes are very rare (8 + 26 = 34 of 870 useful = 4%). The
+  motivating metric for this project is "% time upside down" — that's
+  consistent with the data, but it means our test of the upside-down
+  classification will be statistically thin.
+- "Facing right" / "facing left" pairs are imbalanced (regular: 119/169,
+  diag_up: 125/54, head_up: 107/9). Either the tank has natural directionality
+  bias, or labeling habits.
+
+### Round 2 — 2026-06-19 (snapshot: `labels_raw_snapshot_2026-06-19_v2/`)
+
+2,984 labels total (+164 since round 1). Class deltas:
+
+| Class | R1 | R2 | Δ | Notes |
+|---|---:|---:|---:|---|
+| unclear | 1,950 | 2,037 | +87 | still dominant |
+| regular_facing_right | 169 | 191 | +22 | |
+| diag_up_left_facing_down | 125 | 143 | +18 | |
+| regular_facing_left | 119 | 128 | +9 | |
+| diag_down_right_facing_down | 103 | 113 | +10 | |
+| head_up_facing_left | 107 | 111 | +4 | |
+| head_down_facing_right | 70 | 74 | +4 | |
+| diag_up_right_facing_down | 54 | 56 | +2 | |
+| head_down_facing_left | 44 | 48 | +4 | |
+| diag_up_right_facing_up | 8 | 10 | +2 | still weak |
+| diag_down_left_facing_down | 21 | 22 | +1 | |
+| diag_down_right_facing_up | 0 | 1 | +1 | still unusable |
+| diag_up_left_facing_up | 1 | 1 | 0 | still unusable |
+| diag_down_left_facing_up | 6 | 6 | 0 | still weak |
+| head_up_facing_right | 9 | 9 | 0 | still weak |
+| upside_down_facing_right | 26 | 26 | 0 | |
+| upside_down_facing_left | 8 | 8 | 0 | still weak |
+
+**Takeaway:** rare classes are still rare. We either need to actively seek out
+those poses next round (e.g. eyeball videos for upside-down/head-up-right
+fish and label only those tracks) or the videos genuinely don't have enough
+of them and we should drop/merge those classes before training.
+
+### Round 3 — 2026-06-19 (snapshot: `labels_raw_snapshot_2026-06-19_v3/`)
+
+3,391 labels total (+407 since R2). First round with **neighborhood-mode**
+enabled (after a label on any class with <30 samples, the next 10 same-fish
+crops were pulled into the queue).
+
+| Class | R2 | R3 | Δ | Notes |
+|---|---:|---:|---:|---|
+| unclear | 2,037 | 2,246 | +209 | |
+| regular_facing_right | 191 | 217 | +26 | |
+| diag_up_left_facing_down | 143 | 163 | +20 | |
+| regular_facing_left | 128 | 158 | +30 | |
+| diag_down_right_facing_down | 113 | 128 | +15 | |
+| head_up_facing_left | 111 | 124 | +13 | |
+| head_down_facing_right | 74 | 83 | +9 | |
+| diag_up_right_facing_down | 56 | 62 | +6 | |
+| head_down_facing_left | 48 | 54 | +6 | |
+| upside_down_facing_right | 26 | 40 | **+14** | crossed 30 mark |
+| diag_down_left_facing_down | 22 | 41 | **+19** | crossed 30 mark |
+| diag_down_left_facing_up | 6 | 29 | **+23** | almost crossed; was weakest after the *_up diagonals |
+| head_up_facing_right | 9 | 18 | **+9** | doubled |
+| upside_down_facing_left | 8 | 16 | **+8** | doubled |
+| diag_up_right_facing_up | 10 | 10 | 0 | unchanged — neighborhoods didn't surface any new ones |
+| diag_down_right_facing_up | 1 | 1 | 0 | still effectively absent |
+| diag_up_left_facing_up | 1 | 1 | 0 | still effectively absent |
+
+**Did neighborhood mode help?** Yes, substantially, but only for poses that
+*exist in the videos*:
+
+- **Classes <30 samples: 8 in R2 → 6 in R3.** Two classes
+  (`diag_down_left_facing_down`, `upside_down_facing_right`) crossed the
+  threshold and won't trigger neighborhood mode anymore.
+- **`diag_down_left_facing_up`: 6 → 29** is the headline win — almost +400%
+  on a class that was barely real before.
+- **Both upside_down classes grew** (8→16, 26→40), and the right-facing one
+  is now usable.
+- **3 classes saw no help at all** (`diag_up_right_facing_up`,
+  `diag_down_right_facing_up`, `diag_up_left_facing_up`). When a class is
+  truly absent in the videos, neighborhood mode has nothing to surface — the
+  fish doesn't enter that pose, so there are no nearby same-fish frames to
+  label. These three should probably be dropped before training (or merged
+  with their `_down` counterparts since the pose is functionally the same
+  for the project metric).
+
+### Round 4 — 2026-06-19 (snapshot: `labels_raw_snapshot_2026-06-19_v4/`)
+
+3,687 labels total (+296 since R3). First round with the **one-time
+seed-queue** (750 neighbors of rare-class labels surfaced before random
+sampling).
+
+| Class | R3 | R4 | Δ | Notes |
+|---|---:|---:|---:|---|
+| unclear | 2,246 | 2,344 | +98 | many seeded crops turned out to be unclear |
+| regular_facing_right | 217 | 217 | 0 | |
+| regular_facing_left | 158 | 158 | 0 | |
+| diag_up_left_facing_down | 163 | 163 | 0 | |
+| head_up_facing_left | 124 | 139 | +15 | |
+| diag_down_right_facing_down | 128 | 128 | 0 | |
+| diag_down_left_facing_up | 29 | 91 | **+62** | crossed 30 |
+| diag_up_right_facing_up | 10 | 77 | **+67** | crossed 30 (the seed's biggest win) |
+| head_down_facing_right | 83 | 83 | 0 | |
+| head_down_facing_left | 54 | 72 | +18 | |
+| diag_up_right_facing_down | 62 | 62 | 0 | |
+| upside_down_facing_right | 40 | 56 | +16 | |
+| diag_down_left_facing_down | 41 | 41 | 0 | |
+| upside_down_facing_left | 16 | 19 | +3 | seed didn't help much |
+| head_up_facing_right | 18 | 18 | 0 | seed didn't help at all |
+| diag_down_right_facing_up | 1 | 15 | +14 | from absent to weak |
+| diag_up_left_facing_up | 1 | 4 | +3 | still essentially absent |
+
+**Verdict on the one-time seed:**
+
+- **Weak classes (<30): 6 → 4.** Two classes (`diag_down_left_facing_up`,
+  `diag_up_right_facing_up`) crossed the usable threshold.
+- **Best wins**: `diag_up_right_facing_up` (10→77, 7.7x) and
+  `diag_down_left_facing_up` (29→91, 3x). These poses *do* exist in the
+  videos — the seed just needed to point at them.
+- **Two seeds underdelivered**: `head_up_facing_right` (no change, 180
+  seeded) and `upside_down_facing_left` (+3, 160 seeded). The neighbors of
+  these poses mostly turned out to be `unclear` or a different pose —
+  i.e. the fish only stays in these positions for very brief moments.
+- **Truly absent classes**: `diag_up_left_facing_up` (4 total) is essentially
+  unusable. `diag_down_right_facing_up` (15) is weak but viable if we drop
+  the per-class minimum.
+
+**Recommended actions before training**:
+1. Drop `diag_up_left_facing_up` entirely (4 samples — can't even split).
+2. Keep `diag_down_right_facing_up`, `head_up_facing_right`,
+   `upside_down_facing_left` but consider folding them with their less-rare
+   mirror class (e.g. merge `*_left` and `*_right` for these specific cases
+   to recover statistical power). The "% time upside-down" metric doesn't
+   care about which side the fish is facing.
+
+### Final — 2026-06-19 (snapshot: `labels_raw_snapshot_2026-06-19_final/`)
+
+3,982 labels total. Labeling phase done.
+
+| Class | Final | Tier |
+|---|---:|---|
+| unclear | 2,446 | reject bin |
+| regular_facing_right | 230 | strong |
+| regular_facing_left | 160 | strong |
+| diag_up_left_facing_down | 176 | strong |
+| head_up_facing_left | 150 | strong |
+| diag_down_right_facing_down | 133 | strong |
+| upside_down_facing_right | 121 | strong |
+| diag_down_left_facing_up | 93 | strong |
+| head_down_facing_right | 86 | strong |
+| diag_up_right_facing_down | 80 | strong |
+| diag_up_right_facing_up | 77 | strong |
+| head_down_facing_left | 75 | strong |
+| head_up_facing_right | 60 | strong |
+| diag_down_left_facing_down | 49 | medium |
+| diag_down_right_facing_up | 23 | weak |
+| upside_down_facing_left | 19 | weak |
+| diag_up_left_facing_up | 4 | unusable — drop |
+
+**Counts vs round 1**: 16 usable classes (≥20 samples), up from 8 in R1.
+Useful-label total: ~1,536, up from ~870 in R1 (+77%).
+
+**Recommended cleanup before splitting:**
+- Drop `diag_up_left_facing_up` (4) entirely with `--skip-class`.
+- Either drop or merge-with-mirror `diag_down_right_facing_up` (23) and
+  `upside_down_facing_left` (19). The mirror strategy makes the dataset more
+  balanced (merged `upside_down` = 19+121 = 140 instead of two skewed bins).
+- `unclear` continues to be excluded from reported percentages at inference.
+
+### Round 6 — 2026-06-19 (snapshot: `labels_raw_snapshot_2026-06-19_v6/`)
+
+4,269 labels total (+287 since "final"). General labeling, no targeted seed.
+
+| Class | Final | R6 | Δ |
+|---|---:|---:|---:|
+| unclear | 2,446 | 2,553 | +107 |
+| regular_facing_right | 230 | 265 | +35 |
+| regular_facing_left | 160 | 191 | +31 |
+| head_up_facing_left | 150 | 177 | +27 |
+| diag_up_left_facing_down | 176 | 202 | +26 |
+| diag_down_right_facing_down | 133 | 150 | +17 |
+| head_down_facing_right | 86 | 102 | +16 |
+| diag_up_right_facing_down | 80 | 90 | +10 |
+| diag_down_left_facing_down | 49 | 54 | +5 |
+| head_down_facing_left | 75 | 79 | +4 |
+| upside_down_facing_right | 121 | 125 | +4 |
+| head_up_facing_right | 60 | 63 | +3 |
+| diag_up_right_facing_up | 77 | 78 | +1 |
+| upside_down_facing_left | 19 | 20 | +1 |
+| diag_down_left_facing_up | 93 | 93 | 0 |
+| diag_down_right_facing_up | 23 | 23 | 0 |
+| diag_up_left_facing_up | 4 | 4 | 0 |
+
+Three classes still hard-stuck (`diag_up_left_facing_up` 4, `upside_down_facing_left` 20, `diag_down_right_facing_up` 23). These remain candidates for skip/merge during training experiments.
+
+### Round 7 — 2026-06-20 (snapshot: `labels_raw_snapshot_2026-06-20/`)
+
+4,722 labels total (+453 since R6).
+
+| Class | R6 | R7 | Δ | Notes |
+|---|---:|---:|---:|---|
+| unclear | 2,553 | 2,762 | +209 | |
+| diag_up_left_facing_down | 202 | 254 | +52 | |
+| regular_facing_right | 265 | 297 | +32 | |
+| upside_down_facing_left | 20 | 51 | **+31** | finally crossed 30 |
+| regular_facing_left | 191 | 218 | +27 | |
+| diag_down_right_facing_down | 150 | 172 | +22 | |
+| head_up_facing_left | 177 | 198 | +21 | |
+| head_down_facing_right | 102 | 123 | +21 | |
+| diag_up_right_facing_down | 90 | 100 | +10 | |
+| diag_down_left_facing_down | 54 | 63 | +9 | |
+| head_down_facing_left | 79 | 88 | +9 | |
+| head_up_facing_right | 63 | 68 | +5 | |
+| upside_down_facing_right | 125 | 128 | +3 | |
+| diag_up_right_facing_up | 78 | 80 | +2 | |
+| diag_down_left_facing_up | 93 | 93 | 0 | |
+| diag_down_right_facing_up | 23 | 23 | 0 | stuck |
+| diag_up_left_facing_up | 4 | 4 | 0 | stuck |
+
+Only **2 classes still <30** (`diag_up_left_facing_up` 4, `diag_down_right_facing_up` 23). `upside_down_facing_left` finally crossed.
+
 ## Parameters reference (for Phase 3)
 
 A cheat sheet on what each knob actually does. Use it to pick what to sweep.
