@@ -3,9 +3,17 @@
 Working doc. Phases ordered by dependency, not by "what's coolest". Each phase
 has a clear owner (✦ me, ▲ you, ◇ both) and a definition of done.
 
+> **STATUS — COMPLETE (2026-06-20).** All phases done, including Phase 5 (was
+> parked). Outcomes and benchmarks live in [SUMMARY.md](SUMMARY.md) (overview),
+> [REPORT.md](REPORT.md) (methods + references + results), and
+> [results/INDEX.md](results/INDEX.md) (per-run table). Extras beyond this plan:
+> a roll-only model (the actual deliverable), an active-learning mining loop, and
+> a heading line-annotation tool. Headline: roll 91.7% / 98.1% upside-down;
+> full-position classifier macro-F1 0.76 → 0.87.
+
 ---
 
-## Phase 0 — Reorganize the code  ✦
+## Phase 0 — Reorganize the code  ✦  ✅ DONE
 
 **Why first**: every other phase touches training/inference. If the layout is
 messy now, it's worse after we add baselines, sweeps, and configs.
@@ -47,7 +55,10 @@ and the existing commands still work.
 
 ---
 
-## Phase 1 — Smarter labeling: random + context  ✦
+## Phase 1 — Smarter labeling: random + context  ✦  ✅ DONE
+<!-- Shipped: random sampling + context strip + rare-class seeding, plus a
+     model-assisted active-learning miner that grew the set to ~2,150 crops. -->
+
 
 **Why**: 100 sequential crops of the same fish in the same pose are 100x less
 useful than 100 from random tracks/frames. Adjacency makes the *single*
@@ -74,7 +85,10 @@ to 4 neighbors above it; the keyboard/click only labels the picked one.
 
 ---
 
-## Phase 2 — Augmentation, but carefully  ✦
+## Phase 2 — Augmentation, but carefully  ✦  ✅ DONE
+<!-- Shipped: degrees/translate/scale/HSV/erasing/mixup as config knobs; flip is
+     usable via left<->right label remap in the factorized model. -->
+
 
 **Why**: ultralytics already augments. The current train script correctly
 disables horizontal flip (it would swap `_facing_left` ↔ `_facing_right`).
@@ -102,7 +116,10 @@ augmentation values; results from running it vs default land in `results/`.
 
 ---
 
-## Phase 3 — Config-driven sweep + results doc  ◇
+## Phase 3 — Config-driven sweep + results doc  ◇  ✅ DONE
+<!-- Shipped: one YAML per run, `python -m classifier.train --config ...`,
+     and results/INDEX.md populated across many runs. -->
+
 
 **Why**: "try different parameters and see which works" needs a system or
 you lose track in 3 runs.
@@ -126,7 +143,10 @@ you can point to a "current best" config.
 
 ---
 
-## Phase 4 — Baseline comparison ✦ (with ▲ to validate)
+## Phase 4 — Baseline comparison ✦ (with ▲ to validate)  ✅ DONE
+<!-- Shipped: classifier.baselines (majority + LR-on-pixels, no sklearn needed)
+     for composite and roll. Models beat LR-pixels by ~28 acc pts on both. -->
+
 
 **Why**: you can't claim your model is good without something to beat.
 "95% accuracy" is meaningless without knowing what a dumb baseline gets.
@@ -149,7 +169,12 @@ These slot into the `models/` ABC from Phase 0. Each gets a config.
 
 ---
 
-## Phase 5 — Angle regression  ◇  (decision point, not a free addition)
+## Phase 5 — Angle regression  ◇  (decision point, not a free addition)  ✅ DONE (un-parked)
+<!-- Built (Option 3): continuous heading + roll via cos/sin + angular loss, with
+     a class->angle map and a heading line-annotation tool. Verdict: great for
+     continuous angles (heading 7.9° err) but the decoupled classifier wins on
+     discrete classes, and heading does not improve roll. -->
+
 
 **Read this before saying yes.** It is *not* "another class scheme" —
 it's a different ML problem.
