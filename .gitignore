@@ -16,5 +16,6 @@ results/*/
 best/
 annotation_samples/
 runs/
+ml_storage/
 *.zip
 *.pt
