@@ -3,8 +3,12 @@ import os
 import cv2
 import subprocess
 import tempfile
+import sys
 from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 from ultralytics import YOLO
+from core.image_utils import crop_with_padding
 
 def main():
     parser = argparse.ArgumentParser(description="Extract crops of tracked fish")
@@ -74,21 +78,7 @@ def main():
         ids = r.boxes.id.cpu().numpy().astype(int)
         
         for box, obj_id in zip(boxes, ids):
-            x1, y1, x2, y2 = box
-            
-            # Add padding
-            w = x2 - x1
-            h = y2 - y1
-            
-            pad_w = w * args.padding
-            pad_h = h * args.padding
-            
-            x1 = max(0, int(x1 - pad_w))
-            y1 = max(0, int(y1 - pad_h))
-            x2 = min(w_img, int(x2 + pad_w))
-            y2 = min(h_img, int(y2 + pad_h))
-            
-            crop = img[y1:y2, x1:x2]
+            crop = crop_with_padding(img, box, padding=args.padding)
             
             if crop.size == 0:
                 continue

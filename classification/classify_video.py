@@ -5,15 +5,23 @@ and emit one Excel file with per-fish percentages plus an averaged row.
 
 Temporal smoothing: majority vote in a sliding window (default 5 frames) over each
 fish's per-frame predictions. Cheap, no extra model needed.
+
+Weights can be supplied directly (--weights path) or resolved from the MLStorage
+classifier registry (--use-storage, with optional --run to pick a specific run).
 """
+
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import argparse
 from collections import Counter
-from pathlib import Path
 
 import pandas as pd
 from ultralytics import YOLO
+from core.ml_storage import MLStorage
 
+DEFAULT_MODEL_NAME = "fish_position_classifier"
 
 def smooth(labels: list[str], window: int) -> list[str]:
     if window <= 1 or len(labels) <= 1:
@@ -40,26 +48,66 @@ def classify_fish_folder(model: YOLO, fish_dir: Path, device: str) -> list[str]:
     return [names[int(r.probs.top1)] for r in results]
 
 
+def _resolve_weights(args) -> Path:
+    """Return a validated weights path from --weights or the classifier registry."""
+    if args.use_storage:
+        storage = MLStorage(args.storage_root)
+        weights_path = storage.classifier_models.get_weights(
+            model_name=args.model_name,
+            run=args.run,
+        )
+        label = f"run {args.run}" if args.run else "latest run"
+        print(f"Resolved weights from registry ({label}): {weights_path}")
+        return weights_path
+
+    if args.weights is None:
+        raise FileNotFoundError(
+            "No weights specified. Provide --weights or use --use-storage."
+        )
+    weights_path = Path(args.weights)
+    if not weights_path.exists():
+        raise FileNotFoundError(
+            f"Weights file '{weights_path}' not found. "
+            "Provide a valid --weights path or use --use-storage."
+        )
+    return weights_path
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--crops-dir", required=True,
                         help="crops/<video_name>/ produced by extract_crops.py")
-    parser.add_argument("--weights", required=True,
-                        help="Trained classifier weights (best.pt from train_classifier.py)")
+    parser.add_argument("--weights", default=None,
+                        help="Trained classifier weights (best.pt)")
     parser.add_argument("--output", default=None,
                         help="Output xlsx path (default: <crops-dir>.xlsx)")
     parser.add_argument("--smooth-window", type=int, default=5)
     parser.add_argument("--reject-class", default="unclear",
                         help="Class name to exclude from reported percentages")
     parser.add_argument("--device", default="mps")
+    # ML Storage options
+    parser.add_argument("--use-storage", action="store_true",
+                        help="Fetch weights from the MLStorage classifier registry")
+    parser.add_argument("--storage-root", type=str, default="ml_storage",
+                        help="Root directory for MLStorage (default: ml_storage)")
+    parser.add_argument("--model-name", type=str, default=DEFAULT_MODEL_NAME,
+                        help=f"Model name in the registry (default: {DEFAULT_MODEL_NAME})")
+    parser.add_argument("--run", type=int, default=None,
+                        help="1-indexed run number from the registry (default: latest)")
     args = parser.parse_args()
+
+    try:
+        weights_path = _resolve_weights(args)
+    except FileNotFoundError as e:
+        print(f"Error: {e}")
+        sys.exit(1)
 
     crops_dir = Path(args.crops_dir)
     fish_dirs = sorted([p for p in crops_dir.iterdir() if p.is_dir() and p.name.startswith("id_")])
     if not fish_dirs:
         raise SystemExit(f"No id_* subfolders in {crops_dir}")
 
-    model = YOLO(args.weights)
+    model = YOLO(weights_path)
     class_names = list(model.names.values())
     reported_classes = [c for c in class_names if c != args.reject_class]
 
