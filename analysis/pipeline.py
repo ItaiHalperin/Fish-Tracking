@@ -39,6 +39,7 @@ from ultralytics import YOLO
 
 from core.image_utils import crop_with_padding
 from core.ml_storage import MLStorage
+from classifier import load_classifier
 
 # ---------------------------------------------------------------------------
 # Defaults
@@ -154,7 +155,7 @@ class FishPipeline:
 
         # Lazy-loaded; reused across multiple .run() calls
         self._detector:   YOLO | None = None
-        self._classifier: YOLO | None = None
+        self._classifier = None  # a classifier.Classifier, resolved from storage
 
     # ------------------------------------------------------------------
     # Weight resolution
@@ -167,11 +168,13 @@ class FishPipeline:
             self._detector = YOLO(weights)
         return self._detector
 
-    def _get_classifier(self) -> YOLO:
+    def _get_classifier(self):
         if self._classifier is None:
             weights = self.storage.classifier_models.get_weights(self.classifier_model_name)
             print(f"[Pipeline] Loading classifier from {weights}")
-            self._classifier = YOLO(weights)
+            # Resolves to our Classifier (multihead / roll_cls / angle_reg) via the
+            # run's config.yaml, or a YOLO adapter for legacy weights.
+            self._classifier = load_classifier(weights, device=self.device)
         return self._classifier
 
     # ------------------------------------------------------------------
@@ -256,7 +259,7 @@ class FishPipeline:
             raise RuntimeError(f"No id_* subfolders found in {crops_dir}")
 
         model      = self._get_classifier()
-        class_names     = list(model.names.values())
+        class_names     = model.class_names
         reported_classes = [c for c in class_names if c != self.reject_class]
 
         print(f"[Pipeline] Classifying {len(fish_dirs)} fish IDs …")
@@ -270,12 +273,8 @@ class FishPipeline:
             if not crops:
                 continue
 
-            preds = model.predict(
-                source=[str(c) for c in crops],
-                device=self.device,
-                verbose=False,
-            )
-            raw_labels = [model.names[int(r.probs.top1)] for r in preds]
+            preds = model.predict([str(c) for c in crops])
+            raw_labels = [label for label, _conf in preds]
             smoothed   = _smooth(raw_labels, self.smooth_window)
 
             # Trace: one row per frame

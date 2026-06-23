@@ -406,9 +406,10 @@ class MultiHeadClassifier(Classifier):
     def predict(self, image_paths: Iterable[Path | str]) -> list[tuple[str, float]]:
         if self._net is None:
             raise RuntimeError("Model not loaded. Call load() first.")
+        from ..imageio import to_pil
         out: list[tuple[str, float]] = []
         for p in image_paths:
-            img = Image.open(p).convert("RGB")
+            img = to_pil(p)
             pose_acc = torch.zeros(len(self._vocab.poses))
             facing_acc = torch.zeros(len(self._vocab.facings))
             views: list[tuple[Image.Image, bool]] = [(img, False)]

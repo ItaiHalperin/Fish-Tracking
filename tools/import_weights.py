@@ -86,7 +86,7 @@ def main():
     if args.type == "detection":
         print(f"  python detection/track.py --video <video> --output <out> --use-storage")
     else:
-        print(f"  python classification/classify_video.py --crops-dir <dir> --output <out> --use-storage")
+        print(f"  python analysis/pipeline.py <video> -o <out>   # uses the classifier registry")
 
 
 if __name__ == "__main__":

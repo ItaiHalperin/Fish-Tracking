@@ -178,9 +178,10 @@ class RollClassifier(Classifier):
     def predict(self, image_paths: Iterable[Path | str]) -> list[tuple[str, float]]:
         if self._net is None:
             raise RuntimeError("Model not loaded. Call load() first.")
+        from ..imageio import to_pil
         out = []
         for p in image_paths:
-            x = self._eval_tf(Image.open(p).convert("RGB")).unsqueeze(0).to(self._device)
+            x = self._eval_tf(to_pil(p)).unsqueeze(0).to(self._device)
             probs = torch.softmax(self._net(x), 1)[0]
             i = int(probs.argmax())
             out.append((A.roll_name(self._roll_classes[i]), float(probs[i])))

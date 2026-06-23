@@ -182,9 +182,10 @@ class AngleRegClassifier(Classifier):
     def predict(self, image_paths: Iterable[Path | str]) -> list[tuple[str, float]]:
         if self._net is None:
             raise RuntimeError("Model not loaded. Call load() first.")
+        from ..imageio import to_pil
         out = []
         for p in image_paths:
-            x = self._eval_tf(Image.open(p).convert("RGB")).unsqueeze(0).to(self._device)
+            x = self._eval_tf(to_pil(p)).unsqueeze(0).to(self._device)
             hv, rv = self._net(x)
             heading = float(A.vec_to_deg(hv)[0])
             roll = float(A.vec_to_deg(rv)[0])
@@ -197,10 +198,11 @@ class AngleRegClassifier(Classifier):
         """Roll prediction only — the regressed roll snapped to the nearest roll
         class. Lets classifier.test_roll compare this model's roll head against
         the roll-only classifier on the same 4-way label space."""
+        from ..imageio import to_pil
         roll_classes = A.roll_vocab(self._angle_map)
         out = []
         for p in image_paths:
-            x = self._eval_tf(Image.open(p).convert("RGB")).unsqueeze(0).to(self._device)
+            x = self._eval_tf(to_pil(p)).unsqueeze(0).to(self._device)
             _, rv = self._net(x)
             roll = float(A.vec_to_deg(rv)[0])
             nearest = min(roll_classes, key=lambda r: min((roll - r) % 360, (r - roll) % 360))
