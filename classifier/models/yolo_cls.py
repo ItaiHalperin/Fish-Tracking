@@ -35,7 +35,9 @@ class YoloClsClassifier(Classifier):
             patience=config.patience,
             seed=config.seed,
             lr0=config.lr0,
-            project=str(output_dir.parent),
+            # absolute path — ultralytics treats a relative `project` as relative
+            # to its own runs/ dir, which would scatter outputs outside results/.
+            project=str(output_dir.parent.resolve()),
             name=output_dir.name,
             exist_ok=True,
             # Augmentation knobs

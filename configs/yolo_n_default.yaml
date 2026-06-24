@@ -1,7 +1,7 @@
 name: yolo_n_default
 model_type: yolo_cls
 pretrained: yolo11n-cls.pt
-data_dir: labels
+data_dir: labels_split
 epochs: 50
 imgsz: 224
 batch: 32
