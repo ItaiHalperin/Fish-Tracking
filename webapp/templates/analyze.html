@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fish Orientation Analysis</title>
+<style>
+  :root { --bg:#0d2329; --bg2:#0a1f25; --card:#14333b; --ink:#e4efed; --muted:#85a4a0;
+          --accent:#4f9d8f; --warn:#c6794f; --line:#22454e; }
+  * { box-sizing: border-box; }
+  body { margin:0; color:var(--ink);
+         background: radial-gradient(1100px 520px at 78% -18%, #1b4751, transparent 55%), var(--bg);
+         background-attachment: fixed;
+         font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; }
+  .wrap { max-width:920px; margin:0 auto; padding:28px 20px 60px; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 24px; font-size:14px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:14px;
+          padding:20px; margin-bottom:18px; }
+  #drop { border:2px dashed var(--line); border-radius:14px; padding:34px; text-align:center;
+          color:var(--muted); cursor:pointer; transition:.15s; }
+  #drop.hot { border-color:var(--accent); color:var(--ink); background:#0e2e35; }
+  #drop b { color:var(--ink); }
+  .row { display:flex; gap:12px; align-items:center; margin-top:14px; flex-wrap:wrap; }
+  input[type=text], input[type=number] { background:#0a1f25; border:1px solid var(--line);
+          color:var(--ink); border-radius:9px; padding:10px 12px; font-size:14px; }
+  input[type=text] { flex:1; min-width:240px; }
+  input[type=number] { width:130px; }
+  label.f { color:var(--muted); font-size:13px; }
+  button { background:var(--accent); color:#06201b; border:0; border-radius:9px;
+           padding:11px 20px; font-size:15px; font-weight:600; cursor:pointer; }
+  button:disabled { opacity:.5; cursor:default; }
+  .or { color:var(--muted); font-size:13px; text-align:center; margin:12px 0; }
+  #status { display:none; }
+  .spin { display:inline-block; width:14px; height:14px; border:2px solid var(--line);
+          border-top-color:var(--accent); border-radius:50%; animation:s 0.8s linear infinite;
+          vertical-align:-2px; margin-right:8px; }
+  @keyframes s { to { transform:rotate(360deg); } }
+  .prog { color:var(--muted); font-size:13px; font-variant-numeric:tabular-nums;
+          margin-top:8px; word-break:break-all; }
+  .err { color:#ff6b6b; font-size:14px; white-space:pre-wrap; }
+  #results { display:none; }
+  .stats { display:flex; gap:24px; flex-wrap:wrap; margin-bottom:6px; }
+  .stat .n { font-size:26px; font-weight:700; }
+  .stat .l { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.5px; }
+  .bar { display:flex; align-items:center; gap:10px; margin:9px 0; }
+  .bar .name { width:120px; font-size:13px; color:var(--muted); text-align:right; }
+  .bar .track { flex:1; background:#0a1f25; border-radius:6px; height:22px; overflow:hidden; }
+  .bar .fill { height:100%; background:var(--accent); border-radius:6px; min-width:2px; }
+  .bar .pct { width:58px; font-size:13px; font-variant-numeric:tabular-nums; }
+  table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th,td { padding:7px 9px; text-align:right; border-bottom:1px solid var(--line);
+          font-variant-numeric:tabular-nums; }
+  th:first-child, td:first-child { text-align:left; }
+  th { color:var(--muted); font-weight:600; }
+  tr.avg td { font-weight:700; background:#0e2e35; border-top:2px solid var(--accent); }
+  .hl { color:var(--warn); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🐟 Fish Orientation Analysis</h1>
+  <p class="sub">Drag in a video or paste a local path. Runs detection → tracking →
+     roll classification, then summarises per fish and pooled over all crops.</p>
+
+  <div class="card" id="input-card">
+    <div id="drop">
+      <p>📹 <b>Drag &amp; drop a video here</b>, or click to choose a file</p>
+      <p id="picked" style="color:var(--accent);font-size:13px;"></p>
+      <input type="file" id="file" accept="video/*" style="display:none">
+    </div>
+    <div class="or">— or —</div>
+    <div class="row">
+      <input type="text" id="path" placeholder="/path/to/video.mp4  (or relative to project root)">
+    </div>
+    <div class="row">
+      <label class="f">Limit to first <input type="number" id="dur" min="1" placeholder="all"> seconds (optional, for a quick test)</label>
+    </div>
+    <div class="row">
+      <button id="go">Analyze</button>
+    </div>
+  </div>
+
+  <div class="card" id="status">
+    <div><span class="spin"></span><b id="phase">Starting…</b></div>
+    <div class="prog" id="prog"></div>
+    <div class="err" id="err"></div>
+  </div>
+
+  <div class="card" id="results">
+    <div class="stats">
+      <div class="stat"><div class="n" id="s-fish">–</div><div class="l">Fish tracked</div></div>
+      <div class="stat"><div class="n" id="s-frames">–</div><div class="l">Frames analysed</div></div>
+      <div class="stat"><div class="n hl" id="s-upside">–</div><div class="l">% time upside-down</div></div>
+    </div>
+    <h3 style="margin:18px 0 4px;">Average over all crops</h3>
+    <div id="avg-bars"></div>
+    <h3 style="margin:22px 0 4px;">Per fish</h3>
+    <div style="overflow-x:auto;"><table id="tbl"></table></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let chosenFile = null;
+
+const drop = $("drop");
+drop.addEventListener("click", () => $("file").click());
+$("file").addEventListener("change", e => { chosenFile = e.target.files[0]; showPicked(); });
+["dragover","dragenter"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("hot"); }));
+["dragleave","drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("hot"); }));
+drop.addEventListener("drop", e => { if (e.dataTransfer.files[0]) { chosenFile = e.dataTransfer.files[0]; showPicked(); } });
+function showPicked(){ $("picked").textContent = chosenFile ? "Selected: " + chosenFile.name : ""; }
+
+const pretty = s => s.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+const palette = { belly_up:"#c6794f" };
+
+$("go").addEventListener("click", analyze);
+
+async function analyze(){
+  $("err").textContent = "";
+  const fd = new FormData();
+  if (chosenFile) fd.append("video", chosenFile);
+  else if ($("path").value.trim()) fd.append("path", $("path").value.trim());
+  else { $("err").textContent = "Pick a file or enter a path first."; $("status").style.display="block"; return; }
+  if ($("dur").value) fd.append("duration", $("dur").value);
+
+  $("go").disabled = true;
+  $("results").style.display = "none";
+  $("status").style.display = "block";
+  $("phase").textContent = "Uploading / starting…";
+  $("prog").textContent = ""; $("err").textContent = "";
+
+  let res, data;
+  try { res = await fetch("/api/analyze", {method:"POST", body:fd}); data = await res.json(); }
+  catch(e){ fail("Request failed: " + e); return; }
+  if (!res.ok){ fail(data.error || "Failed to start."); return; }
+  poll(data.job_id);
+}
+
+function fail(msg){ $("err").textContent = msg; $("go").disabled = false; $("phase").textContent = "Failed"; document.querySelector(".spin").style.display="none"; }
+
+async function poll(id){
+  document.querySelector(".spin").style.display="inline-block";
+  const tick = async () => {
+    let d;
+    try { d = await (await fetch("/api/status/" + id)).json(); }
+    catch(e){ return setTimeout(tick, 2000); }
+    $("prog").textContent = d.progress || "";
+    if (d.status === "running" || d.status === "queued"){
+      $("phase").textContent = "Analysing  (" + d.source + ")…";
+      setTimeout(tick, 1500);
+    } else if (d.status === "done"){
+      $("phase").textContent = "Done";
+      document.querySelector(".spin").style.display="none";
+      $("status").style.display="none";
+      render(d.result);
+      $("go").disabled = false;
+    } else if (d.status === "error"){
+      fail(d.error || "Analysis failed.");
+    } else { setTimeout(tick, 1500); }
+  };
+  tick();
+}
+
+function render(r){
+  if (!r || !r.average){ fail("No fish were summarised (no tracks found)."); return; }
+  $("results").style.display = "block";
+  $("s-fish").textContent = r.n_fish;
+  $("s-frames").textContent = r.total_frames.toLocaleString();
+  const upKey = r.class_cols.find(c => c === "belly_up");
+  $("s-upside").textContent = upKey ? r.average[upKey].toFixed(1) + "%" : "n/a";
+
+  // average bars
+  const bars = r.class_cols.map(c => {
+    const v = r.average[c];
+    const col = palette[c] || "var(--accent)";
+    return `<div class="bar"><div class="name">${pretty(c)}</div>
+      <div class="track"><div class="fill" style="width:${v}%;background:${col}"></div></div>
+      <div class="pct">${v.toFixed(1)}%</div></div>`;
+  }).join("");
+  $("avg-bars").innerHTML = bars;
+
+  // per-fish table
+  const cls = r.class_cols;
+  let head = "<tr><th>Fish</th><th>frames</th><th>scored</th><th>rejected</th>" +
+             cls.map(c => `<th>${pretty(c)}</th>`).join("") + "</tr>";
+  let body = r.rows.map(row =>
+    `<tr><td>${row.fish_id}</td><td>${row.n_frames}</td><td>${row.n_scored}</td><td>${row.n_rejected}</td>` +
+    cls.map(c => `<td>${row[c].toFixed(1)}</td>`).join("") + "</tr>").join("");
+  const a = r.average;
+  let avg = `<tr class="avg"><td>AVERAGE</td><td>${a.n_frames}</td><td>${a.n_scored}</td><td>${a.n_rejected}</td>` +
+    cls.map(c => `<td>${a[c].toFixed(1)}</td>`).join("") + "</tr>";
+  $("tbl").innerHTML = head + body + avg;
+}
+</script>
+</body>
+</html>
