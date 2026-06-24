@@ -4,34 +4,38 @@
   <meta charset="utf-8">
   <title>Fish crop labeler</title>
   <style>
-    body { font-family: -apple-system, sans-serif; margin: 0; padding: 16px; background: #111; color: #eee; }
+    :root { --bg:#0d2329; --bg2:#081519; --card:#14333b; --line:#22454e;
+            --ink:#e4efed; --muted:#85a4a0; --accent:#4f9d8f; --coral:#d99a5c; }
+    body { font-family: -apple-system, system-ui, sans-serif; margin: 0; padding: 16px; color: var(--ink);
+           background: radial-gradient(1100px 520px at 78% -18%, #1b4751, transparent 55%), var(--bg);
+           background-attachment: fixed; }
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
     h1 { font-size: 18px; margin: 0; }
-    #stats { font-size: 13px; color: #aaa; }
-    #stats a { color: #6cf; }
-    #image-wrap { background: #000; padding: 12px; border-radius: 8px; text-align: center; min-height: 400px; display: flex; align-items: center; justify-content: center; }
+    #stats { font-size: 13px; color: #85a4a0; }
+    #stats a { color: #4f9d8f; }
+    #image-wrap { background: #081519; padding: 12px; border-radius: 8px; text-align: center; min-height: 400px; display: flex; align-items: center; justify-content: center; }
     #image-wrap img { max-width: 100%; max-height: 60vh; image-rendering: -webkit-optimize-contrast; }
     #context-strip { display: flex; gap: 6px; justify-content: center; margin-bottom: 8px; min-height: 110px; align-items: center; }
-    #context-strip .ctx { width: 100px; height: 100px; background: #1a1a1a; border-radius: 4px; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; opacity: 0.55; }
-    #context-strip .ctx.center { opacity: 1.0; border: 2px solid #6cf; transform: scale(1.1); }
+    #context-strip .ctx { width: 100px; height: 100px; background: #0f2a30; border-radius: 4px; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; opacity: 0.55; }
+    #context-strip .ctx.center { opacity: 1.0; border: 2px solid #4f9d8f; transform: scale(1.1); }
     #context-strip .ctx img { max-width: 100%; max-height: 80px; }
-    #context-strip .ctx .frame-label { font-size: 10px; color: #888; font-family: monospace; }
-    #context-strip .ctx.center .frame-label { color: #6cf; font-weight: bold; }
+    #context-strip .ctx .frame-label { font-size: 10px; color: #85a4a0; font-family: monospace; }
+    #context-strip .ctx.center .frame-label { color: #4f9d8f; font-weight: bold; }
     #buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-    button { padding: 10px 14px; font-size: 14px; background: #2a2a2a; color: #eee; border: 1px solid #444; border-radius: 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 90px; }
-    button:hover { background: #3a3a3a; }
+    button { padding: 10px 14px; font-size: 14px; background: #1b3a42; color: #e4efed; border: 1px solid #22454e; border-radius: 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 90px; }
+    button:hover { background: #234a52; }
     button .ref { width: 64px; height: 64px; object-fit: contain; background: #fff; border-radius: 4px; }
-    button .ref-placeholder { width: 64px; height: 64px; background: #1a1a1a; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #555; font-size: 11px; }
+    button .ref-placeholder { width: 64px; height: 64px; background: #0f2a30; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #6a8682; font-size: 11px; }
     button .label-row { display: flex; align-items: center; gap: 4px; font-size: 13px; }
-    button .key { color: #6cf; font-weight: bold; }
-    #undo { background: #4a2a2a; }
-    #skip { background: #2a3a4a; margin-left: 8px; }
+    button .key { color: #4f9d8f; font-weight: bold; }
+    #undo { background: #4a2f28; }
+    #skip { background: #163b36; margin-left: 8px; }
     .action-row { display: flex; margin-top: 12px; }
-    #mode-banner { background: #3a3a1a; border: 1px solid #6c6; padding: 8px 12px; border-radius: 6px; font-size: 13px; color: #cf6; margin-bottom: 8px; display: none; }
-    #mode-banner button { padding: 4px 10px; font-size: 12px; background: #4a4a2a; color: #eee; border: 1px solid #666; border-radius: 4px; margin-left: 12px; }
-    #counts { margin-top: 16px; font-size: 12px; color: #888; }
+    #mode-banner { background: #26392f; border: 1px solid #4f9d8f; padding: 8px 12px; border-radius: 6px; font-size: 13px; color: #9fc5b0; margin-bottom: 8px; display: none; }
+    #mode-banner button { padding: 4px 10px; font-size: 12px; background: #234a40; color: #e4efed; border: 1px solid #6a8682; border-radius: 4px; margin-left: 12px; }
+    #counts { margin-top: 16px; font-size: 12px; color: #85a4a0; }
     #counts span { margin-right: 12px; }
-    #filename { font-family: monospace; font-size: 11px; color: #666; margin-top: 8px; }
+    #filename { font-family: monospace; font-size: 11px; color: #6a8682; margin-top: 8px; }
   </style>
 </head>
 <body>
@@ -126,7 +130,7 @@ function showNext() {
     refillQueue().then(() => {
       if (queue.length === 0) {
         document.getElementById("image-wrap").innerHTML =
-          "<div>Source folder is empty. <a href='/finish' style='color:#6cf'>Finish &rarr;</a></div>";
+          "<div>Source folder is empty. <a href='/finish' style='color:#4f9d8f'>Finish &rarr;</a></div>";
       } else {
         showNext();
       }
