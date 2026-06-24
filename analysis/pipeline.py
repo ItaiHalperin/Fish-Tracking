@@ -178,21 +178,27 @@ class FishPipeline:
         return self._classifier
 
     # ------------------------------------------------------------------
-    # Step 1: Track
+    # Steps 1+2: Track and extract crops (streamed)
     # ------------------------------------------------------------------
 
-    def _track(
+    def _track_and_extract(
         self,
         video_path: Path,
+        crops_dir: Path,
         track_output_dir: Path | None,
         start: int,
         duration: int | None,
-    ) -> list:
-        """Run YOLO tracking in stream mode; return list of Result objects."""
+    ) -> None:
+        """Track in stream mode and save each frame's crops as it arrives.
+
+        Crops are written per frame so only one Result is ever held in memory —
+        materialising every frame (``list(model.track(...))``) OOM-kills on long
+        videos because each Result keeps its full image.
+        """
         target_video, temp_file = _prepare_video(video_path, start, duration)
         try:
             model = self._get_detector()
-            print(f"[Pipeline] Tracking {target_video.name} …")
+            print(f"[Pipeline] Tracking {target_video.name} (streaming → {crops_dir}) …")
 
             kwargs = dict(
                 source=str(target_video),
@@ -206,40 +212,29 @@ class FishPipeline:
                 kwargs["project"] = str(track_output_dir.parent)
                 kwargs["name"]    = track_output_dir.name
 
-            results = list(model.track(**kwargs))
+            saved = 0
+            for frame_idx, r in enumerate(model.track(**kwargs), start=1):
+                if r.boxes is None or r.boxes.id is None:
+                    continue
+
+                img   = r.orig_img
+                boxes = r.boxes.xyxy.cpu().numpy()
+                ids   = r.boxes.id.cpu().numpy().astype(int)
+
+                for box, obj_id in zip(boxes, ids):
+                    crop = crop_with_padding(img, box, padding=self.padding)
+                    if crop.size == 0:
+                        continue
+                    fish_dir = crops_dir / f"id_{obj_id}"
+                    fish_dir.mkdir(parents=True, exist_ok=True)
+                    cv2.imwrite(str(fish_dir / f"frame_{frame_idx}.jpg"), crop)
+                    saved += 1
+
+                if frame_idx % 1000 == 0:
+                    print(f"  frame {frame_idx}: {saved} crops saved so far")
         finally:
             if temp_file and temp_file.exists():
                 temp_file.unlink()
-
-        return results
-
-    # ------------------------------------------------------------------
-    # Step 2: Extract crops
-    # ------------------------------------------------------------------
-
-    def _extract_crops(self, results: list, crops_dir: Path) -> None:
-        """Save padded bounding-box crops from tracking results."""
-        print(f"[Pipeline] Extracting crops → {crops_dir}")
-        saved = 0
-        for frame_idx, r in enumerate(results, start=1):
-            if r.boxes is None or r.boxes.id is None:
-                continue
-
-            img    = r.orig_img
-            h_img, w_img = img.shape[:2]
-            boxes  = r.boxes.xyxy.cpu().numpy()
-            ids    = r.boxes.id.cpu().numpy().astype(int)
-
-            for box, obj_id in zip(boxes, ids):
-                crop = crop_with_padding(img, box, padding=self.padding)
-                
-                if crop.size == 0:
-                    continue
-
-                fish_dir = crops_dir / f"id_{obj_id}"
-                fish_dir.mkdir(parents=True, exist_ok=True)
-                cv2.imwrite(str(fish_dir / f"frame_{frame_idx}.jpg"), crop)
-                saved += 1
 
         print(f"[Pipeline] Saved {saved} crops.")
 
@@ -385,11 +380,8 @@ class FishPipeline:
 
         print(f"\n[Pipeline] ── {video_path.name} ──────────────────────────")
 
-        # 1. Track
-        results = self._track(video_path, track_output_dir, start, duration)
-
-        # 2. Extract crops
-        self._extract_crops(results, crops_dir)
+        # 1+2. Track and extract crops (streamed, memory-flat)
+        self._track_and_extract(video_path, crops_dir, track_output_dir, start, duration)
 
         # 3+4. Classify and summarise
         traces_df, summary_df = self._classify_and_summarise(crops_dir)
