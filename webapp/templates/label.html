@@ -10,7 +10,13 @@
     #stats { font-size: 13px; color: #aaa; }
     #stats a { color: #6cf; }
     #image-wrap { background: #000; padding: 12px; border-radius: 8px; text-align: center; min-height: 400px; display: flex; align-items: center; justify-content: center; }
-    #image-wrap img { max-width: 100%; max-height: 70vh; image-rendering: -webkit-optimize-contrast; }
+    #image-wrap img { max-width: 100%; max-height: 60vh; image-rendering: -webkit-optimize-contrast; }
+    #context-strip { display: flex; gap: 6px; justify-content: center; margin-bottom: 8px; min-height: 110px; align-items: center; }
+    #context-strip .ctx { width: 100px; height: 100px; background: #1a1a1a; border-radius: 4px; padding: 4px; display: flex; flex-direction: column; align-items: center; gap: 2px; opacity: 0.55; }
+    #context-strip .ctx.center { opacity: 1.0; border: 2px solid #6cf; transform: scale(1.1); }
+    #context-strip .ctx img { max-width: 100%; max-height: 80px; }
+    #context-strip .ctx .frame-label { font-size: 10px; color: #888; font-family: monospace; }
+    #context-strip .ctx.center .frame-label { color: #6cf; font-weight: bold; }
     #buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
     button { padding: 10px 14px; font-size: 14px; background: #2a2a2a; color: #eee; border: 1px solid #444; border-radius: 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 90px; }
     button:hover { background: #3a3a3a; }
@@ -19,6 +25,10 @@
     button .label-row { display: flex; align-items: center; gap: 4px; font-size: 13px; }
     button .key { color: #6cf; font-weight: bold; }
     #undo { background: #4a2a2a; }
+    #skip { background: #2a3a4a; margin-left: 8px; }
+    .action-row { display: flex; margin-top: 12px; }
+    #mode-banner { background: #3a3a1a; border: 1px solid #6c6; padding: 8px 12px; border-radius: 6px; font-size: 13px; color: #cf6; margin-bottom: 8px; display: none; }
+    #mode-banner button { padding: 4px 10px; font-size: 12px; background: #4a4a2a; color: #eee; border: 1px solid #666; border-radius: 4px; margin-left: 12px; }
     #counts { margin-top: 16px; font-size: 12px; color: #888; }
     #counts span { margin-right: 12px; }
     #filename { font-family: monospace; font-size: 11px; color: #666; margin-top: 8px; }
@@ -30,11 +40,19 @@
     <div id="stats">Loading… &middot; <a href="/finish">Finish &rarr;</a></div>
   </header>
 
+  <div id="mode-banner">
+    <span id="mode-text"></span>
+    <button id="exit-mode">Back to random (X)</button>
+  </div>
+  <div id="context-strip"></div>
   <div id="image-wrap"><img id="img" alt=""></div>
   <div id="filename"></div>
 
   <div id="buttons"></div>
-  <button id="undo" style="margin-top: 12px;">↶ Undo (U)</button>
+  <div class="action-row">
+    <button id="undo">↶ Undo (U)</button>
+    <button id="skip">→ Skip (Space)</button>
+  </div>
 
   <div id="counts"></div>
 
@@ -42,12 +60,53 @@
 const CLASSES = {{ classes | tojson }};
 let queue = [];
 let current = null;
+let refillInFlight = false;
+// Every file we've shown this session — keeps us from looping back to files
+// whose label/skip hasn't yet been reflected on the server.
+const handled = new Set();
+const REFILL_AT = 20;
+const BATCH = 100;
+// Count of queued-up neighborhood items remaining. While > 0 the banner shows
+// and refills are suppressed (so we don't drown the neighborhood in random ones).
+let neighborhoodRemaining = 0;
+let neighborhoodReason = null;
+
+function updateModeBanner() {
+  const banner = document.getElementById("mode-banner");
+  if (neighborhoodRemaining > 0) {
+    banner.style.display = "block";
+    document.getElementById("mode-text").textContent =
+      `Focused on rare class "${neighborhoodReason}" — ${neighborhoodRemaining} same-fish crop(s) queued.`;
+  } else {
+    banner.style.display = "none";
+  }
+}
+
+function exitNeighborhood() {
+  if (neighborhoodRemaining === 0) return;
+  // Drop queued neighborhood items but keep `handled` so they don't come back
+  // immediately via random sampling.
+  queue = [];
+  neighborhoodRemaining = 0;
+  neighborhoodReason = null;
+  updateModeBanner();
+  refillQueue().then(showNext);
+}
 
 async function refillQueue() {
-  const r = await fetch("/api/queue?n=50");
-  const j = await r.json();
-  queue = j.files;
-  updateStats(j.remaining, null);
+  if (refillInFlight) return;
+  refillInFlight = true;
+  try {
+    const r = await fetch(`/api/queue?n=${BATCH}`);
+    const j = await r.json();
+    const seen = new Set(queue);
+    for (const f of j.files) {
+      if (!seen.has(f) && !handled.has(f)) queue.push(f);
+    }
+    updateStats(j.remaining, null);
+  } finally {
+    refillInFlight = false;
+  }
 }
 
 function updateStats(remaining, counts) {
@@ -61,29 +120,102 @@ function updateStats(remaining, counts) {
 
 function showNext() {
   if (queue.length === 0) {
+    current = null;
     document.getElementById("img").src = "";
-    document.getElementById("filename").textContent = "";
-    document.getElementById("image-wrap").innerHTML =
-      "<div>All done in this batch. <button onclick='refillQueue().then(showNext)'>Reload</button> or <a href='/finish' style='color:#6cf'>Finish</a>.</div>";
+    document.getElementById("filename").textContent = "Loading next batch…";
+    refillQueue().then(() => {
+      if (queue.length === 0) {
+        document.getElementById("image-wrap").innerHTML =
+          "<div>Source folder is empty. <a href='/finish' style='color:#6cf'>Finish &rarr;</a></div>";
+      } else {
+        showNext();
+      }
+    });
     return;
   }
   current = queue.shift();
+  handled.add(current);
+  if (neighborhoodRemaining > 0) {
+    neighborhoodRemaining -= 1;
+    updateModeBanner();
+  }
   document.getElementById("img").src = `/source/${encodeURIComponent(current)}`;
   document.getElementById("filename").textContent = current;
+  updateContext(current);
 }
 
-async function label(cls) {
+async function updateContext(filename) {
+  const strip = document.getElementById("context-strip");
+  strip.innerHTML = "";
+  try {
+    const r = await fetch(`/api/context?filename=${encodeURIComponent(filename)}&radius=2`);
+    const j = await r.json();
+    if (!j.frames || j.frames.length === 0) return;
+    for (const f of j.frames) {
+      const div = document.createElement("div");
+      div.className = "ctx" + (f.is_center ? " center" : "");
+      div.innerHTML = `<img src="${f.url}"><div class="frame-label">frame ${f.frame}</div>`;
+      strip.appendChild(div);
+    }
+  } catch (e) {
+    console.warn("context fetch failed", e);
+  }
+}
+
+// Optimistic UI: advance immediately, fire POST in the background.
+// Server enforces "still in source" so a stale rapid-click just errors silently
+// (no UI freeze, no fake "already classified" race).
+function label(cls) {
   if (!current) return;
-  const r = await fetch("/api/label", {
+  const filename = current;
+  showNext();  // advance instantly
+  fetch("/api/label", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ filename: current, class: cls }),
+    body: JSON.stringify({ filename, class: cls }),
+  }).then(r => r.json()).then(j => {
+    if (j.error) {
+      console.warn("label failed:", filename, j.error);
+      return;
+    }
+    updateStats(j.remaining, j.counts);
+
+    // If the server flagged this as a rare class, prepend nearby same-fish
+    // crops to the queue so we can label this pose in bulk. Because we
+    // already advanced optimistically, also push the currently-shown random
+    // image BACK into the queue (deferred until after the neighborhood) and
+    // re-show so the user sees a same-fish crop, not the random one.
+    if (j.neighborhood && j.neighborhood.length > 0) {
+      // Filter out anything already shown OR already waiting in the queue
+      // (otherwise consecutive rare labels keep re-adding the same nearby
+      // frames and we loop back to the same crops).
+      const inQueue = new Set(queue);
+      const fresh = j.neighborhood.filter(f =>
+        !handled.has(f) && !inQueue.has(f) && f !== current
+      );
+      if (fresh.length > 0) {
+        if (current) {
+          queue.unshift(current);
+          handled.delete(current);
+        }
+        queue = fresh.concat(queue);
+        neighborhoodRemaining += fresh.length;
+        neighborhoodReason = j.neighborhood_reason;
+        updateModeBanner();
+        current = null;
+        showNext();
+      }
+    }
+
+    // Suppress random refills while we're working through neighborhood items.
+    if (neighborhoodRemaining === 0 && queue.length < REFILL_AT) refillQueue();
   });
-  const j = await r.json();
-  if (j.error) { alert(j.error); return; }
-  updateStats(j.remaining, j.counts);
-  if (queue.length < 5) await refillQueue();
+}
+
+function skip() {
+  if (!current) return;
   showNext();
+  if (queue.length < REFILL_AT) refillQueue();
 }
 
 async function undo() {
@@ -92,6 +224,7 @@ async function undo() {
   if (j.error) { alert(j.error); return; }
   updateStats(j.remaining, j.counts);
   // Put restored file at front of queue so user re-sees it
+  handled.delete(j.restored.filename);
   queue.unshift(j.restored.filename);
   showNext();
 }
@@ -110,9 +243,13 @@ function buildButtons() {
     wrap.appendChild(b);
   });
   document.getElementById("undo").onclick = undo;
+  document.getElementById("skip").onclick = skip;
+  document.getElementById("exit-mode").onclick = exitNeighborhood;
 
   document.addEventListener("keydown", (e) => {
     if (e.key === "u" || e.key === "U") { undo(); return; }
+    if (e.key === " ") { e.preventDefault(); skip(); return; }
+    if (e.key === "x" || e.key === "X") { exitNeighborhood(); return; }
     const idx = parseInt(e.key, 10);
     if (!isNaN(idx) && idx >= 1 && idx <= CLASSES.length) {
       label(CLASSES[idx - 1]);

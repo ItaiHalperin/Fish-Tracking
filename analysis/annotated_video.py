@@ -47,6 +47,7 @@ from ultralytics import YOLO
 
 from core.image_utils import crop_with_padding
 from core.ml_storage import MLStorage
+from classifier import load_classifier
 
 # ---------------------------------------------------------------------------
 # Defaults
@@ -246,7 +247,7 @@ class AnnotatedVideoRenderer:
 
         # Lazy-loaded
         self._detector:   YOLO | None = None
-        self._classifier: YOLO | None = None
+        self._classifier = None  # a classifier.Classifier, resolved from storage
 
     # ------------------------------------------------------------------
     # Weight resolution (lazy)
@@ -264,7 +265,7 @@ class AnnotatedVideoRenderer:
             self._detector = YOLO(path)
         return self._detector
 
-    def _get_classifier(self) -> YOLO:
+    def _get_classifier(self):
         if self._classifier is None:
             if self._cls_weights_override:
                 path = self._cls_weights_override
@@ -273,7 +274,7 @@ class AnnotatedVideoRenderer:
             else:
                 raise ValueError("No classifier weights: pass classifier_weights= or a storage=.")
             print(f"[AnnotatedVideoRenderer] Loading classifier → {path}")
-            self._classifier = YOLO(path)
+            self._classifier = load_classifier(path, device=self.device)
         return self._classifier
 
     # ------------------------------------------------------------------
@@ -378,17 +379,11 @@ class AnnotatedVideoRenderer:
                     crop = crop_with_padding(frame, box, padding=self._pad, min_size=(32, 32))
                     crops.append(crop)
 
-                cls_results = classifier.predict(
-                    source=crops,
-                    device=self.device,
-                    verbose=False,
-                )
+                cls_results = classifier.predict(crops)
 
                 cls_labels: list[str]        = []
                 cls_confs:  list[float | None] = []
-                for tid, res in zip(track_ids, cls_results):
-                    raw_label = classifier.names[int(res.probs.top1)]
-                    raw_conf  = float(res.probs.top1conf)
+                for tid, (raw_label, raw_conf) in zip(track_ids, cls_results):
 
                     # Update sliding window for this track
                     buf = label_buffers.setdefault(

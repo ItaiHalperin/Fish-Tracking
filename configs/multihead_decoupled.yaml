@@ -1,0 +1,47 @@
+name: multihead_decoupled
+model_type: multihead
+
+# Option 2: decoupled two-stage training (cRT).
+#   Stage 1 (epochs)         — learn the representation on the NATURAL class
+#                              distribution with plain CE + full backbone.
+#   Stage 2 (decouple_epochs) — freeze backbone, reinit heads, retrain heads only
+#                              on class-BALANCED sampling + class-balanced loss.
+# In two-stage mode `loss` and `weighted_sampler` below are ignored (each stage
+# sets its own); they're left here only for documentation.
+data_dir: labels_split
+backbone: resnet34
+
+epochs: 35              # stage 1 length (no early stop; full representation training)
+decouple_epochs: 20    # stage 2 length (heads only; early-stops on val)
+imgsz: 224
+batch: 32
+lr0: 0.0003
+weight_decay: 0.0002
+patience: 12
+seed: 42
+device: mps
+num_workers: 4
+
+loss: class_balanced   # ignored in two-stage (stage1=ce, stage2=class_balanced)
+cb_beta: 0.999
+weighted_sampler: true # ignored in two-stage (stage1=natural, stage2=balanced)
+
+dropout: 0.2
+label_smoothing: 0.0
+
+tta: true
+abstain_threshold: 0.0
+
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  fliplr: 0.5
+  flipud: 0.0
+  erasing: 0.3
+  mixup: 0.1           # stage 1 only (auto-disabled in stage 2)
+
+notes: "Decoupled cRT: stage1 natural+CE (35 ep), stage2 frozen-backbone heads on balanced+CB loss (20 ep), +TTA."

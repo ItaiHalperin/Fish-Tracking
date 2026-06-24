@@ -1,0 +1,38 @@
+name: angle_reg
+model_type: angle_reg
+
+# Option 3: orientation regression. Predicts continuous heading + roll angles
+# (cos/sin + angular loss) instead of a composite class. Targets come from
+# configs/angle_map.yaml (class -> angles), so no relabeling is needed.
+# predict() snaps angles back to the nearest class so the test harness reports a
+# class accuracy comparable to the classifiers, alongside mean angular error.
+data_dir: labels_split
+angle_map: configs/angle_map.yaml
+headings_file: labels_angles/headings.json   # line-tool output; ignored if absent
+backbone: resnet34
+
+epochs: 60
+imgsz: 224
+batch: 32
+lr0: 0.0003
+weight_decay: 0.0002
+patience: 15
+seed: 42
+device: mps
+num_workers: 4
+
+dropout: 0.2
+weighted_sampler: true   # still oversample rare orientations during training
+
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  fliplr: 0.5            # flip remaps heading (180-h) and roll (360-r) in data.py
+  flipud: 0.0
+  erasing: 0.3
+
+notes: "Angle regression v1: resnet34, heading+roll heads, angular loss, class-center targets from angle_map.yaml."
