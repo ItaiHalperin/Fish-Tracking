@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-YOLOv11 Training Script for FishTracking.
+YOLO Training Script for FishTracking.
 
+Supports YOLO v5, v11, and v26 in sizes nano/small/medium/large/xlarge.
 Training runs are saved directly into the MLStorage model registry.
 All YOLO artefacts (weights, metrics, plots) live in
 ``ml_storage/model_registry/<model_name>/run_<timestamp>/``.
@@ -17,16 +18,26 @@ from pathlib import Path
 from ultralytics import YOLO
 from core.ml_storage import MLStorage
 
-VALID_MODELS = ["n", "s", "m", "l", "x"]
+# Map full size names to single-letter codes (short forms also accepted directly)
+SIZE_ALIASES = {
+    "nano": "n", "small": "s", "medium": "m", "large": "l", "xlarge": "x",
+    "n": "n", "s": "s", "m": "m", "l": "l", "x": "x",
+}
+VALID_SIZES = list(SIZE_ALIASES.keys())
+VALID_VERSIONS = ["5", "11", "26"]
 DEFAULT_MODEL_NAME = "goldfish_yolo"
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Train YOLOv11 on the fish tracking dataset.")
-    parser.add_argument("--model", choices=VALID_MODELS, default="n",
-                        help="Model size: n(ano), s(mall), m(edium), l(arge), x (default: n)")
+    parser = argparse.ArgumentParser(description="Train YOLO on the fish tracking dataset.")
+    parser.add_argument("--model", choices=VALID_SIZES, default="n",
+                        help="Model size: nano/n, small/s, medium/m, large/l, xlarge/x (default: n)")
+    parser.add_argument("--version", choices=VALID_VERSIONS, default="11",
+                        help=f"YOLO version to use ({', '.join(VALID_VERSIONS)}) (default: 11)")
     parser.add_argument("--epochs", default="200",
                         help="Number of epochs (default: 200)")
+    parser.add_argument("--dataset", type=str, default=None,
+                        help="Path to the dataset.yaml file (defaults to latest in MLStorage)")
     # ML Storage options
     parser.add_argument("--storage-root", type=str, default="ml_storage",
                         help="Root directory for MLStorage (default: ml_storage)")
@@ -34,20 +45,46 @@ def main():
                         help=f"Model name in the registry (default: {DEFAULT_MODEL_NAME})")
     args = parser.parse_args()
 
-    base_weights = f"yolo11{args.model}.pt"
-    print(f"Initializing YOLOv11-{args.model} from {base_weights}...")
+    # Resolve size alias to single-letter code
+    size = SIZE_ALIASES[args.model]
+
+    # Determine base weights string based on YOLO version naming conventions
+    weight_patterns = {
+        "5":  f"yolov5{size}u.pt",   # Ultralytics updated v5 models have 'u' suffix
+        "11": f"yolo11{size}.pt",
+        "26": f"yolo26{size}.pt",
+    }
+    base_weights = weight_patterns[args.version]
+        
+    print(f"Initializing YOLOv{args.version}-{size} from {base_weights}...")
     model = YOLO(base_weights)
 
     # Prepare the run directory inside the detection model registry
     storage = MLStorage(args.storage_root)
-    project, run_name = storage.detection_models.prepare_run(args.model_name)
+    
+    # Resolve Dataset
+    dataset_path = args.dataset
+    if not dataset_path:
+        latest_ds_dir = storage.datasets.latest_version()
+        if latest_ds_dir:
+            dataset_path = str(latest_ds_dir / "dataset.yaml")
+        else:
+            print("Error: No datasets found in MLStorage and --dataset not provided.", file=sys.stderr)
+            sys.exit(1)
+            
+    # Automatically tag the model name with the version if it's using the default
+    model_name = args.model_name
+    if model_name == DEFAULT_MODEL_NAME and args.version != "11":
+        model_name = f"goldfish_yolov{args.version}"
+        
+    project, run_name = storage.detection_models.prepare_run(model_name)
     print(f"Training output: {project}/{run_name}/")
 
     # Start the training loop
     print("Starting training...")
     try:
         results = model.train(
-            data="dataset.yaml",
+            data=dataset_path,
             epochs=int(args.epochs),
             patience=50,
             imgsz=640,
@@ -57,32 +94,36 @@ def main():
             # Save directly into the model registry
             project=project,
             name=run_name,
-            
+
             # --- Geometric Augmentations ---
-            degrees=10.0,    
-            translate=0.1,   
-            scale=0.5,       
-            fliplr=0.5,      
-            flipud=0.2,      
-            mosaic=1.0,      
-            mixup=0.1,       
+            degrees=10.0,     # Fish swim at arbitrary angles, wider rotation helps recall
+            translate=0.1,
+            scale=0.5,
+            shear=0.0,        # Disabled shear
+            perspective=0.0,  # Disabled perspective
+            fliplr=0.5,
+            flipud=0.2,
+            mosaic=1.0,
+            mixup=0.1,
+            copy_paste=0.0,   # Disabled copy-paste as it creates unnatural overlaps
             erasing=0.3,      # Randomly erase 30% of patches, forces learning from partial views
 
             # --- Color Augmentations ---
             hsv_h=0.015,      # Hue shift
             hsv_s=0.7,        # Saturation shift
-            hsv_v=0.4         # Brightness shift
+            hsv_v=0.4         # Brightness shift (also handles exposure/gain natively in YOLO)
         )
         print("Training completed successfully!")
 
         # Finalize the run with metadata
         save_dir = Path(results.save_dir)
         storage.detection_models.finalize_run(
-            model_name=args.model_name,
+            model_name=model_name,
             run_dir=save_dir,
             metadata={
                 "base_model": base_weights,
-                "model_size": args.model,
+                "yolo_version": args.version,
+                "model_size": size,
                 "epochs_requested": int(args.epochs),
             },
         )

@@ -349,7 +349,7 @@ class MLStorage:
     """
 
     def __init__(self, root: str | Path = "ml_storage"):
-        self.root = Path(root)
+        self.root = Path(root).absolute()
         self.root.mkdir(parents=True, exist_ok=True)
         self.datasets = DatasetManager(self.root / "datasets")
         registry_root = self.root / "model_registry"
