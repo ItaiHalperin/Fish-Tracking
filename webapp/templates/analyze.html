@@ -55,6 +55,10 @@
   th { color:var(--muted); font-weight:600; }
   tr.avg td { font-weight:700; background:#0e2e35; border-top:2px solid var(--accent); }
   .hl { color:var(--warn); }
+  .bar .ref { width:36px; height:36px; flex:0 0 auto; object-fit:contain; border-radius:6px;
+              background:#0a1f25; border:1px solid var(--line); }
+  th .ref { display:block; width:30px; height:30px; margin:0 0 3px auto; object-fit:contain;
+            border-radius:5px; background:#0a1f25; border:1px solid var(--line); }
 </style>
 </head>
 <body>
@@ -114,6 +118,16 @@ function showPicked(){ $("picked").textContent = chosenFile ? "Selected: " + cho
 
 const pretty = s => s.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
 const palette = { belly_up:"#c6794f" };
+// Reference orientation image per class. Roll classes have no own PNG, so map
+// each to a representative composite image; composite classes use their own name.
+const ROLL_REF = {
+  belly_down:  "regular_facing_right",
+  belly_up:    "upside_down_facing_left",
+  right_flank: "head_up_facing_right",
+  left_flank:  "head_up_facing_left",
+};
+const refImg = c => `<img class="ref" src="/static/reference/${ROLL_REF[c] || c}.png" alt=""
+  onerror="this.style.display='none'">`;
 
 $("go").addEventListener("click", analyze);
 
@@ -175,7 +189,7 @@ function render(r){
   const bars = r.class_cols.map(c => {
     const v = r.average[c];
     const col = palette[c] || "var(--accent)";
-    return `<div class="bar"><div class="name">${pretty(c)}</div>
+    return `<div class="bar">${refImg(c)}<div class="name">${pretty(c)}</div>
       <div class="track"><div class="fill" style="width:${v}%;background:${col}"></div></div>
       <div class="pct">${v.toFixed(1)}%</div></div>`;
   }).join("");
@@ -184,7 +198,7 @@ function render(r){
   // per-fish table
   const cls = r.class_cols;
   let head = "<tr><th>Fish</th><th>frames</th><th>scored</th><th>rejected</th>" +
-             cls.map(c => `<th>${pretty(c)}</th>`).join("") + "</tr>";
+             cls.map(c => `<th>${refImg(c)}${pretty(c)}</th>`).join("") + "</tr>";
   let body = r.rows.map(row =>
     `<tr><td>${row.fish_id}</td><td>${row.n_frames}</td><td>${row.n_scored}</td><td>${row.n_rejected}</td>` +
     cls.map(c => `<td>${row[c].toFixed(1)}</td>`).join("") + "</tr>").join("");

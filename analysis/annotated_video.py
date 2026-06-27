@@ -2,8 +2,10 @@
 """
 AnnotatedVideoRenderer — fused detection + classification video output.
 
-Runs the YOLO detector / ByteTrack tracker and the YOLO classifier
-simultaneously, frame-by-frame, and writes an annotated video that shows:
+Runs the YOLO detector / ByteTrack tracker and the fish-position classifier
+(any model_type — roll_cls / multihead / angle_reg — resolved from the run's
+config.yaml by classifier.load_classifier) simultaneously, frame-by-frame, and
+writes an annotated video that shows:
 
     #<id>  <det_conf>  |  <cls_label> <cls_conf>
 
