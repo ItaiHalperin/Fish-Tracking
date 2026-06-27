@@ -1,0 +1,19 @@
+# Fish Orientation — Python dependencies (pinned to the working environment).
+# Install:  pip install -r requirements.txt
+# Note: ffmpeg is a system dependency (not pip) — needed to read/trim .MTS etc.
+
+# Deep learning
+torch==2.12.0
+torchvision==0.27.0
+ultralytics==8.4.53            # detection + tracking (YOLO)
+
+# Data / IO
+numpy==2.4.6
+pandas==3.0.3
+openpyxl==3.1.5               # Excel output (summary.xlsx / traces.xlsx)
+opencv-python==4.13.0.92      # video frames + cropping
+pillow==12.2.0               # image loading in the classifiers
+pyyaml==6.0.3                # config + angle-map files
+
+# Webapps
+flask==3.1.3
