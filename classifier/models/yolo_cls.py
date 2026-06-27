@@ -51,6 +51,9 @@ class YoloClsClassifier(Classifier):
             flipud=config.aug.flipud,
             mosaic=config.aug.mosaic,
             erasing=config.aug.erasing,
+            # ultralytics' default randaugment applies rotations/shears that
+            # corrupt direction-aware labels (same reason flips are off).
+            auto_augment=None,
         )
         weights = output_dir / "weights" / "best.pt"
         if not weights.exists():

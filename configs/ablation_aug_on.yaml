@@ -1,0 +1,37 @@
+name: ablation_aug_on
+model_type: multihead
+
+# Augmentation ablation — ON arm. Our standard direction-aware augmentation
+# (flip-with-remap, small rotation, scale/translate, HSV, erasing, mixup).
+# Identical to ablation_aug_off except for the aug block.
+data_dir: labels_split
+backbone: resnet34
+epochs: 50
+imgsz: 224
+batch: 32
+lr0: 0.0003
+weight_decay: 0.0002
+patience: 12
+seed: 42
+device: mps
+num_workers: 4
+
+loss: class_balanced
+cb_beta: 0.999
+weighted_sampler: true
+dropout: 0.0
+label_smoothing: 0.0
+
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  fliplr: 0.5          # flip + left<->right label remap (direction-aware)
+  flipud: 0.0
+  erasing: 0.3
+  mixup: 0.1
+
+notes: "Ablation ON: standard direction-aware augmentation (flip-remap + rot/scale/HSV/erasing/mixup)."
