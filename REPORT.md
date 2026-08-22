@@ -52,6 +52,19 @@ All models use a pretrained ResNet-34 backbone [8].
   refined with the continuous line annotations.
 - **Roll-only model** and a **heading-as-auxiliary** test, motivated by
   multi-task learning theory [10]: does jointly predicting heading improve roll?
+- **Distance-aware (cost-sensitive) loss.** Cross-entropy charges every wrong
+  class equally, which for an orientation task is plainly wrong: mistaking a pose
+  for its 45° neighbour is not the error that mistaking it for the 180° opposite
+  is. We keep the labels as plain classes and replace the one-hot target with
+  `softmax(-d(i, ·)/τ)`, where `d` is angular distance on the circle in both
+  orientation axes (from the class→angle map) and τ is in degrees — the
+  label-relaxation / cost-sensitive-learning family [11], and the discrete
+  counterpart of the angular loss used by the regressor. τ→0 recovers ordinary
+  weighted cross-entropy exactly, so each run is a clean one-knob ablation.
+  For the factorized model the term must act on the *composite*: pose×facing is a
+  different factorization from heading×roll (`facing_right` is a 0° heading under
+  a `regular` pose but a 90° roll under `head_up`), so an angular cost is only
+  well-defined once the two factors are combined.
 
 ## 4. Results
 All rows share one split per block. Composite = 16-way full position; Roll =
@@ -98,21 +111,98 @@ thin-support tail classes (14 vs 13 tested), which macro-F1 penalizes.
 - *Classes:* the **decoupled classifier beats angle-regression** on the discrete
   task (83.1/0.718 vs 80.1/0.699, same split) — a model trained for the discrete
   boundaries beats one adapted from continuous angles, where snapping compounds
-  two errors.
+  two errors. But see §4a: this verdict is specific to the discrete metric and
+  reverses when the same runs are scored in degrees.
 - *Roll:* **roll-only ≈ joint** (91.7/0.861 vs 92.1/0.852) — adding the heading
   head does **not** improve roll, so heading is unnecessary for the primary goal.
 - Heading itself is accurate (7.9° mean error) if a continuous output is wanted.
 
+## 4a. Scoring in degrees, not just right/wrong
+
+Accuracy and macro-F1 treat a 45°-adjacent miss and a 180° miss as the same
+event, which hides most of what an orientation model gets wrong. Re-scoring the
+*same trained runs* by angular error (heading truth = the 2,150 continuous line
+annotations; no retraining) gives a different and sharper picture.
+
+The reference quantity is the **oracle floor**: the heading error a *perfect*
+classifier still pays, because a classifier can only ever emit a bin centre. On
+this taxonomy it is **12.1° mean / 11.0° median**.
+
+| Model | Class acc | Heading mean / median | ≤15° | Roll mean | Upside-down (±45°) |
+|---|---|---|---|---|---|
+| YOLO baseline (fair) | 66.5% | 22.4° / 12.5° | 60% | 32.8° | 85.7% |
+| Decoupled cRT | 83.1% | 14.2° / 11.5° | 61% | 9.1° | 98.1% |
+| Angle regression | 80.1% | **8.4° / 5.6°** | **85%** | 11.2° | 98.5% |
+| *oracle floor* | — | *12.1° / 11.0°* | — | — | — |
+
+Three results follow.
+
+1. **The classifier-vs-regression verdict is metric-dependent.** cRT wins on class
+   accuracy (83.1% vs 80.1%) and loses on angular error (14.2° vs 8.4°; 61% vs 85%
+   within 15°). The regressor is *below the floor that bounds every classifier on
+   this taxonomy* — it cannot be matched by any model restricted to these 16 bins.
+   Both statements were always true; they had only ever been measured on one axis.
+2. **The composite classifier is near the information limit of its label space.**
+   14.2° against a 12.1° floor leaves ~2.1° attributable to misclassification.
+   Most of the residual "17% inaccuracy" is the taxonomy, not the model.
+3. **Roll reverses the ordering.** roll-only averages 8.8° against the regressor's
+   11.2° despite the near-tie on accuracy: the regressor's right-flank error
+   averages 59.2° (n=12) vs 15.0°. Equal accuracy, larger misses. roll-only's
+   belly_up error is 2.5°, so the project's actual metric is essentially solved.
+
+Incidentally, the factorized model emitted **10/266 (3.8%) impossible pose×facing
+combinations** — taking each head's argmax independently can compose classes the
+16-class taxonomy never defines (`head_up_facing_up`). Restricting the argmax to
+composites that exist (`predict_joint`) fixes this.
+
+## 4b. Distance-aware loss
+
+Same configs as the two best models, changing only the loss (τ = 45°).
+
+| Task | Model | Acc | Macro-F1 | Angular error |
+|---|---|---|---|---|
+| Roll (4-way) | roll-only, CE | 91.7% | 0.861 | 8.8° |
+| Roll (4-way) | **roll-only, distance-aware** | **93.6%** | **0.903** | **6.8°** |
+| Composite | cRT, CE | 83.1% | 0.718 | 14.2° heading |
+| Composite | cRT, distance-aware | 82.7% | 0.711 | 13.3° heading |
+
+**On roll it is the largest single gain in the project bar factorization**:
++0.042 macro-F1 and −2.0° angular error, from one loss term and no new labels
+(comparable to the +0.035 that decoupled cRT bought on the composite task). The
+gain is concentrated in the flanks — `right_flank`, the weakest class in the
+project, goes from F1 0.69 to 0.83 — which is exactly the mechanism working as
+intended: the soft target encodes that a flank is *nearer* to belly_down than
+belly_up is, an ordering flat cross-entropy cannot express. Against this,
+upside-down accuracy moved 98.12% → 97.74%, a single crop of 266 — noise, but
+noted because it is the headline metric.
+
+**On the composite task it is a wash** (−0.38% accuracy is one crop), with a small
+gain in degrees. That small gain is the more informative number: since no
+classifier can beat the 12.1° floor, only 2.1° of the baseline's 14.2° was ever
+recoverable, and this run recovered nearly half of it (excess 2.1° → 1.2°). §4a
+predicted precisely this — the composite task had almost no headroom left, so a
+better-shaped loss has little to win there.
+
 ## 5. Conclusions
-- **Roll/upside-down:** the roll-only classifier is the deliverable (91.7% 4-way,
-  98.1% upside-down).
+- **Roll/upside-down:** the roll-only classifier with the **distance-aware loss**
+  is the deliverable (93.6% 4-way, 0.903 macro-F1, 6.8° mean roll error,
+  97.7% upside-down).
 - **Full positions:** the decoupled-cRT classifier (best discrete accuracy and
-  native class output).
-- **Continuous orientation:** the angle-regression model, when exact angles or
-  flexible re-binning are needed.
-- Biggest levers were **label factorization + decoupled training** (for classes)
-  and **task scoping to roll** (for the goal); the biggest constraint was **data**
-  for genuinely rare orientations, not model capacity.
+  native class output); the distance-aware variant is equivalent on classes and
+  slightly better in degrees.
+- **Continuous orientation:** the angle-regression model — and on angular error it
+  beats every classifier here, including a hypothetically perfect one, so prefer
+  it whenever the output is an angle rather than a class name.
+- Biggest levers were **label factorization + decoupled training** (for classes),
+  **task scoping to roll** (for the goal), and **charging mistakes by their
+  angular size** (for roll quality). The binding constraint on the composite task
+  is now the **taxonomy itself** — 12.1° of the 14.2° heading error is the cost of
+  discretizing into 16 bins, not model error — with **data** for genuinely rare
+  orientations the constraint behind it. Neither is a capacity problem.
+- **Methodological lesson:** the choice of metric decided a conclusion. Measuring
+  "how wrong" rather than "whether wrong" reversed the classifier-vs-regression
+  comparison and showed the composite classifier had almost no headroom left.
+  Report both for any task whose labels are a discretized continuum.
 
 ## References
 1. Zhang et al. *Deep Long-Tailed Learning: A Survey.* IEEE TPAMI, 2023. arXiv:2110.04596.
@@ -125,3 +215,4 @@ thin-support tail classes (14 vs 13 tested), which macro-F1 penalizes.
 8. He et al. *Deep Residual Learning for Image Recognition.* CVPR 2016. arXiv:1512.03385.
 9. Beyer et al. *Biternion Nets: Continuous Head Pose Regression from Discrete Training Labels.* GCPR 2015.
 10. Ruder. *An Overview of Multi-Task Learning in Deep Neural Networks.* 2017. arXiv:1706.05098.
+11. Diaz & Marathe. *Soft Labels for Ordinal Regression.* CVPR 2019. (Distance-weighted soft targets for ordered/circular label spaces; see also Elkan, *The Foundations of Cost-Sensitive Learning*, IJCAI 2001.)

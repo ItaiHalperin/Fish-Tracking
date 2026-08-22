@@ -18,6 +18,7 @@ from typing import Iterable
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torchvision
 from PIL import Image
 from torch.utils.data import DataLoader
@@ -140,6 +141,55 @@ class MultiHeadClassifier(Classifier):
         w = class_balanced_weights(counts_for(labels, vocab), cfg.cb_beta)
         return w.to(self._device)
 
+    def _build_angular_term(self, config, vocab: D.Vocab):
+        """A distance-aware penalty on the *joint* composite prediction.
+
+        The two heads can't carry this on their own: pose and facing are not the
+        same factorization as heading and roll (`facing_right` means a heading of
+        0° under a `regular` pose but a 90° roll under `head_up`), so an angular
+        cost is only well-defined on the composite. This scores the joint
+        log p(pose) + log p(facing) restricted to composites that really exist,
+        alongside — not instead of — the per-head losses.
+        """
+        if config.angular_tau <= 0:
+            return lambda lp, lf, yp, yf: 0.0
+
+        from .. import angles as A
+        from ..losses import AngularSoftTargetLoss, angular_cost_matrix
+
+        angle_map = A.load_angle_map(config.angle_map)
+        comps = [c for c in vocab.composites if c in angle_map]
+        if dropped := set(vocab.composites) - set(comps):
+            print(f"  angular loss: skipping classes absent from {config.angle_map}: "
+                  f"{sorted(dropped)}")
+        cost = angular_cost_matrix(comps, angle_map, config.angular_heading_weight,
+                                   config.angular_roll_weight)
+        loss_fn = AngularSoftTargetLoss(cost, config.angular_tau).to(self._device)
+
+        pose_of = torch.tensor([vocab.pose_idx(L.parse_composite(c)[0]) for c in comps],
+                               device=self._device)
+        facing_of = torch.tensor([vocab.facing_idx(L.parse_composite(c)[1]) for c in comps],
+                                 device=self._device)
+        # (pose, facing) -> composite index; -1 marks a combination with no class.
+        lookup = torch.full((len(vocab.poses), len(vocab.facings)), -1,
+                            dtype=torch.long, device=self._device)
+        for i, c in enumerate(comps):
+            lookup[pose_of[i], facing_of[i]] = i
+
+        print(f"  distance-aware composite loss: tau={config.angular_tau}° "
+              f"weight={config.angular_weight} over {len(comps)} classes")
+
+        def term(lp, lf, yp, yf):
+            target = lookup[yp, yf]
+            keep = target >= 0
+            if not bool(keep.any()):
+                return 0.0
+            joint = (F.log_softmax(lp, 1)[:, pose_of]
+                     + F.log_softmax(lf, 1)[:, facing_of])
+            return config.angular_weight * loss_fn(joint[keep], target[keep])
+
+        return term
+
     def train(self, config, output_dir: Path) -> Path:
         torch.manual_seed(config.seed)
         self._device = _resolve_device(config.device)
@@ -194,6 +244,8 @@ class MultiHeadClassifier(Classifier):
             for p in self._net.backbone.parameters():
                 p.requires_grad = flag
 
+        angular_term = self._build_angular_term(config, vocab)
+
         state = {"best_f1": -1.0, "best_epoch": -1, "global_epoch": 0, "history": []}
 
         def run_phase(label, n_epochs, dl, pose_loss, facing_loss, opt, sched,
@@ -222,11 +274,14 @@ class MultiHeadClassifier(Classifier):
                         lam = mix.sample().item()
                         perm = torch.randperm(x.size(0), device=self._device)
                         lp, lf = self._net(lam * x + (1 - lam) * x[perm])
-                        loss = (lam * (pose_loss(lp, yp) + facing_loss(lf, yf))
-                                + (1 - lam) * (pose_loss(lp, yp[perm]) + facing_loss(lf, yf[perm])))
+                        loss = (lam * (pose_loss(lp, yp) + facing_loss(lf, yf)
+                                       + angular_term(lp, lf, yp, yf))
+                                + (1 - lam) * (pose_loss(lp, yp[perm]) + facing_loss(lf, yf[perm])
+                                               + angular_term(lp, lf, yp[perm], yf[perm])))
                     else:
                         lp, lf = self._net(x)
-                        loss = pose_loss(lp, yp) + facing_loss(lf, yf)
+                        loss = (pose_loss(lp, yp) + facing_loss(lf, yf)
+                                + angular_term(lp, lf, yp, yf))
                     loss.backward()
                     opt.step()
                     running += loss.item() * x.size(0)
@@ -403,27 +458,29 @@ class MultiHeadClassifier(Classifier):
         return ok, torch.cat(embs), torch.cat(poses), torch.cat(facings)
 
     @torch.no_grad()
+    def _avg_probs(self, img: Image.Image) -> tuple[torch.Tensor, torch.Tensor]:
+        pose_acc = torch.zeros(len(self._vocab.poses))
+        facing_acc = torch.zeros(len(self._vocab.facings))
+        views: list[tuple[Image.Image, bool]] = [(img, False)]
+        if self.tta:
+            views += [(img.transpose(Image.FLIP_LEFT_RIGHT), True),
+                      (img.rotate(10), False), (img.rotate(-10), False)]
+        for view, flipped in views:
+            pp, pf = self._probs(view)
+            if flipped:
+                pp, pf = pp[self._pose_flip], pf[self._facing_flip]
+            pose_acc += pp
+            facing_acc += pf
+        return pose_acc / len(views), facing_acc / len(views)
+
+    @torch.no_grad()
     def predict(self, image_paths: Iterable[Path | str]) -> list[tuple[str, float]]:
         if self._net is None:
             raise RuntimeError("Model not loaded. Call load() first.")
         from ..imageio import to_pil
         out: list[tuple[str, float]] = []
         for p in image_paths:
-            img = to_pil(p)
-            pose_acc = torch.zeros(len(self._vocab.poses))
-            facing_acc = torch.zeros(len(self._vocab.facings))
-            views: list[tuple[Image.Image, bool]] = [(img, False)]
-            if self.tta:
-                views += [(img.transpose(Image.FLIP_LEFT_RIGHT), True),
-                          (img.rotate(10), False), (img.rotate(-10), False)]
-            for view, flipped in views:
-                pp, pf = self._probs(view)
-                if flipped:
-                    pp, pf = pp[self._pose_flip], pf[self._facing_flip]
-                pose_acc += pp
-                facing_acc += pf
-            pose_acc /= len(views)
-            facing_acc /= len(views)
+            pose_acc, facing_acc = self._avg_probs(to_pil(p))
             pi = int(pose_acc.argmax())
             fi = int(facing_acc.argmax())
             conf = float(pose_acc[pi] * facing_acc[fi])
@@ -432,3 +489,34 @@ class MultiHeadClassifier(Classifier):
             else:
                 out.append((L.compose(self._vocab.poses[pi], self._vocab.facings[fi]), conf))
         return out
+
+    @torch.no_grad()
+    def predict_joint(self, image_paths: Iterable[Path | str]) -> list[tuple[str, float]]:
+        """Argmax over the composites that actually exist in the label space.
+
+        predict() takes each head's argmax independently, which can compose a
+        pose and a facing that never co-occur (e.g. `head_up_facing_up`) — 32
+        combinations from a 16-class taxonomy. This restricts the joint
+        p(pose)·p(facing) to the real classes and renormalizes."""
+        if self._net is None:
+            raise RuntimeError("Model not loaded. Call load() first.")
+        from ..imageio import to_pil
+        v = self._vocab
+        pairs = [(c, v.pose_idx(pf[0]), v.facing_idx(pf[1]))
+                 for c, pf in ((c, L.parse_composite(c)) for c in v.composites)]
+        out: list[tuple[str, float]] = []
+        for p in image_paths:
+            pose_acc, facing_acc = self._avg_probs(to_pil(p))
+            scores = torch.tensor([pose_acc[pi] * facing_acc[fi] for _, pi, fi in pairs])
+            total = float(scores.sum())
+            best = int(scores.argmax())
+            out.append((pairs[best][0], float(scores[best]) / total if total else 0.0))
+        return out
+
+    @torch.no_grad()
+    def predict_angles(self, image_paths: Iterable[Path | str],
+                       angle_map: dict[str, tuple[float, float]] | None = None):
+        """(heading, roll) of the best *valid* composite — see predict_joint."""
+        from .. import angles as A
+        amap = angle_map or A.load_angle_map("configs/angle_map.yaml")
+        return [amap[c] for c, _ in self.predict_joint(image_paths)]

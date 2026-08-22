@@ -194,6 +194,20 @@ class AngleRegClassifier(Classifier):
         return out
 
     @torch.no_grad()
+    def predict_angles(self, image_paths: Iterable[Path | str]) -> list[tuple[float, float]]:
+        """Raw (heading, roll) degrees, unsnapped. Lets classifier.angle_eval score
+        this model on its native continuous output instead of a snapped class."""
+        if self._net is None:
+            raise RuntimeError("Model not loaded. Call load() first.")
+        from ..imageio import to_pil
+        out = []
+        for p in image_paths:
+            x = self._eval_tf(to_pil(p)).unsqueeze(0).to(self._device)
+            hv, rv = self._net(x)
+            out.append((float(A.vec_to_deg(hv)[0]), float(A.vec_to_deg(rv)[0])))
+        return out
+
+    @torch.no_grad()
     def predict_roll(self, image_paths: Iterable[Path | str]) -> list[tuple[str, float]]:
         """Roll prediction only — the regressed roll snapped to the nearest roll
         class. Lets classifier.test_roll compare this model's roll head against

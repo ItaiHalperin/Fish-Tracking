@@ -26,7 +26,8 @@ from .base import Classifier
 from .multihead import _build_backbone, _resolve_device, _transforms
 from .. import data as D
 from .. import angles as A
-from ..losses import build_loss, class_balanced_weights
+from ..losses import (AngularSoftTargetLoss, build_loss, class_balanced_weights,
+                      roll_cost_matrix)
 
 
 class _RollNet(nn.Module):
@@ -83,8 +84,14 @@ class RollClassifier(Classifier):
         if config.loss != "ce":
             weight = class_balanced_weights([counts.get(r, 0) for r in rc],
                                             config.cb_beta).to(self._device)
-        loss_fn = build_loss(config.loss, weight, config.focal_gamma,
-                             config.label_smoothing).to(self._device)
+        if config.angular_tau > 0:
+            loss_fn = AngularSoftTargetLoss(roll_cost_matrix(rc), config.angular_tau,
+                                            weight).to(self._device)
+            print(f"  distance-aware roll loss: tau={config.angular_tau}° "
+                  f"(a flank mistake costs half of a belly_up/belly_down flip)")
+        else:
+            loss_fn = build_loss(config.loss, weight, config.focal_gamma,
+                                 config.label_smoothing).to(self._device)
 
         opt = torch.optim.AdamW(self._net.parameters(), lr=config.lr0,
                                 weight_decay=config.weight_decay)
