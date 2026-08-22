@@ -1,0 +1,57 @@
+name: multihead_angular
+model_type: multihead
+
+# Ablation of configs/multihead_decoupled.yaml (the current best composite model).
+# Every knob below is identical to it EXCEPT the angular_* block, so any change in
+# the result is attributable to the loss and nothing else.
+#
+# The added term charges a mistake by how many degrees of orientation it is off,
+# instead of a flat right/wrong: confusing a pose with its 45° neighbour costs a
+# quarter of confusing it with the 180° opposite. Labels are unchanged — still the
+# same class folders; configs/angle_map.yaml only supplies the geometry.
+data_dir: labels_split
+angle_map: configs/angle_map.yaml
+backbone: resnet34
+
+epochs: 35
+decouple_epochs: 20
+imgsz: 224
+batch: 32
+lr0: 0.0003
+weight_decay: 0.0002
+patience: 12
+seed: 42
+device: mps
+num_workers: 4
+
+loss: class_balanced
+cb_beta: 0.999
+weighted_sampler: true
+
+dropout: 0.2
+label_smoothing: 0.0
+
+# tau is in degrees: the soft target keeps ~exp(-45/45) of its mass one step away.
+# 45° is the heading spacing of the taxonomy, so a class leaks mass to its
+# immediate neighbours and little further. tau: 0 would reproduce the baseline run.
+angular_tau: 45.0
+angular_weight: 1.0
+angular_heading_weight: 1.0
+angular_roll_weight: 1.0
+
+tta: true
+abstain_threshold: 0.0
+
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  fliplr: 0.5
+  flipud: 0.0
+  erasing: 0.3
+  mixup: 0.1
+
+notes: "Decoupled cRT + distance-aware composite loss (tau=45°). Ablation of multihead_decoupled: identical apart from the angular term."

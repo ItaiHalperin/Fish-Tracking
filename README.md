@@ -130,7 +130,18 @@ Secondary, but the pipeline depends on models these produce. All take
 | `classifier.mine_candidates` | Find rare-class crops to label (active learning) | `python -m classifier.mine_candidates --run results/<run> --top 200` |
 | `classifier.infer` | Classify a pre-extracted crops folder → Excel | `python -m classifier.infer --run results/<run> --crops-dir crops/<video>` |
 
-Configs live in `configs/` (one YAML per run): `roll_cls.yaml` (roll, the goal),
-`multihead_decoupled.yaml` (best full-position classifier), `angle_reg.yaml`
-(continuous angles), plus baselines. Per-run results and the benchmark table are
-under `results/` ([results/INDEX.md](results/INDEX.md)).
+Configs live in `configs/` (one YAML per run): `roll_cls_angular.yaml` (roll, the
+goal — the deliverable), `multihead_decoupled.yaml` (best full-position
+classifier), `angle_reg.yaml` (continuous angles), plus their plain-loss ablation
+partners and baselines. Per-run results and the benchmark table are under
+`results/` ([results/INDEX.md](results/INDEX.md)).
+
+`classifier.test` and `classifier.test_roll` also report **angular error** — how
+many degrees off the orientation was, not just whether the class matched — into
+`test_report.json` / `roll_test_report.json`. Heading truth comes from
+`labels_angles/headings.json`; pass `--headings` to point elsewhere. Re-running
+either command on an old run re-scores it with no retraining.
+
+Any config can charge mistakes by their angular size instead of a flat
+right/wrong by setting `angular_tau` (degrees; `0` = off, reproducing the plain
+loss exactly). See [REPORT.md](REPORT.md) §4b.

@@ -1,0 +1,44 @@
+name: roll_cls_angular
+model_type: roll_cls
+
+# Ablation of configs/roll_cls.yaml (the project's deliverable model). Identical
+# except for angular_tau, which replaces the flat class-balanced cross-entropy
+# with a distance-aware target: mistaking belly_down for a flank (90°) costs half
+# of mistaking it for belly_up (180°) — and belly_up is the metric that matters.
+data_dir: labels_split
+angle_map: configs/angle_map.yaml
+backbone: resnet34
+
+epochs: 50
+imgsz: 224
+batch: 32
+lr0: 0.0003
+weight_decay: 0.0002
+patience: 12
+seed: 42
+device: mps
+num_workers: 4
+
+dropout: 0.2
+label_smoothing: 0.0    # the soft angular target already smooths; stacking both would blur it twice
+loss: class_balanced    # supplies the per-class weights the angular loss reuses
+cb_beta: 0.999
+weighted_sampler: true
+
+# Roll classes sit 90° apart, so tau=45° puts the soft target's half-way point
+# between a class and its neighbour. tau: 0 would reproduce the baseline run.
+angular_tau: 45.0
+angular_roll_weight: 1.0
+
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  fliplr: 0.5
+  flipud: 0.0
+  erasing: 0.3
+
+notes: "Roll-only + distance-aware roll loss (tau=45°). Ablation of roll_cls: identical apart from the angular target."

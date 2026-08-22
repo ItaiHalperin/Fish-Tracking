@@ -73,6 +73,16 @@ class TrainConfig:
     tta: bool = False              # average over flip(remap) + small rotations
     abstain_threshold: float = 0.0  # below this conf, predict "unclear"
 
+    # Distance-aware loss: charge a mistake by how many degrees off it was rather
+    # than a flat right/wrong. tau (degrees) is the softness of the target; 0
+    # disables it and falls back to the plain loss above, so tau=0 reproduces the
+    # earlier runs exactly. angular_weight scales the extra joint-composite term
+    # in the multihead model (ignored by roll_cls, which is a single head).
+    angular_tau: float = 0.0
+    angular_weight: float = 1.0
+    angular_heading_weight: float = 1.0
+    angular_roll_weight: float = 1.0
+
     # --- angle-regression model (model_type: "angle_reg") ---
     angle_map: str = "configs/angle_map.yaml"  # class -> (heading, roll) degrees
     headings_file: str = ""  # optional {crop: heading_deg} from the line tool
