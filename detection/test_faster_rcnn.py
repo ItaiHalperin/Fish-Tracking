@@ -21,6 +21,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 # Import dataset and model utilities from train_faster_rcnn.py
 from train_faster_rcnn import YoloToFasterRCNNDataset, get_model
+from core.device import get_device
 
 def get_latest_weights_path(storage_root, model_name):
     """Finds the best.pt weights from the latest run."""
@@ -50,7 +51,7 @@ def main():
     parser.add_argument("--conf", type=float, default=0.25, help="Confidence threshold for predictions")
     args = parser.parse_args()
 
-    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu')
+    device = torch.device(get_device())
     print(f"Using device: {device}")
 
     # Determine weights path

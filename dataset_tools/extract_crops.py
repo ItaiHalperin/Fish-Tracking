@@ -9,6 +9,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from ultralytics import YOLO
 from core.image_utils import crop_with_padding
+from core.device import get_device
 
 def main():
     parser = argparse.ArgumentParser(description="Extract crops of tracked fish")
@@ -62,7 +63,7 @@ def main():
     
     print(f"Processing video {target_video}")
     # Run tracking in stream mode for efficiency
-    results = model.track(source=str(target_video), stream=True, save=False, conf=0.4, device="mps")
+    results = model.track(source=str(target_video), stream=True, save=False, conf=0.4, device=get_device())
     
     frame_idx = 0
     saved_crops = 0

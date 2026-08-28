@@ -1,0 +1,11 @@
+Flask
+numpy
+opencv-python
+pandas
+Pillow
+PyYAML
+supervision
+torch
+torchvision
+tqdm
+ultralytics

@@ -24,6 +24,7 @@ from supervision.metrics import MeanAveragePrecision, Precision, Recall
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from core.ml_storage import MLStorage
+from core.device import get_device
 
 # --- Dataset Class ---
 
@@ -152,7 +153,7 @@ def main():
                         help="Model name in the registry (default: goldfish_faster_rcnn)")
     args = parser.parse_args()
 
-    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu')
+    device = torch.device(get_device())
     print(f"Using device: {device}")
 
     # Since YOLO class 0 is unused and class 1 is goldfish, we just use 2 classes (bg + goldfish)
