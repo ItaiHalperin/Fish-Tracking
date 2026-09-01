@@ -51,10 +51,6 @@ from core.image_utils import crop_with_padding
 from core.ml_storage import MLStorage
 from core.device import get_device
 
-# ---------------------------------------------------------------------------
-# Defaults
-# ---------------------------------------------------------------------------
-
 DEFAULT_DETECTION_MODEL  = "goldfish_yolo"
 DEFAULT_CLASSIFIER_MODEL = "fish_position_classifier"
 
@@ -69,10 +65,6 @@ _FONT_SCALE = 0.52
 _THICKNESS  = 1
 _PAD        = 4   # pixels of padding inside label chips
 
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
 
 def _prepare_video(
     video_path: Path,
@@ -130,7 +122,6 @@ def _draw_chip(
         x1, y1 = x, y
     x2, y2 = x1 + chip_w, y1 + chip_h
 
-    # Clip to frame bounds
     h_frame, w_frame = frame.shape[:2]
     x1 = max(0, x1); y1 = max(0, y1)
     x2 = min(w_frame, x2); y2 = min(h_frame, y2)
@@ -160,17 +151,14 @@ def _annotate_frame(
     ):
         x1, y1, x2, y2 = int(box[0]), int(box[1]), int(box[2]), int(box[3])
 
-        # Bounding box
         cv2.rectangle(out, (x1, y1), (x2, y2), _BOX_COLOUR, 2)
 
-        # ── Left chip: ID + detection confidence ──────────────────────────
         id_text = f"#{tid}  {det_conf:.2f}"
         chip_x1, chip_y1, chip_x2, chip_y2 = _draw_chip(
             out, id_text, x1, max(0, y1 - (_FONT_SCALE * 30 + 2 * _PAD + 2).__ceil__()),
             _BOX_COLOUR, anchor="top-left",
         )
 
-        # ── Right chip: classifier label + confidence ──────────────────────
         if cls_label == "?":
             cls_text = "?"
             bg = _UNKNOWN_COLOUR
@@ -178,15 +166,10 @@ def _annotate_frame(
             cls_text = f"{cls_label}  {cls_conf:.2f}" if cls_conf is not None else cls_label
             bg = _LABEL_COLOUR
 
-        # Place the classifier chip just to the right of the ID chip (same row)
         _draw_chip(out, cls_text, chip_x2 + 2, chip_y1, bg, anchor="top-left")
 
     return out
 
-
-# ---------------------------------------------------------------------------
-# Main class
-# ---------------------------------------------------------------------------
 
 class AnnotatedVideoRenderer:
     """Render a tracking + classification video from a single source video.
@@ -247,13 +230,8 @@ class AnnotatedVideoRenderer:
         self.reject_class  = reject_class
         self.device        = device or get_device()
 
-        # Lazy-loaded
         self._detector:   YOLO | None = None
         self._classifier: YOLO | None = None
-
-    # ------------------------------------------------------------------
-    # Weight resolution (lazy)
-    # ------------------------------------------------------------------
 
     def _get_detector(self) -> YOLO:
         if self._detector is None:
@@ -278,10 +256,6 @@ class AnnotatedVideoRenderer:
             print(f"[AnnotatedVideoRenderer] Loading classifier → {path}")
             self._classifier = YOLO(path)
         return self._classifier
-
-    # ------------------------------------------------------------------
-    # Public entry point
-    # ------------------------------------------------------------------
 
     def render(
         self,
@@ -319,14 +293,12 @@ class AnnotatedVideoRenderer:
         if output_path.suffix.lower() != ".mp4":
             output_path = output_path.with_suffix(".mp4")
 
-        # Prepare (remux / trim if needed)
         target_video, temp_file = _prepare_video(video_path, start, duration)
 
         try:
             detector   = self._get_detector()
             classifier = self._get_classifier()
 
-            # Open the source to read fps / frame size
             cap = cv2.VideoCapture(str(target_video))
             if not cap.isOpened():
                 raise IOError(f"Cannot open video: {target_video}")
@@ -363,7 +335,6 @@ class AnnotatedVideoRenderer:
                 frame = result.orig_img
 
                 if result.boxes is None or result.boxes.id is None:
-                    # No detections this frame — write the bare frame
                     writer.write(frame)
                     if frame_idx % 100 == 0:
                         print(f"  frame {frame_idx}/{total}")
@@ -373,7 +344,6 @@ class AnnotatedVideoRenderer:
                 track_ids = result.boxes.id.cpu().numpy().astype(int)
                 det_confs = result.boxes.conf.cpu().numpy()
 
-                # --- Classify each crop on this frame ------------------
                 # Apply the same 10% padding used by extract_crops.py so
                 # the crops match the training distribution exactly.
                 crops = []
@@ -393,7 +363,6 @@ class AnnotatedVideoRenderer:
                     raw_label = classifier.names[int(res.probs.top1)]
                     raw_conf  = float(res.probs.top1conf)
 
-                    # Update sliding window for this track
                     buf = label_buffers.setdefault(
                         tid, deque(maxlen=self.smooth_window)
                     )
@@ -421,10 +390,6 @@ class AnnotatedVideoRenderer:
         print(f"[AnnotatedVideoRenderer] Done → {output_path.resolve()}")
         return output_path.resolve()
 
-
-# ---------------------------------------------------------------------------
-# CLI entry point
-# ---------------------------------------------------------------------------
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -478,7 +443,6 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    # --- Resolve weights ------------------------------------------------
     det_weights: Path | None = None
     cls_weights: Path | None = None
     storage: MLStorage | None = None
@@ -504,7 +468,6 @@ def main() -> None:
                 args.cls_model_name, run=args.cls_run
             )
 
-    # --- Build renderer and run -----------------------------------------
     renderer = AnnotatedVideoRenderer(
         storage=storage,
         detection_weights=det_weights,

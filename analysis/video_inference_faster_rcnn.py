@@ -74,22 +74,18 @@ def main():
             rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             tensor_frame = F.to_tensor(rgb_frame).to(device)
 
-            # Inference
             predictions = model([tensor_frame])[0]
 
             boxes = predictions['boxes'].cpu().numpy()
             scores = predictions['scores'].cpu().numpy()
             labels = predictions['labels'].cpu().numpy()
 
-            # Draw boxes
             for box, score, label in zip(boxes, scores, labels):
                 if score >= args.conf:
                     x1, y1, x2, y2 = map(int, box)
                     
-                    # Draw rectangle
                     cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
                     
-                    # Draw label and score
                     text = f"Class {label-1}: {score:.2f}" # -1 to revert background shift
                     cv2.putText(frame, text, (x1, max(y1 - 10, 0)), 
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)

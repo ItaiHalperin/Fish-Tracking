@@ -2,12 +2,12 @@
 
 A tiny Flask app for hand-labeling fish crops into class folders, then balancing
 and splitting them into the `labels/train` and `labels/val` layout that
-`train_classifier.py` expects.
+the classifier pipeline expects.
 
 ## What it does
 
 1. Reads unlabeled crops from a **source** folder (typically the output of
-   `flatten_crops.py`).
+   `dataset_tools/flatten_crops.py`).
 2. Shows them one at a time in the browser. You pick a class with a click or
    a number key. The file gets **moved** into `labels_raw/<class>/`.
 3. When you're done, the **Finish** page shows per-class counts and lets you:
@@ -33,10 +33,10 @@ That's the only new dependency.
 ## Prepare a source folder
 
 The app expects a flat folder of crops (no subdirectories). Use the existing
-`flatten_crops.py` to produce one from `extract_crops.py` output:
+`dataset_tools/flatten_crops.py` to produce one from `dataset_tools/extract_crops.py` output:
 
 ```bash
-python flatten_crops.py --crops-dir crops/RGoldies_23_10_25
+python -m dataset_tools.flatten_crops --crops-dir crops/RGoldies_23_10_25
 # -> crops/RGoldies_23_10_25_flat/
 ```
 
@@ -61,7 +61,7 @@ Just flatten and copy them into the same source folder before (or during)
 labeling — the app re-scans each batch:
 
 ```bash
-python flatten_crops.py --crops-dir crops/AnotherVideo
+python -m dataset_tools.flatten_crops --crops-dir crops/AnotherVideo
 cp crops/AnotherVideo_flat/* crops/RGoldies_23_10_25_flat/
 ```
 
@@ -79,7 +79,7 @@ On the Finish page:
   classes start balanced. Raise it if you have plenty of every class, lower
   it to be more aggressive about balancing.
 - Validation ratio default 0.2, test ratio default 0.1 (10% held out for
-  benchmarking via `test_classifier.py`). Set test ratio to 0 if you don't
+  benchmarking via `classifier.test`). Set test ratio to 0 if you don't
   want a separate test split.
 - Click **Finalize**. You'll see a summary like:
 
@@ -94,7 +94,8 @@ On the Finish page:
 After that:
 
 ```bash
-python train_classifier.py --data labels --epochs 50
+python -m classifier.data --out labels_split --skip-class unclear
+python -m classifier.train --config configs/roll_cls_angular.yaml
 ```
 
 ## Layout
@@ -113,7 +114,7 @@ labels_discarded/<class>/       # overflow from the cap, kept for review
 --source         Required. Flat folder of crops to label.
 --classes        Required. Space-separated class names.
 --raw-dir        Default: labels_raw
---out-dir        Default: labels (what train_classifier.py consumes)
+--out-dir        Default: labels (the labeler's own split; training reads labels_split/)
 --discarded-dir  Default: labels_discarded
 --host           Default: 127.0.0.1
 --port           Default: 5050

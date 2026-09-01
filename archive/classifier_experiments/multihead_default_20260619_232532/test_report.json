@@ -1,0 +1,172 @@
+{
+  "n_total": 268,
+  "n_correct": 216,
+  "accuracy": 0.8059701492537313,
+  "macro_f1": 0.8380577348980501,
+  "per_class": {
+    "diag_down_left_facing_down": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "support": 2
+    },
+    "diag_down_left_facing_up": {
+      "precision": 1.0,
+      "recall": 0.75,
+      "f1": 0.8571428571428571,
+      "support": 20
+    },
+    "diag_down_right_facing_down": {
+      "precision": 0.9696969696969697,
+      "recall": 0.8888888888888888,
+      "f1": 0.927536231884058,
+      "support": 36
+    },
+    "diag_down_right_facing_up": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "diag_up_left_facing_down": {
+      "precision": 0.8846153846153846,
+      "recall": 0.696969696969697,
+      "f1": 0.7796610169491526,
+      "support": 33
+    },
+    "diag_up_left_facing_up": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "diag_up_right_facing_down": {
+      "precision": 0.8571428571428571,
+      "recall": 0.8571428571428571,
+      "f1": 0.8571428571428571,
+      "support": 14
+    },
+    "diag_up_right_facing_up": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 14
+    },
+    "head_down_facing_left": {
+      "precision": 0.6666666666666666,
+      "recall": 0.875,
+      "f1": 0.7567567567567567,
+      "support": 16
+    },
+    "head_down_facing_right": {
+      "precision": 0.9375,
+      "recall": 0.7894736842105263,
+      "f1": 0.8571428571428572,
+      "support": 19
+    },
+    "head_up_facing_left": {
+      "precision": 0.8,
+      "recall": 0.7407407407407407,
+      "f1": 0.7692307692307692,
+      "support": 27
+    },
+    "head_up_facing_right": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.8571428571428571,
+      "support": 12
+    },
+    "regular_facing_left": {
+      "precision": 0.92,
+      "recall": 0.6764705882352942,
+      "f1": 0.7796610169491526,
+      "support": 34
+    },
+    "regular_facing_right": {
+      "precision": 0.8888888888888888,
+      "recall": 0.8205128205128205,
+      "f1": 0.8533333333333333,
+      "support": 39
+    },
+    "upside_down_facing_left": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "upside_down_facing_right": {
+      "precision": 0.6666666666666666,
+      "recall": 1.0,
+      "f1": 0.8,
+      "support": 2
+    }
+  },
+  "confusion": {
+    "diag_down_left_facing_down": {
+      "diag_down_left_facing_down": 2
+    },
+    "diag_down_left_facing_up": {
+      "diag_down_left_facing_up": 15,
+      "head_down_facing_left": 3,
+      "diag_down_left_facing_left": 2
+    },
+    "diag_down_right_facing_down": {
+      "diag_down_right_facing_down": 32,
+      "regular_facing_down": 2,
+      "regular_facing_right": 2
+    },
+    "diag_up_left_facing_down": {
+      "upside_down_facing_left": 1,
+      "diag_up_left_facing_down": 23,
+      "head_up_facing_left": 5,
+      "head_up_facing_down": 1,
+      "diag_up_left_facing_left": 3
+    },
+    "diag_up_right_facing_down": {
+      "diag_up_right_facing_down": 12,
+      "regular_facing_right": 2
+    },
+    "diag_up_right_facing_up": {
+      "diag_up_right_facing_up": 14
+    },
+    "head_down_facing_left": {
+      "head_down_facing_left": 14,
+      "head_down_facing_up": 1,
+      "head_down_facing_right": 1
+    },
+    "head_down_facing_right": {
+      "head_down_facing_left": 3,
+      "head_down_facing_right": 15,
+      "diag_down_left_facing_down": 1
+    },
+    "head_up_facing_left": {
+      "head_up_facing_left": 20,
+      "head_up_facing_right": 4,
+      "diag_up_left_facing_down": 1,
+      "regular_facing_left": 1,
+      "head_down_facing_left": 1
+    },
+    "head_up_facing_right": {
+      "head_up_facing_right": 12
+    },
+    "regular_facing_left": {
+      "regular_facing_left": 23,
+      "upside_down_facing_left": 6,
+      "regular_facing_down": 1,
+      "diag_down_left_facing_left": 2,
+      "diag_up_left_facing_down": 2
+    },
+    "regular_facing_right": {
+      "regular_facing_right": 32,
+      "upside_down_facing_left": 1,
+      "diag_up_right_facing_down": 2,
+      "upside_down_facing_right": 1,
+      "diag_down_right_facing_down": 1,
+      "diag_down_right_facing_right": 1,
+      "regular_facing_left": 1
+    },
+    "upside_down_facing_right": {
+      "upside_down_facing_right": 2
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "angle_reg",
+  "model_type": "angle_reg",
+  "timestamp": "20260620_210454",
+  "weights": "weights/best.pt"
+}

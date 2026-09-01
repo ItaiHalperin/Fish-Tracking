@@ -1,0 +1,38 @@
+name: multihead_default
+model_type: multihead
+pretrained: yolo11n-cls.pt
+data_dir: labels_split
+epochs: 50
+imgsz: 224
+batch: 32
+lr0: 0.0003
+patience: 12
+seed: 42
+device: mps
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  fliplr: 0.5
+  flipud: 0.0
+  mosaic: 0.0
+  erasing: 0.3
+  mixup: 0.0
+  cardinal_rotation: false
+notes: 'Baseline factorized multi-head: resnet34, class-balanced loss + weighted sampler
+  + flip-with-remap.'
+backbone: resnet34
+weight_decay: 0.0001
+num_workers: 4
+loss: class_balanced
+cb_beta: 0.999
+focal_gamma: 2.0
+weighted_sampler: true
+dropout: 0.0
+label_smoothing: 0.0
+freeze_epochs: 0
+tta: false
+abstain_threshold: 0.0

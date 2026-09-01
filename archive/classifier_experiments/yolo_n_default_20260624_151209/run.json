@@ -1,0 +1,6 @@
+{
+  "name": "yolo_n_default",
+  "model_type": "yolo_cls",
+  "timestamp": "20260624_151209",
+  "weights": "weights/best.pt"
+}

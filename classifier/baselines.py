@@ -1,5 +1,5 @@
 """
-Phase 4 baselines: establish the floor the real models must beat.
+Baselines: establish the floor the real models must beat.
 
 Two baselines x two tasks (16-way composite full-position, 4-way roll), on the
 same labels_split as the trained models:
@@ -76,10 +76,8 @@ def _logreg(Xtr, ytr, Xte, k, seed, epochs=300):
 
 
 def _eval_task(name, ytr, yte, k, Xtr, Xte, seed) -> dict:
-    # majority
     maj = Counter(ytr).most_common(1)[0][0]
     maj_pred = [maj] * len(yte)
-    # logreg on pixels
     lr_pred = _logreg(Xtr, ytr, Xte, k, seed)
     out = {
         "task": name, "n_test": len(yte), "n_classes": k,
@@ -106,14 +104,12 @@ def main():
 
     Xtr, Xte = _features(train_s, args.imgsz), _features(test_s, args.imgsz)
 
-    # composite task
     comp_vocab = sorted({s.composite for s in train_s + test_s})
     ci = {c: i for i, c in enumerate(comp_vocab)}
     comp = _eval_task("composite (16-way)",
                       [ci[s.composite] for s in train_s], [ci[s.composite] for s in test_s],
                       len(comp_vocab), Xtr, Xte, args.seed)
 
-    # roll task
     amap = A.load_angle_map(args.angle_map)
     rolls = A.roll_vocab(amap)
     ri = {r: i for i, r in enumerate(rolls)}

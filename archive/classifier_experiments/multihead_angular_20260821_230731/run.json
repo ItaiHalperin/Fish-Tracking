@@ -1,0 +1,6 @@
+{
+  "name": "multihead_angular",
+  "model_type": "multihead",
+  "timestamp": "20260821_230731",
+  "weights": "weights/best.pt"
+}

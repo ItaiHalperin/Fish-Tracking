@@ -1,0 +1,173 @@
+{
+  "n_total": 231,
+  "n_correct": 184,
+  "accuracy": 0.7965367965367965,
+  "macro_f1": 0.7615485160783213,
+  "per_class": {
+    "diag_down_left_facing_down": {
+      "precision": 0.8947368421052632,
+      "recall": 0.6538461538461539,
+      "f1": 0.7555555555555555,
+      "support": 26
+    },
+    "diag_down_left_facing_up": {
+      "precision": 0.875,
+      "recall": 0.875,
+      "f1": 0.875,
+      "support": 8
+    },
+    "diag_down_right_facing_down": {
+      "precision": 0.7727272727272727,
+      "recall": 0.7083333333333334,
+      "f1": 0.7391304347826088,
+      "support": 24
+    },
+    "diag_down_right_facing_up": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "diag_up_left_facing_down": {
+      "precision": 0.8571428571428571,
+      "recall": 0.8888888888888888,
+      "f1": 0.8727272727272727,
+      "support": 27
+    },
+    "diag_up_left_facing_up": {
+      "precision": 1.0,
+      "recall": 0.25,
+      "f1": 0.4,
+      "support": 4
+    },
+    "diag_up_right_facing_down": {
+      "precision": 0.8947368421052632,
+      "recall": 1.0,
+      "f1": 0.9444444444444444,
+      "support": 17
+    },
+    "diag_up_right_facing_up": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "head_down_facing_left": {
+      "precision": 0.25,
+      "recall": 1.0,
+      "f1": 0.4,
+      "support": 4
+    },
+    "head_down_facing_right": {
+      "precision": 1.0,
+      "recall": 0.7647058823529411,
+      "f1": 0.8666666666666666,
+      "support": 17
+    },
+    "head_up_facing_left": {
+      "precision": 1.0,
+      "recall": 0.7,
+      "f1": 0.8235294117647058,
+      "support": 20
+    },
+    "head_up_facing_right": {
+      "precision": 0.3333333333333333,
+      "recall": 1.0,
+      "f1": 0.5,
+      "support": 1
+    },
+    "regular_facing_left": {
+      "precision": 0.967741935483871,
+      "recall": 0.8823529411764706,
+      "f1": 0.923076923076923,
+      "support": 34
+    },
+    "regular_facing_right": {
+      "precision": 0.8571428571428571,
+      "recall": 0.75,
+      "f1": 0.7999999999999999,
+      "support": 40
+    },
+    "upside_down_facing_left": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 0
+    },
+    "upside_down_facing_right": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 9
+    }
+  },
+  "confusion": {
+    "diag_down_left_facing_down": {
+      "head_down_facing_left": 6,
+      "diag_down_left_facing_down": 17,
+      "diag_down_left_facing_up": 1,
+      "diag_down_right_facing_down": 1,
+      "regular_facing_left": 1
+    },
+    "diag_down_left_facing_up": {
+      "diag_down_left_facing_up": 7,
+      "head_down_facing_left": 1
+    },
+    "diag_down_right_facing_down": {
+      "diag_down_right_facing_down": 17,
+      "head_down_facing_left": 1,
+      "regular_facing_right": 5,
+      "diag_down_right_facing_up": 1
+    },
+    "diag_up_left_facing_down": {
+      "diag_up_left_facing_down": 24,
+      "head_up_facing_right": 1,
+      "diag_up_left_facing_left": 1,
+      "head_up_facing_down": 1
+    },
+    "diag_up_left_facing_up": {
+      "upside_down_facing_left": 1,
+      "diag_up_left_facing_left": 1,
+      "diag_up_left_facing_up": 1,
+      "diag_up_left_facing_down": 1
+    },
+    "diag_up_right_facing_down": {
+      "diag_up_right_facing_down": 17
+    },
+    "head_down_facing_left": {
+      "head_down_facing_left": 4
+    },
+    "head_down_facing_right": {
+      "head_down_facing_left": 4,
+      "head_down_facing_right": 13
+    },
+    "head_up_facing_left": {
+      "head_up_facing_left": 14,
+      "diag_up_left_facing_down": 2,
+      "head_up_facing_down": 2,
+      "head_up_facing_right": 1,
+      "head_down_facing_down": 1
+    },
+    "head_up_facing_right": {
+      "head_up_facing_right": 1
+    },
+    "regular_facing_left": {
+      "diag_up_left_facing_left": 1,
+      "regular_facing_left": 30,
+      "diag_down_left_facing_down": 1,
+      "regular_facing_down": 1,
+      "diag_up_left_facing_down": 1
+    },
+    "regular_facing_right": {
+      "regular_facing_right": 30,
+      "diag_down_left_facing_down": 1,
+      "diag_up_right_facing_down": 2,
+      "diag_down_right_facing_down": 4,
+      "diag_up_right_facing_right": 2,
+      "diag_down_right_facing_right": 1
+    },
+    "upside_down_facing_right": {
+      "upside_down_facing_right": 9
+    }
+  }
+}

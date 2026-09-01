@@ -1,0 +1,6 @@
+{
+  "name": "ablation_aug_on",
+  "model_type": "multihead",
+  "timestamp": "20260627_150617",
+  "weights": "weights/best.pt"
+}

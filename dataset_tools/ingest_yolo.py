@@ -30,10 +30,6 @@ import yaml
 from core.ml_storage import MLStorage
 
 
-# ======================================================================
-# Unified class map for the underwater benchmark datasets
-# ======================================================================
-
 UNIFIED_CLASSES: dict[int, str] = {
     0: "crab",
     1: "corals",
@@ -71,11 +67,6 @@ _SPLIT_ALIASES: dict[str, str] = {
 }
 
 
-# ======================================================================
-# YoloIngestor
-# ======================================================================
-
-
 class YoloIngestor:
     """Ingests and merges YOLO-format ZIP datasets with class remapping."""
 
@@ -91,10 +82,6 @@ class YoloIngestor:
         self.storage = storage
         self.version_description = version_description
 
-    # ------------------------------------------------------------------
-    # Output directory resolution
-    # ------------------------------------------------------------------
-
     def _resolve_output_dir(self) -> Path:
         """Determine the output directory, optionally creating a versioned dataset."""
         if self.storage is not None:
@@ -102,10 +89,6 @@ class YoloIngestor:
             version_dir = self.storage.datasets.create_version(desc)
             return version_dir
         return self.output_dir
-
-    # ------------------------------------------------------------------
-    # Locating splits inside an extracted zip
-    # ------------------------------------------------------------------
 
     @staticmethod
     def _find_splits(extracted_root: Path) -> dict[str, list[Path]]:
@@ -137,10 +120,6 @@ class YoloIngestor:
 
         return found
 
-    # ------------------------------------------------------------------
-    # Reading the original data.yaml to auto-detect dataset name
-    # ------------------------------------------------------------------
-
     @staticmethod
     def _detect_dataset_name(extracted_root: Path) -> str | None:
         """Try to identify the dataset from the zip contents."""
@@ -162,10 +141,6 @@ class YoloIngestor:
             if key_lower.startswith(name.lower()) or name.lower().startswith(key_lower):
                 return table
         return None
-
-    # ------------------------------------------------------------------
-    # Remapping a single label file
-    # ------------------------------------------------------------------
 
     @staticmethod
     def _remap_label_file(
@@ -189,10 +164,6 @@ class YoloIngestor:
             remapped_lines.append(f"{new_cls} {' '.join(parts[1:])}")
 
         dst_path.write_text("\n".join(remapped_lines) + "\n" if remapped_lines else "")
-
-    # ------------------------------------------------------------------
-    # Processing a single zip
-    # ------------------------------------------------------------------
 
     def _process_zip(
         self,
@@ -270,10 +241,6 @@ class YoloIngestor:
 
         return counts
 
-    # ------------------------------------------------------------------
-    # Main workflow
-    # ------------------------------------------------------------------
-
     def run(self) -> Path | None:
         """Execute the full ingestion/merge pipeline.
 
@@ -322,11 +289,6 @@ class YoloIngestor:
         print(f"{'='*60}")
 
         return effective_output
-
-
-# ======================================================================
-# CLI entry point
-# ======================================================================
 
 
 def parse_args():

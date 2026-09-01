@@ -30,8 +30,7 @@ class AugConfig:
     erasing: float = 0.0
     # Beta(alpha, alpha) mixup strength (multihead only). 0 = off.
     mixup: float = 0.0
-    # Phase 2: rotate by random multiple of 45/90° and remap the class label.
-    # Implemented in classifier/augmentation.py; off by default.
+    # Rotate by a random multiple of 45/90° and remap the class label accordingly.
     cardinal_rotation: bool = False
 
 

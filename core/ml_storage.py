@@ -44,11 +44,6 @@ def _slugify(text: str) -> str:
     return slug.strip("_")
 
 
-# ======================================================================
-# DatasetManager
-# ======================================================================
-
-
 class DatasetManager:
     """Manages versioned datasets under ``<root>/``."""
 
@@ -57,10 +52,6 @@ class DatasetManager:
     def __init__(self, root: Path):
         self.root = Path(root)
         self.root.mkdir(parents=True, exist_ok=True)
-
-    # ------------------------------------------------------------------
-    # Internal helpers
-    # ------------------------------------------------------------------
 
     def _parse_version_dirs(self) -> list[dict]:
         """Return sorted list of ``{version, description, path, created_at}`` dicts."""
@@ -95,10 +86,6 @@ class DatasetManager:
         if not existing:
             return 1
         return existing[-1]["version"] + 1
-
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
 
     def create_version(self, description: str) -> Path:
         """Create a new numbered version directory and write ``version.json``.
@@ -146,11 +133,6 @@ class DatasetManager:
         )
 
 
-# ======================================================================
-# ModelRegistry
-# ======================================================================
-
-
 class ModelRegistry:
     """Manages model artefacts under ``<root>/<model_name>/``.
 
@@ -171,10 +153,6 @@ class ModelRegistry:
 
     def _model_root(self, model_name: str) -> Path:
         return self.root / model_name
-
-    # ------------------------------------------------------------------
-    # YOLO-native workflow
-    # ------------------------------------------------------------------
 
     def prepare_run(self, model_name: str) -> tuple[str, str]:
         """Return ``(project, name)`` strings to pass to ``model.train()``.
@@ -208,10 +186,6 @@ class ModelRegistry:
         print(f"Finalized run: {run_dir}")
         return run_dir
 
-    # ------------------------------------------------------------------
-    # Default weights (imported / pre-trained)
-    # ------------------------------------------------------------------
-
     def set_default_weights(self, model_name: str, weights_path: Path) -> Path:
         """Copy an external weights file as the canonical default for a model.
 
@@ -238,10 +212,6 @@ class ModelRegistry:
         """Return the path to the default weights, or ``None`` if not set."""
         dst = self._model_root(model_name) / "default.pt"
         return dst if dst.exists() else None
-
-    # ------------------------------------------------------------------
-    # Querying
-    # ------------------------------------------------------------------
 
     def list_runs(self, model_name: str) -> list[dict]:
         """List all registered runs for a model, sorted by directory name."""
@@ -326,11 +296,6 @@ class ModelRegistry:
             f"Weights file '{filename}' not found in {run_dir} "
             f"(checked weights/{filename} and {filename})"
         )
-
-
-# ======================================================================
-# MLStorage façade
-# ======================================================================
 
 
 class MLStorage:

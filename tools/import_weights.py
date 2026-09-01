@@ -68,7 +68,6 @@ def main():
         print(f"Error: weights file not found: {weights_path}")
         sys.exit(1)
 
-    # Resolve model name default based on type
     if args.model_name:
         model_name = args.model_name
     elif args.type == "detection":

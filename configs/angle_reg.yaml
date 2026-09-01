@@ -1,7 +1,7 @@
 name: angle_reg
 model_type: angle_reg
 
-# Option 3: orientation regression. Predicts continuous heading + roll angles
+# Orientation regression: predicts continuous heading + roll angles
 # (cos/sin + angular loss) instead of a composite class. Targets come from
 # configs/angle_map.yaml (class -> angles), so no relabeling is needed.
 # predict() snaps angles back to the nearest class so the test harness reports a

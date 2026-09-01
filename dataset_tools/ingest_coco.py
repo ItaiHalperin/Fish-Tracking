@@ -43,10 +43,6 @@ class CocoIngestor:
         self.storage = storage
         self.version_description = version_description
 
-    # ------------------------------------------------------------------
-    # Output directory resolution
-    # ------------------------------------------------------------------
-
     def _resolve_output_dir(self) -> Path:
         """Determine the output directory, optionally creating a versioned dataset."""
         if self.storage is not None:
@@ -54,10 +50,6 @@ class CocoIngestor:
             version_dir = self.storage.datasets.create_version(desc)
             return version_dir
         return self.output_dir
-
-    # ------------------------------------------------------------------
-    # COCO → YOLO conversion
-    # ------------------------------------------------------------------
 
     @staticmethod
     def _convert_split(
@@ -139,10 +131,6 @@ class CocoIngestor:
 
         return count
 
-    # ------------------------------------------------------------------
-    # Main workflow
-    # ------------------------------------------------------------------
-
     def run(self) -> None:
         """Execute the full COCO → YOLO ingestion pipeline."""
         if not self.zip_path.exists():
@@ -213,10 +201,6 @@ class CocoIngestor:
             print("\nAll done! You can now start training by running:")
             print("  .venv/bin/python train.py")
 
-
-# ======================================================================
-# CLI entry point
-# ======================================================================
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Ingest a pre-split COCO zip and convert to YOLOv11 dataset.")

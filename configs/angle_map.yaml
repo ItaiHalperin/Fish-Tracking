@@ -1,4 +1,4 @@
-# Class -> (heading, roll) in degrees, for the angle-regression model (Option 3).
+# Class -> (heading, roll) in degrees, for the angle-regression model.
 #
 # heading: in-plane direction the HEAD points (from the pose).
 #   0 = head points right, 90 = up, 180 = left, 270 = down.

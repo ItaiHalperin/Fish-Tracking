@@ -54,10 +54,6 @@ class CloudExtractor:
         self.storage = storage
         self.version_description = version_description
 
-    # ------------------------------------------------------------------
-    # Remote listing
-    # ------------------------------------------------------------------
-
     def list_remote_videos(self) -> list[str]:
         """Lists video files inside the rclone remote directory (recursively)."""
         print(f"Querying remote directory (including subfolders): {self.remote_dir} ...")
@@ -84,10 +80,6 @@ class CloudExtractor:
 
         return videos
 
-    # ------------------------------------------------------------------
-    # MTS conversion
-    # ------------------------------------------------------------------
-
     @staticmethod
     def convert_mts_if_needed(video_path: Path) -> Path | None:
         """Converts .MTS files to .mp4 using FFmpeg. Returns the path to the usable file."""
@@ -105,10 +97,6 @@ class CloudExtractor:
             print(f"  Warning: Failed to convert {video_path.name}.")
             print(f"  FFmpeg error: {e.stderr[-500:] if e.stderr else 'unknown'}")
             return None
-
-    # ------------------------------------------------------------------
-    # Single-video processing
-    # ------------------------------------------------------------------
 
     def process_single_video(self, remote_path: str, staging_dir: Path) -> str | None:
         """Downloads a single video, extracts frames to staging, and cleans up.
@@ -170,10 +158,6 @@ class CloudExtractor:
         finally:
             shutil.rmtree(temp_dir, ignore_errors=True)
 
-    # ------------------------------------------------------------------
-    # Split & move
-    # ------------------------------------------------------------------
-
     def _split_and_move(self, successful_videos: list[str], staging_dir: Path) -> None:
         """Assigns train/val/test splits and moves frame folders out of staging."""
         random.shuffle(successful_videos)
@@ -219,10 +203,6 @@ class CloudExtractor:
         total_frames = sum(split_counts.values())
         print(f"  Total: {total_frames} frames")
         print(f"\nOutput: {raw_frames_dir}")
-
-    # ------------------------------------------------------------------
-    # Main workflow
-    # ------------------------------------------------------------------
 
     def _resolve_output_dir(self) -> Path:
         """Determine the output directory, optionally creating a versioned dataset."""
@@ -284,10 +264,6 @@ class CloudExtractor:
         self._split_and_move(successful_videos, staging_dir)
         self.output_dir = original_output
 
-
-# ======================================================================
-# CLI entry point
-# ======================================================================
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Randomly sample frames from cloud videos via rclone.")

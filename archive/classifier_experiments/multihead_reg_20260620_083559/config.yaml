@@ -1,0 +1,38 @@
+name: multihead_reg
+model_type: multihead
+pretrained: yolo11n-cls.pt
+data_dir: labels_split
+epochs: 60
+imgsz: 224
+batch: 32
+lr0: 0.0003
+patience: 15
+seed: 42
+device: mps
+aug:
+  degrees: 10.0
+  translate: 0.1
+  scale: 0.3
+  hsv_h: 0.015
+  hsv_s: 0.5
+  hsv_v: 0.4
+  fliplr: 0.5
+  flipud: 0.0
+  mosaic: 0.0
+  erasing: 0.3
+  mixup: 0.1
+  cardinal_rotation: false
+notes: 'Moderate reg + TTA: dropout 0.2, label-smooth 0.05, mixup 0.1, wd 2e-4, freeze
+  3 ep.'
+backbone: resnet34
+weight_decay: 0.0002
+num_workers: 4
+loss: class_balanced
+cb_beta: 0.999
+focal_gamma: 2.0
+weighted_sampler: true
+dropout: 0.2
+label_smoothing: 0.05
+freeze_epochs: 3
+tta: true
+abstain_threshold: 0.0
