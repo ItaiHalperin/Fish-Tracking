@@ -1,0 +1,376 @@
+{
+  "best_epoch": 31,
+  "best_composite_macro_f1": 0.798918684745159,
+  "n_train": 972,
+  "n_val": 333,
+  "poses": [
+    "diag_down_left",
+    "diag_down_right",
+    "diag_up_left",
+    "diag_up_right",
+    "head_down",
+    "head_up",
+    "regular",
+    "upside_down"
+  ],
+  "facings": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "history": [
+    {
+      "epoch": 0,
+      "train_loss": 1.7969058943383487,
+      "pose_acc": 0.7207207207207207,
+      "facing_acc": 0.7117117117117117,
+      "composite_acc": 0.5945945945945946,
+      "composite_macro_f1": 0.46545112902261443
+    },
+    {
+      "epoch": 1,
+      "train_loss": 1.0348900752793615,
+      "pose_acc": 0.8228228228228228,
+      "facing_acc": 0.7477477477477478,
+      "composite_acc": 0.7147147147147147,
+      "composite_macro_f1": 0.629841306692298
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.9395551087924973,
+      "pose_acc": 0.6036036036036037,
+      "facing_acc": 0.5555555555555556,
+      "composite_acc": 0.5015015015015015,
+      "composite_macro_f1": 0.4569627573651274
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.7786731636573258,
+      "pose_acc": 0.8468468468468469,
+      "facing_acc": 0.7567567567567568,
+      "composite_acc": 0.7117117117117117,
+      "composite_macro_f1": 0.6568851019776711
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.7035922332065095,
+      "pose_acc": 0.8438438438438438,
+      "facing_acc": 0.8498498498498499,
+      "composite_acc": 0.7837837837837838,
+      "composite_macro_f1": 0.7282387633787135
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.6081206749496146,
+      "pose_acc": 0.7837837837837838,
+      "facing_acc": 0.8288288288288288,
+      "composite_acc": 0.7387387387387387,
+      "composite_macro_f1": 0.7057391538786574
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.5366060456621303,
+      "pose_acc": 0.8018018018018018,
+      "facing_acc": 0.7897897897897898,
+      "composite_acc": 0.7267267267267268,
+      "composite_macro_f1": 0.6848654490130992
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.6750275988147092,
+      "pose_acc": 0.8528528528528528,
+      "facing_acc": 0.8348348348348348,
+      "composite_acc": 0.7837837837837838,
+      "composite_macro_f1": 0.7054495179286048
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.5269536249676849,
+      "pose_acc": 0.8498498498498499,
+      "facing_acc": 0.8258258258258259,
+      "composite_acc": 0.7897897897897898,
+      "composite_macro_f1": 0.7437591016664096
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.5475482459912084,
+      "pose_acc": 0.8678678678678678,
+      "facing_acc": 0.8198198198198198,
+      "composite_acc": 0.7987987987987988,
+      "composite_macro_f1": 0.7062978303438338
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.4839719641846394,
+      "pose_acc": 0.8708708708708709,
+      "facing_acc": 0.8528528528528528,
+      "composite_acc": 0.8228228228228228,
+      "composite_macro_f1": 0.7553651204598905
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.4763691335793876,
+      "pose_acc": 0.8528528528528528,
+      "facing_acc": 0.7717717717717718,
+      "composite_acc": 0.7417417417417418,
+      "composite_macro_f1": 0.6911137257168666
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.4428866765626664,
+      "pose_acc": 0.8438438438438438,
+      "facing_acc": 0.8078078078078078,
+      "composite_acc": 0.7747747747747747,
+      "composite_macro_f1": 0.741110814738447
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.31974509738600304,
+      "pose_acc": 0.8138138138138138,
+      "facing_acc": 0.7537537537537538,
+      "composite_acc": 0.7177177177177178,
+      "composite_macro_f1": 0.6950067515704184
+    },
+    {
+      "epoch": 14,
+      "train_loss": 0.3786312195744534,
+      "pose_acc": 0.8108108108108109,
+      "facing_acc": 0.7837837837837838,
+      "composite_acc": 0.7537537537537538,
+      "composite_macro_f1": 0.7234508417735768
+    },
+    {
+      "epoch": 15,
+      "train_loss": 0.35327334119459236,
+      "pose_acc": 0.8618618618618619,
+      "facing_acc": 0.8168168168168168,
+      "composite_acc": 0.7627627627627628,
+      "composite_macro_f1": 0.7442798385108228
+    },
+    {
+      "epoch": 16,
+      "train_loss": 0.43615683422657686,
+      "pose_acc": 0.8198198198198198,
+      "facing_acc": 0.7627627627627628,
+      "composite_acc": 0.7357357357357357,
+      "composite_macro_f1": 0.7027449743090588
+    },
+    {
+      "epoch": 17,
+      "train_loss": 0.3025903010074003,
+      "pose_acc": 0.8618618618618619,
+      "facing_acc": 0.8618618618618619,
+      "composite_acc": 0.8198198198198198,
+      "composite_macro_f1": 0.7651012651845271
+    },
+    {
+      "epoch": 18,
+      "train_loss": 0.4119777049056787,
+      "pose_acc": 0.8438438438438438,
+      "facing_acc": 0.8318318318318318,
+      "composite_acc": 0.7837837837837838,
+      "composite_macro_f1": 0.7265991193818306
+    },
+    {
+      "epoch": 19,
+      "train_loss": 0.25966636560581347,
+      "pose_acc": 0.8378378378378378,
+      "facing_acc": 0.7537537537537538,
+      "composite_acc": 0.7387387387387387,
+      "composite_macro_f1": 0.719941265257848
+    },
+    {
+      "epoch": 20,
+      "train_loss": 0.2671615149626516,
+      "pose_acc": 0.8468468468468469,
+      "facing_acc": 0.8228228228228228,
+      "composite_acc": 0.7987987987987988,
+      "composite_macro_f1": 0.7425053943669752
+    },
+    {
+      "epoch": 21,
+      "train_loss": 0.23227459351712293,
+      "pose_acc": 0.8618618618618619,
+      "facing_acc": 0.8378378378378378,
+      "composite_acc": 0.8138138138138138,
+      "composite_macro_f1": 0.7614946949242177
+    },
+    {
+      "epoch": 22,
+      "train_loss": 0.20680526855551165,
+      "pose_acc": 0.8498498498498499,
+      "facing_acc": 0.8318318318318318,
+      "composite_acc": 0.7987987987987988,
+      "composite_macro_f1": 0.7310501391102282
+    },
+    {
+      "epoch": 23,
+      "train_loss": 0.2350073876204314,
+      "pose_acc": 0.8738738738738738,
+      "facing_acc": 0.8378378378378378,
+      "composite_acc": 0.8018018018018018,
+      "composite_macro_f1": 0.759501998054997
+    },
+    {
+      "epoch": 24,
+      "train_loss": 0.2054050677597768,
+      "pose_acc": 0.8768768768768769,
+      "facing_acc": 0.8348348348348348,
+      "composite_acc": 0.8018018018018018,
+      "composite_macro_f1": 0.757248122047489
+    },
+    {
+      "epoch": 25,
+      "train_loss": 0.20793664093616077,
+      "pose_acc": 0.8408408408408409,
+      "facing_acc": 0.8378378378378378,
+      "composite_acc": 0.8018018018018018,
+      "composite_macro_f1": 0.7334791755819635
+    },
+    {
+      "epoch": 26,
+      "train_loss": 0.21669172172898374,
+      "pose_acc": 0.8498498498498499,
+      "facing_acc": 0.8408408408408409,
+      "composite_acc": 0.8138138138138138,
+      "composite_macro_f1": 0.7492762036803622
+    },
+    {
+      "epoch": 27,
+      "train_loss": 0.16519711629598718,
+      "pose_acc": 0.8528528528528528,
+      "facing_acc": 0.8618618618618619,
+      "composite_acc": 0.8258258258258259,
+      "composite_macro_f1": 0.7759461532405829
+    },
+    {
+      "epoch": 28,
+      "train_loss": 0.2083520654113695,
+      "pose_acc": 0.8798798798798799,
+      "facing_acc": 0.8318318318318318,
+      "composite_acc": 0.8078078078078078,
+      "composite_macro_f1": 0.7689676633743242
+    },
+    {
+      "epoch": 29,
+      "train_loss": 0.16415816619072432,
+      "pose_acc": 0.8858858858858859,
+      "facing_acc": 0.8828828828828829,
+      "composite_acc": 0.8558558558558559,
+      "composite_macro_f1": 0.7939075964824832
+    },
+    {
+      "epoch": 30,
+      "train_loss": 0.13577067622064073,
+      "pose_acc": 0.8828828828828829,
+      "facing_acc": 0.8738738738738738,
+      "composite_acc": 0.8438438438438438,
+      "composite_macro_f1": 0.7847361569982166
+    },
+    {
+      "epoch": 31,
+      "train_loss": 0.14180595565725257,
+      "pose_acc": 0.8918918918918919,
+      "facing_acc": 0.8798798798798799,
+      "composite_acc": 0.8468468468468469,
+      "composite_macro_f1": 0.798918684745159
+    },
+    {
+      "epoch": 32,
+      "train_loss": 0.12014886920834765,
+      "pose_acc": 0.8648648648648649,
+      "facing_acc": 0.8498498498498499,
+      "composite_acc": 0.8288288288288288,
+      "composite_macro_f1": 0.7819949042515341
+    },
+    {
+      "epoch": 33,
+      "train_loss": 0.12109770411203918,
+      "pose_acc": 0.8648648648648649,
+      "facing_acc": 0.8618618618618619,
+      "composite_acc": 0.8288288288288288,
+      "composite_macro_f1": 0.7687223436843932
+    },
+    {
+      "epoch": 34,
+      "train_loss": 0.10524243659075395,
+      "pose_acc": 0.8768768768768769,
+      "facing_acc": 0.8378378378378378,
+      "composite_acc": 0.8138138138138138,
+      "composite_macro_f1": 0.7640178068756079
+    },
+    {
+      "epoch": 35,
+      "train_loss": 0.11095369577315854,
+      "pose_acc": 0.8738738738738738,
+      "facing_acc": 0.8318318318318318,
+      "composite_acc": 0.8018018018018018,
+      "composite_macro_f1": 0.7663537152524568
+    },
+    {
+      "epoch": 36,
+      "train_loss": 0.0982549282810325,
+      "pose_acc": 0.8408408408408409,
+      "facing_acc": 0.8168168168168168,
+      "composite_acc": 0.7867867867867868,
+      "composite_macro_f1": 0.7458960330557765
+    },
+    {
+      "epoch": 37,
+      "train_loss": 0.09393712249680311,
+      "pose_acc": 0.8498498498498499,
+      "facing_acc": 0.8438438438438438,
+      "composite_acc": 0.7927927927927928,
+      "composite_macro_f1": 0.7666503724541608
+    },
+    {
+      "epoch": 38,
+      "train_loss": 0.12199426163371208,
+      "pose_acc": 0.8228228228228228,
+      "facing_acc": 0.8168168168168168,
+      "composite_acc": 0.7717717717717718,
+      "composite_macro_f1": 0.7395165818609127
+    },
+    {
+      "epoch": 39,
+      "train_loss": 0.07894216227985214,
+      "pose_acc": 0.8378378378378378,
+      "facing_acc": 0.8168168168168168,
+      "composite_acc": 0.7747747747747747,
+      "composite_macro_f1": 0.7412133395592287
+    },
+    {
+      "epoch": 40,
+      "train_loss": 0.0874405778300615,
+      "pose_acc": 0.8648648648648649,
+      "facing_acc": 0.8408408408408409,
+      "composite_acc": 0.8078078078078078,
+      "composite_macro_f1": 0.763754733505305
+    },
+    {
+      "epoch": 41,
+      "train_loss": 0.07687223475779036,
+      "pose_acc": 0.8468468468468469,
+      "facing_acc": 0.8108108108108109,
+      "composite_acc": 0.7837837837837838,
+      "composite_macro_f1": 0.748384269776621
+    },
+    {
+      "epoch": 42,
+      "train_loss": 0.08006644724205197,
+      "pose_acc": 0.8288288288288288,
+      "facing_acc": 0.8048048048048048,
+      "composite_acc": 0.7717717717717718,
+      "composite_macro_f1": 0.7399744733716038
+    },
+    {
+      "epoch": 43,
+      "train_loss": 0.07181428903292236,
+      "pose_acc": 0.8408408408408409,
+      "facing_acc": 0.8138138138138138,
+      "composite_acc": 0.7747747747747747,
+      "composite_macro_f1": 0.7483904470324714
+    }
+  ]
+}

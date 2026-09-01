@@ -1,0 +1,1820 @@
+{
+  "run": "results/multihead_default_20260619_232532",
+  "tail_classes": [
+    "diag_down_left_facing_down",
+    "diag_down_right_facing_up",
+    "diag_up_left_facing_up",
+    "diag_up_right_facing_up",
+    "head_up_facing_right",
+    "upside_down_facing_left"
+  ],
+  "n_pool_embedded": 4209,
+  "n_queued": 200,
+  "quota": {
+    "knn": 100,
+    "pred": 50,
+    "unc": 50
+  },
+  "candidates": [
+    {
+      "file": "all__NRGoldies_3_11_25__id_137_frame_1622.jpg",
+      "knn_sim": 0.98,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.943,
+      "uncertainty": 0.194
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_137_frame_1838.jpg",
+      "knn_sim": 0.971,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.968,
+      "uncertainty": 0.111
+    },
+    {
+      "file": "all__RGoldies_7_6_25__id_150_frame_2432.jpg",
+      "knn_sim": 0.967,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.916,
+      "uncertainty": 0.234
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_1_frame_1995.jpg",
+      "knn_sim": 0.964,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.803,
+      "uncertainty": 0.485
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_196_frame_1567.jpg",
+      "knn_sim": 0.959,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.724,
+      "uncertainty": 0.572
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_1_frame_1106.jpg",
+      "knn_sim": 0.958,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.906,
+      "uncertainty": 0.259
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_227_frame_1923.jpg",
+      "knn_sim": 0.956,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.779,
+      "uncertainty": 0.496
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_227_frame_1923.jpg",
+      "knn_sim": 0.956,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.779,
+      "uncertainty": 0.496
+    },
+    {
+      "file": "all__RGoldies_7_6_25__id_148_frame_2011.jpg",
+      "knn_sim": 0.955,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.861,
+      "uncertainty": 0.363
+    },
+    {
+      "file": "RGoldies_23_10_25__id_578_frame_1590.jpg",
+      "knn_sim": 0.954,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.989,
+      "uncertainty": 0.049
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_227_frame_1921.jpg",
+      "knn_sim": 0.952,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.911,
+      "uncertainty": 0.274
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_112_frame_886.jpg",
+      "knn_sim": 0.951,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_up_left_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.37,
+      "uncertainty": 1.171
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_73_frame_948.jpg",
+      "knn_sim": 0.95,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.886,
+      "uncertainty": 0.308
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_7_frame_46.jpg",
+      "knn_sim": 0.945,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.903,
+      "uncertainty": 0.268
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_141_frame_1052.jpg",
+      "knn_sim": 0.945,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.92,
+      "uncertainty": 0.234
+    },
+    {
+      "file": "RGoldies_23_10_25__id_914_frame_2740.jpg",
+      "knn_sim": 0.944,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.823,
+      "uncertainty": 0.478
+    },
+    {
+      "file": "RGoldies_23_10_25__id_975_frame_2887.jpg",
+      "knn_sim": 0.939,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.526,
+      "uncertainty": 0.986
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_457_frame_1137.jpg",
+      "knn_sim": 0.938,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.907,
+      "uncertainty": 0.3
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_38_frame_199.jpg",
+      "knn_sim": 0.938,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.715,
+      "uncertainty": 0.583
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_1_frame_2078.jpg",
+      "knn_sim": 0.938,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.894,
+      "uncertainty": 0.315
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_227_frame_1919.jpg",
+      "knn_sim": 0.937,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.626,
+      "uncertainty": 0.651
+    },
+    {
+      "file": "RGoldies_7_6_25__id_150_frame_2468.jpg",
+      "knn_sim": 0.937,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.479,
+      "uncertainty": 0.782
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_754_frame_2260.jpg",
+      "knn_sim": 0.936,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.661,
+      "uncertainty": 0.791
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_207_frame_1978.jpg",
+      "knn_sim": 0.936,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.564,
+      "uncertainty": 1.0
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_4_frame_645.jpg",
+      "knn_sim": 0.934,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.754,
+      "uncertainty": 0.573
+    },
+    {
+      "file": "RGoldies_7_6_25__id_77_frame_1576.jpg",
+      "knn_sim": 0.932,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.8,
+      "uncertainty": 0.498
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_559_frame_1416.jpg",
+      "knn_sim": 0.932,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.907,
+      "uncertainty": 0.27
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_70_frame_159.jpg",
+      "knn_sim": 0.93,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.934,
+      "uncertainty": 0.161
+    },
+    {
+      "file": "RGoldies_23_10_25__id_70_frame_159.jpg",
+      "knn_sim": 0.93,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.934,
+      "uncertainty": 0.161
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_565_frame_1468.jpg",
+      "knn_sim": 0.929,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.993,
+      "uncertainty": 0.036
+    },
+    {
+      "file": "RGoldies_7_6_25__id_49_frame_555.jpg",
+      "knn_sim": 0.928,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.78,
+      "uncertainty": 0.593
+    },
+    {
+      "file": "RGoldies_23_10_25__id_352_frame_831.jpg",
+      "knn_sim": 0.928,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.965,
+      "uncertainty": 0.123
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_121_frame_1107.jpg",
+      "knn_sim": 0.927,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.431,
+      "uncertainty": 1.076
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_153_frame_1431.jpg",
+      "knn_sim": 0.926,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.691,
+      "uncertainty": 0.646
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_51_frame_320.jpg",
+      "knn_sim": 0.925,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.811,
+      "uncertainty": 0.474
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_72_frame_170.jpg",
+      "knn_sim": 0.925,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.428,
+      "uncertainty": 0.939
+    },
+    {
+      "file": "RGoldies_23_10_25__id_72_frame_170.jpg",
+      "knn_sim": 0.925,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.428,
+      "uncertainty": 0.939
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_321_frame_2692.jpg",
+      "knn_sim": 0.924,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.528,
+      "uncertainty": 0.972
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_321_frame_2692.jpg",
+      "knn_sim": 0.924,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.528,
+      "uncertainty": 0.972
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_204_frame_1738.jpg",
+      "knn_sim": 0.924,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "head_down_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.183,
+      "uncertainty": 1.557
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_141_frame_1130.jpg",
+      "knn_sim": 0.924,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "upside_down_facing_up",
+      "pred_is_tail": false,
+      "pred_conf": 0.561,
+      "uncertainty": 0.728
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_241_frame_2225.jpg",
+      "knn_sim": 0.924,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.591,
+      "uncertainty": 0.628
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_279_frame_2884.jpg",
+      "knn_sim": 0.923,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "regular_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.467,
+      "uncertainty": 0.923
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_204_frame_1642.jpg",
+      "knn_sim": 0.923,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.806,
+      "uncertainty": 0.451
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_50_frame_421.jpg",
+      "knn_sim": 0.92,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.64,
+      "uncertainty": 0.713
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_160_frame_2420.jpg",
+      "knn_sim": 0.919,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.482,
+      "uncertainty": 0.657
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_2_frame_589.jpg",
+      "knn_sim": 0.919,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.931,
+      "uncertainty": 0.238
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_298_frame_2906.jpg",
+      "knn_sim": 0.919,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_up_right_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.476,
+      "uncertainty": 0.556
+    },
+    {
+      "file": "RGoldies_23_10_25__id_493_frame_1225.jpg",
+      "knn_sim": 0.919,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.9,
+      "uncertainty": 0.292
+    },
+    {
+      "file": "RGoldies_7_6_25__id_110_frame_1768.jpg",
+      "knn_sim": 0.918,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.901,
+      "uncertainty": 0.258
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_978_frame_2965.jpg",
+      "knn_sim": 0.918,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.967,
+      "uncertainty": 0.123
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_124_frame_1409.jpg",
+      "knn_sim": 0.917,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.558,
+      "uncertainty": 0.698
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_59_frame_407.jpg",
+      "knn_sim": 0.917,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.641,
+      "uncertainty": 0.561
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_59_frame_407.jpg",
+      "knn_sim": 0.917,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.641,
+      "uncertainty": 0.561
+    },
+    {
+      "file": "RGoldies_23_10_25__id_943_frame_2819.jpg",
+      "knn_sim": 0.916,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.281,
+      "uncertainty": 1.283
+    },
+    {
+      "file": "RGoldies_23_10_25__id_152_frame_395.jpg",
+      "knn_sim": 0.916,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.61,
+      "uncertainty": 0.904
+    },
+    {
+      "file": "RGoldies_23_10_25__id_662_frame_2168.jpg",
+      "knn_sim": 0.915,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.373,
+      "uncertainty": 1.109
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_108_frame_848.jpg",
+      "knn_sim": 0.915,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.734,
+      "uncertainty": 0.701
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_196_frame_1565.jpg",
+      "knn_sim": 0.915,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_up",
+      "pred_is_tail": false,
+      "pred_conf": 0.502,
+      "uncertainty": 0.789
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_593_frame_1531.jpg",
+      "knn_sim": 0.915,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.494,
+      "uncertainty": 0.882
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_309_frame_767.jpg",
+      "knn_sim": 0.915,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.702,
+      "uncertainty": 0.516
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_152_frame_399.jpg",
+      "knn_sim": 0.914,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.493,
+      "uncertainty": 0.949
+    },
+    {
+      "file": "RGoldies_23_10_25__id_593_frame_1533.jpg",
+      "knn_sim": 0.914,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.433,
+      "uncertainty": 0.878
+    },
+    {
+      "file": "all__RGoldies_7_6_25__id_169_frame_2804.jpg",
+      "knn_sim": 0.913,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.402,
+      "uncertainty": 1.299
+    },
+    {
+      "file": "RGoldies_23_10_25__id_417_frame_1062.jpg",
+      "knn_sim": 0.913,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.693,
+      "uncertainty": 0.772
+    },
+    {
+      "file": "RGoldies_23_10_25__id_248_frame_600.jpg",
+      "knn_sim": 0.913,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.673,
+      "uncertainty": 0.741
+    },
+    {
+      "file": "RGoldies_7_6_25__id_178_frame_2804.jpg",
+      "knn_sim": 0.912,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.755,
+      "uncertainty": 0.515
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_282_frame_2783.jpg",
+      "knn_sim": 0.91,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "regular_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.378,
+      "uncertainty": 0.858
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_404_frame_1006.jpg",
+      "knn_sim": 0.91,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.391,
+      "uncertainty": 0.956
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_973_frame_2879.jpg",
+      "knn_sim": 0.91,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.701,
+      "uncertainty": 0.788
+    },
+    {
+      "file": "RGoldies_23_10_25__id_973_frame_2879.jpg",
+      "knn_sim": 0.91,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.701,
+      "uncertainty": 0.788
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_6_frame_46.jpg",
+      "knn_sim": 0.909,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.558,
+      "uncertainty": 0.734
+    },
+    {
+      "file": "all__RGoldies_7_6_25__id_178_frame_2803.jpg",
+      "knn_sim": 0.908,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.529,
+      "uncertainty": 0.667
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_38_frame_196.jpg",
+      "knn_sim": 0.908,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.27,
+      "uncertainty": 0.969
+    },
+    {
+      "file": "RGoldies_23_10_25__id_36_frame_150.jpg",
+      "knn_sim": 0.908,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.804,
+      "uncertainty": 0.5
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_141_frame_1096.jpg",
+      "knn_sim": 0.908,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.519,
+      "uncertainty": 0.96
+    },
+    {
+      "file": "RGoldies_23_10_25__id_892_frame_2628.jpg",
+      "knn_sim": 0.907,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.871,
+      "uncertainty": 0.327
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_36_frame_217.jpg",
+      "knn_sim": 0.906,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.389,
+      "uncertainty": 1.222
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_187_frame_1924.jpg",
+      "knn_sim": 0.906,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.356,
+      "uncertainty": 1.303
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_264_frame_2532.jpg",
+      "knn_sim": 0.905,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.908,
+      "uncertainty": 0.279
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_133_frame_1376.jpg",
+      "knn_sim": 0.905,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.706,
+      "uncertainty": 0.612
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_187_frame_1932.jpg",
+      "knn_sim": 0.905,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.446,
+      "uncertainty": 1.152
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_688_frame_1905.jpg",
+      "knn_sim": 0.905,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.547,
+      "uncertainty": 0.888
+    },
+    {
+      "file": "RGoldies_23_10_25__id_688_frame_1905.jpg",
+      "knn_sim": 0.905,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.547,
+      "uncertainty": 0.888
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_892_frame_2626.jpg",
+      "knn_sim": 0.904,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.783,
+      "uncertainty": 0.346
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_593_frame_1524.jpg",
+      "knn_sim": 0.904,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.696,
+      "uncertainty": 0.785
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_731_frame_2437.jpg",
+      "knn_sim": 0.903,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.699,
+      "uncertainty": 0.488
+    },
+    {
+      "file": "RGoldies_7_6_25__id_85_frame_1280.jpg",
+      "knn_sim": 0.903,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.605,
+      "uncertainty": 0.756
+    },
+    {
+      "file": "RGoldies_23_10_25__id_583_frame_1528.jpg",
+      "knn_sim": 0.903,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.71,
+      "uncertainty": 0.585
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_241_frame_2317.jpg",
+      "knn_sim": 0.903,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.97,
+      "uncertainty": 0.091
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_981_frame_2924.jpg",
+      "knn_sim": 0.902,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.537,
+      "uncertainty": 0.781
+    },
+    {
+      "file": "RGoldies_23_10_25__id_899_frame_2802.jpg",
+      "knn_sim": 0.902,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.384,
+      "uncertainty": 0.717
+    },
+    {
+      "file": "RGoldies_23_10_25__id_96_frame_223.jpg",
+      "knn_sim": 0.902,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.576,
+      "uncertainty": 0.601
+    },
+    {
+      "file": "all__RGoldies_7_6_25__id_36_frame_332.jpg",
+      "knn_sim": 0.901,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.736,
+      "uncertainty": 0.614
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_63_frame_527.jpg",
+      "knn_sim": 0.901,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.301,
+      "uncertainty": 1.064
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_72_frame_173.jpg",
+      "knn_sim": 0.901,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.503,
+      "uncertainty": 0.543
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_342_frame_868.jpg",
+      "knn_sim": 0.9,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.286,
+      "uncertainty": 1.18
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_493_frame_1227.jpg",
+      "knn_sim": 0.899,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.538,
+      "uncertainty": 0.747
+    },
+    {
+      "file": "RGoldies_23_10_25__id_604_frame_1550.jpg",
+      "knn_sim": 0.899,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.409,
+      "uncertainty": 0.962
+    },
+    {
+      "file": "RGoldies_23_10_25__id_426_frame_1083.jpg",
+      "knn_sim": 0.899,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.221,
+      "uncertainty": 1.284
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_307_frame_2544.jpg",
+      "knn_sim": 0.894,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.992,
+      "uncertainty": 0.039
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_307_frame_2544.jpg",
+      "knn_sim": 0.894,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.992,
+      "uncertainty": 0.039
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_117_frame_1094.jpg",
+      "knn_sim": 0.877,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.984,
+      "uncertainty": 0.059
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_117_frame_1090.jpg",
+      "knn_sim": 0.886,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.973,
+      "uncertainty": 0.094
+    },
+    {
+      "file": "all__RGoldies_7_6_25__id_168_frame_2616.jpg",
+      "knn_sim": 0.859,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.964,
+      "uncertainty": 0.116
+    },
+    {
+      "file": "RGoldies_7_6_25__id_168_frame_2616.jpg",
+      "knn_sim": 0.859,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.964,
+      "uncertainty": 0.116
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_50_frame_427.jpg",
+      "knn_sim": 0.813,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_up_left_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.949,
+      "uncertainty": 0.142
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_307_frame_2540.jpg",
+      "knn_sim": 0.861,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.946,
+      "uncertainty": 0.2
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_857_frame_2553.jpg",
+      "knn_sim": 0.894,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.938,
+      "uncertainty": 0.185
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_284_frame_2808.jpg",
+      "knn_sim": 0.898,
+      "knn_nearest_tail": "diag_down_right_facing_up",
+      "predicted": "diag_down_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.922,
+      "uncertainty": 0.247
+    },
+    {
+      "file": "RGoldies_23_10_25__id_754_frame_2399.jpg",
+      "knn_sim": 0.858,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.904,
+      "uncertainty": 0.252
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_132_frame_1398.jpg",
+      "knn_sim": 0.854,
+      "knn_nearest_tail": "diag_down_right_facing_up",
+      "predicted": "diag_down_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.874,
+      "uncertainty": 0.359
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_284_frame_2801.jpg",
+      "knn_sim": 0.893,
+      "knn_nearest_tail": "diag_down_right_facing_up",
+      "predicted": "diag_down_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.858,
+      "uncertainty": 0.431
+    },
+    {
+      "file": "RGoldies_23_10_25__id_328_frame_805.jpg",
+      "knn_sim": 0.843,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.856,
+      "uncertainty": 0.389
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_504_frame_1255.jpg",
+      "knn_sim": 0.894,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.846,
+      "uncertainty": 0.279
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_230_frame_555.jpg",
+      "knn_sim": 0.863,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.841,
+      "uncertainty": 0.411
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_352_frame_835.jpg",
+      "knn_sim": 0.885,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.835,
+      "uncertainty": 0.406
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_326_frame_789.jpg",
+      "knn_sim": 0.888,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.831,
+      "uncertainty": 0.445
+    },
+    {
+      "file": "RGoldies_23_10_25__id_983_frame_2911.jpg",
+      "knn_sim": 0.869,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.828,
+      "uncertainty": 0.52
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_160_frame_2942.jpg",
+      "knn_sim": 0.878,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.828,
+      "uncertainty": 0.375
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_459_frame_1136.jpg",
+      "knn_sim": 0.88,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.823,
+      "uncertainty": 0.381
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_307_frame_2534.jpg",
+      "knn_sim": 0.836,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.817,
+      "uncertainty": 0.532
+    },
+    {
+      "file": "RGoldies_23_10_25__id_894_frame_2663.jpg",
+      "knn_sim": 0.879,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.805,
+      "uncertainty": 0.348
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_35_frame_274.jpg",
+      "knn_sim": 0.886,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.802,
+      "uncertainty": 0.448
+    },
+    {
+      "file": "RGoldies_7_6_25__id_151_frame_2078.jpg",
+      "knn_sim": 0.888,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.791,
+      "uncertainty": 0.611
+    },
+    {
+      "file": "RGoldies_23_10_25__id_600_frame_1545.jpg",
+      "knn_sim": 0.834,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.782,
+      "uncertainty": 0.569
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_600_frame_1545.jpg",
+      "knn_sim": 0.834,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.782,
+      "uncertainty": 0.569
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_125_frame_855.jpg",
+      "knn_sim": 0.832,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.774,
+      "uncertainty": 0.444
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_559_frame_1417.jpg",
+      "knn_sim": 0.898,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.769,
+      "uncertainty": 0.505
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_71_frame_504.jpg",
+      "knn_sim": 0.877,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.769,
+      "uncertainty": 0.345
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_71_frame_504.jpg",
+      "knn_sim": 0.877,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.769,
+      "uncertainty": 0.345
+    },
+    {
+      "file": "RGoldies_23_10_25__id_478_frame_1220.jpg",
+      "knn_sim": 0.889,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.767,
+      "uncertainty": 0.305
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_271_frame_2565.jpg",
+      "knn_sim": 0.807,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.765,
+      "uncertainty": 0.613
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_271_frame_2565.jpg",
+      "knn_sim": 0.807,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.765,
+      "uncertainty": 0.613
+    },
+    {
+      "file": "all__RGoldies_7_6_25__id_92_frame_1301.jpg",
+      "knn_sim": 0.888,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.762,
+      "uncertainty": 0.632
+    },
+    {
+      "file": "RGoldies_7_6_25__id_92_frame_1301.jpg",
+      "knn_sim": 0.888,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.762,
+      "uncertainty": 0.632
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_204_frame_1723.jpg",
+      "knn_sim": 0.895,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.755,
+      "uncertainty": 0.472
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_34_frame_162.jpg",
+      "knn_sim": 0.867,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.755,
+      "uncertainty": 0.52
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_34_frame_162.jpg",
+      "knn_sim": 0.867,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.755,
+      "uncertainty": 0.52
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_307_frame_2551.jpg",
+      "knn_sim": 0.861,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.751,
+      "uncertainty": 0.464
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_307_frame_2532.jpg",
+      "knn_sim": 0.82,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.73,
+      "uncertainty": 0.566
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_223_frame_1984.jpg",
+      "knn_sim": 0.742,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_up_left_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.729,
+      "uncertainty": 0.652
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_223_frame_1984.jpg",
+      "knn_sim": 0.742,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_up_left_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.729,
+      "uncertainty": 0.652
+    },
+    {
+      "file": "RGoldies_23_10_25__id_687_frame_1894.jpg",
+      "knn_sim": 0.843,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.723,
+      "uncertainty": 0.572
+    },
+    {
+      "file": "RGoldies_23_10_25__id_677_frame_1872.jpg",
+      "knn_sim": 0.846,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.715,
+      "uncertainty": 0.344
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_216_frame_1814.jpg",
+      "knn_sim": 0.877,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.715,
+      "uncertainty": 0.547
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_15_frame_599.jpg",
+      "knn_sim": 0.888,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.712,
+      "uncertainty": 0.622
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_17_frame_53.jpg",
+      "knn_sim": 0.856,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.705,
+      "uncertainty": 0.735
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_17_frame_53.jpg",
+      "knn_sim": 0.856,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "upside_down_facing_left",
+      "pred_is_tail": true,
+      "pred_conf": 0.705,
+      "uncertainty": 0.735
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_263_frame_2722.jpg",
+      "knn_sim": 0.89,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_down_left_facing_down",
+      "pred_is_tail": true,
+      "pred_conf": 0.699,
+      "uncertainty": 0.739
+    },
+    {
+      "file": "all__RGoldies_7_6_25__id_41_frame_365.jpg",
+      "knn_sim": 0.775,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_down_right_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.074,
+      "uncertainty": 1.968
+    },
+    {
+      "file": "RGoldies_7_6_25__id_41_frame_365.jpg",
+      "knn_sim": 0.775,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_down_right_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.074,
+      "uncertainty": 1.968
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_21_frame_155.jpg",
+      "knn_sim": 0.747,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "diag_up_right_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.1,
+      "uncertainty": 1.918
+    },
+    {
+      "file": "RGoldies_23_10_25__id_884_frame_2627.jpg",
+      "knn_sim": 0.727,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "regular_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.087,
+      "uncertainty": 1.912
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_600_frame_1549.jpg",
+      "knn_sim": 0.697,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "regular_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.123,
+      "uncertainty": 1.897
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_256_frame_2332.jpg",
+      "knn_sim": 0.626,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "regular_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.095,
+      "uncertainty": 1.892
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_256_frame_2332.jpg",
+      "knn_sim": 0.626,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "regular_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.095,
+      "uncertainty": 1.892
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_658_frame_1778.jpg",
+      "knn_sim": 0.64,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "head_down_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.106,
+      "uncertainty": 1.875
+    },
+    {
+      "file": "RGoldies_23_10_25__id_531_frame_1344.jpg",
+      "knn_sim": 0.706,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.105,
+      "uncertainty": 1.868
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_531_frame_1344.jpg",
+      "knn_sim": 0.706,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.105,
+      "uncertainty": 1.868
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_27_frame_139.jpg",
+      "knn_sim": 0.715,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "diag_down_right_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.148,
+      "uncertainty": 1.864
+    },
+    {
+      "file": "RGoldies_7_6_25__id_84_frame_1156.jpg",
+      "knn_sim": 0.729,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_down_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.131,
+      "uncertainty": 1.863
+    },
+    {
+      "file": "RGoldies_23_10_25__id_700_frame_1949.jpg",
+      "knn_sim": 0.784,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_down_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.094,
+      "uncertainty": 1.858
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_700_frame_1949.jpg",
+      "knn_sim": 0.784,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_down_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.094,
+      "uncertainty": 1.858
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_330_frame_804.jpg",
+      "knn_sim": 0.679,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "regular_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.116,
+      "uncertainty": 1.845
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_259_frame_2159.jpg",
+      "knn_sim": 0.779,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "regular_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.095,
+      "uncertainty": 1.844
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_259_frame_2159.jpg",
+      "knn_sim": 0.779,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "regular_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.095,
+      "uncertainty": 1.844
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_13_frame_42.jpg",
+      "knn_sim": 0.667,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "regular_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.155,
+      "uncertainty": 1.839
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_207_frame_505.jpg",
+      "knn_sim": 0.717,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "regular_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.113,
+      "uncertainty": 1.837
+    },
+    {
+      "file": "RGoldies_23_10_25__id_207_frame_505.jpg",
+      "knn_sim": 0.717,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "regular_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.113,
+      "uncertainty": 1.837
+    },
+    {
+      "file": "RGoldies_23_10_25__id_927_frame_2809.jpg",
+      "knn_sim": 0.654,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "diag_up_left_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.101,
+      "uncertainty": 1.834
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_108_frame_760.jpg",
+      "knn_sim": 0.703,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "head_down_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.121,
+      "uncertainty": 1.819
+    },
+    {
+      "file": "RGoldies_23_10_25__id_604_frame_1666.jpg",
+      "knn_sim": 0.677,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "diag_up_right_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.1,
+      "uncertainty": 1.816
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_869_frame_2518.jpg",
+      "knn_sim": 0.747,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "diag_up_right_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.15,
+      "uncertainty": 1.814
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_751_frame_2151.jpg",
+      "knn_sim": 0.764,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "diag_down_right_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.117,
+      "uncertainty": 1.812
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_782_frame_2254.jpg",
+      "knn_sim": 0.73,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.133,
+      "uncertainty": 1.804
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_190_frame_469.jpg",
+      "knn_sim": 0.664,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "regular_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.164,
+      "uncertainty": 1.804
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_187_frame_451.jpg",
+      "knn_sim": 0.774,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "diag_up_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.178,
+      "uncertainty": 1.803
+    },
+    {
+      "file": "RGoldies_23_10_25__id_111_frame_275.jpg",
+      "knn_sim": 0.644,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "regular_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.177,
+      "uncertainty": 1.802
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_111_frame_275.jpg",
+      "knn_sim": 0.644,
+      "knn_nearest_tail": "diag_up_right_facing_up",
+      "predicted": "regular_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.177,
+      "uncertainty": 1.802
+    },
+    {
+      "file": "RGoldies_23_10_25__id_927_frame_2808.jpg",
+      "knn_sim": 0.653,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "regular_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.096,
+      "uncertainty": 1.801
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_927_frame_2808.jpg",
+      "knn_sim": 0.653,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "regular_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.096,
+      "uncertainty": 1.801
+    },
+    {
+      "file": "RGoldies_23_10_25__id_627_frame_1670.jpg",
+      "knn_sim": 0.64,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "regular_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.107,
+      "uncertainty": 1.799
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_627_frame_1670.jpg",
+      "knn_sim": 0.64,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "regular_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.107,
+      "uncertainty": 1.799
+    },
+    {
+      "file": "all__NRGoldies_3_11_25__id_127_frame_1108.jpg",
+      "knn_sim": 0.752,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "regular_facing_up",
+      "pred_is_tail": false,
+      "pred_conf": 0.102,
+      "uncertainty": 1.798
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_111_frame_763.jpg",
+      "knn_sim": 0.701,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_down_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.186,
+      "uncertainty": 1.785
+    },
+    {
+      "file": "all__NRGoldies_5_11_25__id_111_frame_763.jpg",
+      "knn_sim": 0.701,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_down_right_facing_up",
+      "pred_is_tail": true,
+      "pred_conf": 0.186,
+      "uncertainty": 1.785
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_7_frame_17.jpg",
+      "knn_sim": 0.839,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "head_up_facing_right",
+      "pred_is_tail": true,
+      "pred_conf": 0.123,
+      "uncertainty": 1.782
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_43_frame_89.jpg",
+      "knn_sim": 0.806,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "regular_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.118,
+      "uncertainty": 1.78
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_669_frame_1842.jpg",
+      "knn_sim": 0.686,
+      "knn_nearest_tail": "upside_down_facing_left",
+      "predicted": "diag_down_right_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.16,
+      "uncertainty": 1.778
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_897_frame_2668.jpg",
+      "knn_sim": 0.703,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "diag_down_right_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.135,
+      "uncertainty": 1.774
+    },
+    {
+      "file": "RGoldies_23_10_25__id_897_frame_2668.jpg",
+      "knn_sim": 0.703,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "diag_down_right_facing_right",
+      "pred_is_tail": false,
+      "pred_conf": 0.135,
+      "uncertainty": 1.774
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_648_frame_1872.jpg",
+      "knn_sim": 0.755,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_up_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.098,
+      "uncertainty": 1.772
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_651_frame_2138.jpg",
+      "knn_sim": 0.721,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_down_right_facing_down",
+      "pred_is_tail": false,
+      "pred_conf": 0.175,
+      "uncertainty": 1.772
+    },
+    {
+      "file": "RGoldies_23_10_25__id_1006_frame_3001.jpg",
+      "knn_sim": 0.574,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_down_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.16,
+      "uncertainty": 1.771
+    },
+    {
+      "file": "all__RGoldies_23_10_25__id_1006_frame_3001.jpg",
+      "knn_sim": 0.574,
+      "knn_nearest_tail": "head_up_facing_right",
+      "predicted": "head_down_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.16,
+      "uncertainty": 1.771
+    },
+    {
+      "file": "NRGoldies_3_11_25__id_41_frame_282.jpg",
+      "knn_sim": 0.851,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_up_left_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.201,
+      "uncertainty": 1.765
+    },
+    {
+      "file": "RGoldies_23_10_25__id_402_frame_972.jpg",
+      "knn_sim": 0.734,
+      "knn_nearest_tail": "diag_down_left_facing_down",
+      "predicted": "head_down_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.116,
+      "uncertainty": 1.764
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_7_frame_28.jpg",
+      "knn_sim": 0.777,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "head_up_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.148,
+      "uncertainty": 1.762
+    },
+    {
+      "file": "NRGoldies_5_11_25__id_111_frame_762.jpg",
+      "knn_sim": 0.704,
+      "knn_nearest_tail": "diag_up_left_facing_up",
+      "predicted": "diag_down_right_facing_left",
+      "pred_is_tail": false,
+      "pred_conf": 0.181,
+      "uncertainty": 1.759
+    }
+  ]
+}

@@ -15,6 +15,7 @@ classifier/
     yolo_cls.py    yolo11{n,s}-cls fine-tuning backend
 configs/<name>.yaml   one file per parameter set
 results/<name>_<ts>/  one folder per run (weights, config copy, test report)
+                      completed runs are moved to archive/classifier_experiments/
 ```
 
 ## Lifecycle of a run
@@ -24,14 +25,13 @@ results/<name>_<ts>/  one folder per run (weights, config copy, test report)
 python -m classifier.train --config configs/yolo_n_default.yaml
 
 # 2. Test on the held-out split. Writes test_report.json + optional errors/.
-python -m classifier.test --run results/yolo_n_default_20260618_120000 --save-errors
+python -m classifier.test --run results/roll_cls_angular_<ts> --save-errors
 
 # 3. Score a video. Writes <crops_dir>.xlsx.
 python -m classifier.infer \
-    --run results/yolo_n_default_20260618_120000 \
+    --run results/roll_cls_angular_<ts> \
     --crops-dir "crops/RGoldies_23_10_25"
 
-# 4. Append one row to results/INDEX.md (by hand) with the headline numbers.
 ```
 
 ## Adding a new config
@@ -45,5 +45,3 @@ field becomes the run folder prefix — make it descriptive.
 2. Register the class in `classifier.models.__init__.MODEL_REGISTRY` under a
    string key.
 3. Reference that key in a config's `model_type` field.
-
-Coming soon: `logreg_pixels` (Phase 4 baseline).

@@ -1,0 +1,6 @@
+{
+  "name": "multihead_reg",
+  "model_type": "multihead",
+  "timestamp": "20260619_171417",
+  "weights": "weights/best.pt"
+}

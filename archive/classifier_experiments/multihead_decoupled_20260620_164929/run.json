@@ -1,0 +1,6 @@
+{
+  "name": "multihead_decoupled",
+  "model_type": "multihead",
+  "timestamp": "20260620_164929",
+  "weights": "weights/best.pt"
+}

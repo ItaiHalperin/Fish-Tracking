@@ -1,0 +1,6 @@
+{
+  "name": "roll_cls",
+  "model_type": "roll_cls",
+  "timestamp": "20260620_190833",
+  "weights": "weights/best.pt"
+}

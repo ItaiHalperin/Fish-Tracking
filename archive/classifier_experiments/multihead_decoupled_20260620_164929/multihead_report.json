@@ -1,0 +1,520 @@
+{
+  "best_epoch": 49,
+  "best_composite_macro_f1": 0.8115535765896432,
+  "n_train": 1371,
+  "n_val": 452,
+  "two_stage": true,
+  "poses": [
+    "diag_down_left",
+    "diag_down_right",
+    "diag_up_left",
+    "diag_up_right",
+    "head_down",
+    "head_up",
+    "regular",
+    "upside_down"
+  ],
+  "facings": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "history": [
+    {
+      "epoch": 0,
+      "phase": "stage1-repr",
+      "train_loss": 2.147873777355442,
+      "pose_acc": 0.6969026548672567,
+      "facing_acc": 0.6991150442477876,
+      "composite_acc": 0.6084070796460177,
+      "composite_macro_f1": 0.5711104364686193
+    },
+    {
+      "epoch": 1,
+      "phase": "stage1-repr",
+      "train_loss": 1.4308676342299869,
+      "pose_acc": 0.8207964601769911,
+      "facing_acc": 0.7853982300884956,
+      "composite_acc": 0.7146017699115044,
+      "composite_macro_f1": 0.7226803034618167
+    },
+    {
+      "epoch": 2,
+      "phase": "stage1-repr",
+      "train_loss": 1.2034267041911009,
+      "pose_acc": 0.834070796460177,
+      "facing_acc": 0.7721238938053098,
+      "composite_acc": 0.7345132743362832,
+      "composite_macro_f1": 0.7561023672665171
+    },
+    {
+      "epoch": 3,
+      "phase": "stage1-repr",
+      "train_loss": 1.0065549265112346,
+      "pose_acc": 0.8805309734513275,
+      "facing_acc": 0.8495575221238938,
+      "composite_acc": 0.8119469026548672,
+      "composite_macro_f1": 0.8447531753120948
+    },
+    {
+      "epoch": 4,
+      "phase": "stage1-repr",
+      "train_loss": 1.1247846375061246,
+      "pose_acc": 0.8871681415929203,
+      "facing_acc": 0.8628318584070797,
+      "composite_acc": 0.8362831858407079,
+      "composite_macro_f1": 0.8567268700333607
+    },
+    {
+      "epoch": 5,
+      "phase": "stage1-repr",
+      "train_loss": 1.2962722185317137,
+      "pose_acc": 0.8783185840707964,
+      "facing_acc": 0.8584070796460177,
+      "composite_acc": 0.8362831858407079,
+      "composite_macro_f1": 0.8313119306647131
+    },
+    {
+      "epoch": 6,
+      "phase": "stage1-repr",
+      "train_loss": 1.0338771236281947,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.8473451327433629,
+      "composite_acc": 0.8163716814159292,
+      "composite_macro_f1": 0.8022866294228895
+    },
+    {
+      "epoch": 7,
+      "phase": "stage1-repr",
+      "train_loss": 1.069119726368148,
+      "pose_acc": 0.8495575221238938,
+      "facing_acc": 0.831858407079646,
+      "composite_acc": 0.8008849557522124,
+      "composite_macro_f1": 0.7796109394656643
+    },
+    {
+      "epoch": 8,
+      "phase": "stage1-repr",
+      "train_loss": 1.0213926436690672,
+      "pose_acc": 0.8230088495575221,
+      "facing_acc": 0.7942477876106194,
+      "composite_acc": 0.7588495575221239,
+      "composite_macro_f1": 0.7584856762424679
+    },
+    {
+      "epoch": 9,
+      "phase": "stage1-repr",
+      "train_loss": 0.8353464088676447,
+      "pose_acc": 0.8185840707964602,
+      "facing_acc": 0.8207964601769911,
+      "composite_acc": 0.7676991150442478,
+      "composite_macro_f1": 0.7657155141679538
+    },
+    {
+      "epoch": 10,
+      "phase": "stage1-repr",
+      "train_loss": 0.7662463125566946,
+      "pose_acc": 0.8761061946902655,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8207964601769911,
+      "composite_macro_f1": 0.825679080972899
+    },
+    {
+      "epoch": 11,
+      "phase": "stage1-repr",
+      "train_loss": 1.2382900653574085,
+      "pose_acc": 0.8561946902654868,
+      "facing_acc": 0.8517699115044248,
+      "composite_acc": 0.8163716814159292,
+      "composite_macro_f1": 0.8123585300468388
+    },
+    {
+      "epoch": 12,
+      "phase": "stage1-repr",
+      "train_loss": 1.1489715933973645,
+      "pose_acc": 0.8694690265486725,
+      "facing_acc": 0.8495575221238938,
+      "composite_acc": 0.8163716814159292,
+      "composite_macro_f1": 0.815424222961815
+    },
+    {
+      "epoch": 13,
+      "phase": "stage1-repr",
+      "train_loss": 0.8788030399274513,
+      "pose_acc": 0.8915929203539823,
+      "facing_acc": 0.8694690265486725,
+      "composite_acc": 0.8517699115044248,
+      "composite_macro_f1": 0.8484013316070483
+    },
+    {
+      "epoch": 14,
+      "phase": "stage1-repr",
+      "train_loss": 1.019190911086783,
+      "pose_acc": 0.8584070796460177,
+      "facing_acc": 0.8429203539823009,
+      "composite_acc": 0.8097345132743363,
+      "composite_macro_f1": 0.8176644625560858
+    },
+    {
+      "epoch": 15,
+      "phase": "stage1-repr",
+      "train_loss": 0.8320525720291638,
+      "pose_acc": 0.8716814159292036,
+      "facing_acc": 0.8473451327433629,
+      "composite_acc": 0.834070796460177,
+      "composite_macro_f1": 0.8341167389117724
+    },
+    {
+      "epoch": 16,
+      "phase": "stage1-repr",
+      "train_loss": 0.9355298456573556,
+      "pose_acc": 0.8738938053097345,
+      "facing_acc": 0.8561946902654868,
+      "composite_acc": 0.834070796460177,
+      "composite_macro_f1": 0.8291501960366766
+    },
+    {
+      "epoch": 17,
+      "phase": "stage1-repr",
+      "train_loss": 0.9004653625293512,
+      "pose_acc": 0.8694690265486725,
+      "facing_acc": 0.8473451327433629,
+      "composite_acc": 0.8252212389380531,
+      "composite_macro_f1": 0.8175852920234733
+    },
+    {
+      "epoch": 18,
+      "phase": "stage1-repr",
+      "train_loss": 0.8937629030448168,
+      "pose_acc": 0.8495575221238938,
+      "facing_acc": 0.8252212389380531,
+      "composite_acc": 0.8008849557522124,
+      "composite_macro_f1": 0.8009363241166246
+    },
+    {
+      "epoch": 19,
+      "phase": "stage1-repr",
+      "train_loss": 0.645237396443351,
+      "pose_acc": 0.8849557522123894,
+      "facing_acc": 0.8650442477876106,
+      "composite_acc": 0.8451327433628318,
+      "composite_macro_f1": 0.8410049301671302
+    },
+    {
+      "epoch": 20,
+      "phase": "stage1-repr",
+      "train_loss": 0.8021659094603891,
+      "pose_acc": 0.8761061946902655,
+      "facing_acc": 0.8429203539823009,
+      "composite_acc": 0.827433628318584,
+      "composite_macro_f1": 0.8285453788760909
+    },
+    {
+      "epoch": 21,
+      "phase": "stage1-repr",
+      "train_loss": 0.5797691164574946,
+      "pose_acc": 0.8783185840707964,
+      "facing_acc": 0.8606194690265486,
+      "composite_acc": 0.8362831858407079,
+      "composite_macro_f1": 0.8189528051080083
+    },
+    {
+      "epoch": 22,
+      "phase": "stage1-repr",
+      "train_loss": 0.5317265352874146,
+      "pose_acc": 0.8694690265486725,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8252212389380531,
+      "composite_macro_f1": 0.8120588122164255
+    },
+    {
+      "epoch": 23,
+      "phase": "stage1-repr",
+      "train_loss": 0.5225552444711035,
+      "pose_acc": 0.8738938053097345,
+      "facing_acc": 0.8473451327433629,
+      "composite_acc": 0.834070796460177,
+      "composite_macro_f1": 0.8282919801519572
+    },
+    {
+      "epoch": 24,
+      "phase": "stage1-repr",
+      "train_loss": 0.5599052944294647,
+      "pose_acc": 0.8783185840707964,
+      "facing_acc": 0.8495575221238938,
+      "composite_acc": 0.8362831858407079,
+      "composite_macro_f1": 0.8406265508245305
+    },
+    {
+      "epoch": 25,
+      "phase": "stage1-repr",
+      "train_loss": 0.5144990267738819,
+      "pose_acc": 0.8716814159292036,
+      "facing_acc": 0.8495575221238938,
+      "composite_acc": 0.8296460176991151,
+      "composite_macro_f1": 0.8397914533293679
+    },
+    {
+      "epoch": 26,
+      "phase": "stage1-repr",
+      "train_loss": 0.5687520094895172,
+      "pose_acc": 0.8849557522123894,
+      "facing_acc": 0.8561946902654868,
+      "composite_acc": 0.8429203539823009,
+      "composite_macro_f1": 0.8417639113981601
+    },
+    {
+      "epoch": 27,
+      "phase": "stage1-repr",
+      "train_loss": 0.5175169297241974,
+      "pose_acc": 0.8827433628318584,
+      "facing_acc": 0.8539823008849557,
+      "composite_acc": 0.834070796460177,
+      "composite_macro_f1": 0.8370485135416154
+    },
+    {
+      "epoch": 28,
+      "phase": "stage1-repr",
+      "train_loss": 0.9039593198215066,
+      "pose_acc": 0.8761061946902655,
+      "facing_acc": 0.8561946902654868,
+      "composite_acc": 0.838495575221239,
+      "composite_macro_f1": 0.836052045043618
+    },
+    {
+      "epoch": 29,
+      "phase": "stage1-repr",
+      "train_loss": 0.7420185549384395,
+      "pose_acc": 0.8716814159292036,
+      "facing_acc": 0.8495575221238938,
+      "composite_acc": 0.8296460176991151,
+      "composite_macro_f1": 0.8390669323434273
+    },
+    {
+      "epoch": 30,
+      "phase": "stage1-repr",
+      "train_loss": 0.5289464844655678,
+      "pose_acc": 0.8650442477876106,
+      "facing_acc": 0.838495575221239,
+      "composite_acc": 0.8230088495575221,
+      "composite_macro_f1": 0.8201044177320167
+    },
+    {
+      "epoch": 31,
+      "phase": "stage1-repr",
+      "train_loss": 0.6065088613549782,
+      "pose_acc": 0.8738938053097345,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8252212389380531,
+      "composite_macro_f1": 0.8302988247619766
+    },
+    {
+      "epoch": 32,
+      "phase": "stage1-repr",
+      "train_loss": 0.6958610200147225,
+      "pose_acc": 0.8694690265486725,
+      "facing_acc": 0.8429203539823009,
+      "composite_acc": 0.8230088495575221,
+      "composite_macro_f1": 0.829613792547843
+    },
+    {
+      "epoch": 33,
+      "phase": "stage1-repr",
+      "train_loss": 0.5789354603539236,
+      "pose_acc": 0.8628318584070797,
+      "facing_acc": 0.8451327433628318,
+      "composite_acc": 0.8185840707964602,
+      "composite_macro_f1": 0.8258795935354997
+    },
+    {
+      "epoch": 34,
+      "phase": "stage1-repr",
+      "train_loss": 0.48032396027504487,
+      "pose_acc": 0.8694690265486725,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8230088495575221,
+      "composite_macro_f1": 0.8281313518022955
+    },
+    {
+      "epoch": 35,
+      "phase": "stage2-clf",
+      "train_loss": 2.1303467720986107,
+      "pose_acc": 0.8451327433628318,
+      "facing_acc": 0.8230088495575221,
+      "composite_acc": 0.7743362831858407,
+      "composite_macro_f1": 0.7678958570179059
+    },
+    {
+      "epoch": 36,
+      "phase": "stage2-clf",
+      "train_loss": 0.6283761870243704,
+      "pose_acc": 0.8584070796460177,
+      "facing_acc": 0.8473451327433629,
+      "composite_acc": 0.8053097345132744,
+      "composite_macro_f1": 0.809557176686768
+    },
+    {
+      "epoch": 37,
+      "phase": "stage2-clf",
+      "train_loss": 0.32767339225757913,
+      "pose_acc": 0.8584070796460177,
+      "facing_acc": 0.834070796460177,
+      "composite_acc": 0.8053097345132744,
+      "composite_macro_f1": 0.8070763831265184
+    },
+    {
+      "epoch": 38,
+      "phase": "stage2-clf",
+      "train_loss": 0.23074680484184637,
+      "pose_acc": 0.8584070796460177,
+      "facing_acc": 0.8429203539823009,
+      "composite_acc": 0.8053097345132744,
+      "composite_macro_f1": 0.8057123320957899
+    },
+    {
+      "epoch": 39,
+      "phase": "stage2-clf",
+      "train_loss": 0.18995892629842528,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.834070796460177,
+      "composite_acc": 0.8053097345132744,
+      "composite_macro_f1": 0.8074880168399944
+    },
+    {
+      "epoch": 40,
+      "phase": "stage2-clf",
+      "train_loss": 0.15315406483120506,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8097345132743363,
+      "composite_macro_f1": 0.8092701072795819
+    },
+    {
+      "epoch": 41,
+      "phase": "stage2-clf",
+      "train_loss": 0.13956111111969605,
+      "pose_acc": 0.8584070796460177,
+      "facing_acc": 0.831858407079646,
+      "composite_acc": 0.8053097345132744,
+      "composite_macro_f1": 0.8083236009368706
+    },
+    {
+      "epoch": 42,
+      "phase": "stage2-clf",
+      "train_loss": 0.12796275040513838,
+      "pose_acc": 0.8584070796460177,
+      "facing_acc": 0.8429203539823009,
+      "composite_acc": 0.8119469026548672,
+      "composite_macro_f1": 0.8095809181443876
+    },
+    {
+      "epoch": 43,
+      "phase": "stage2-clf",
+      "train_loss": 0.15179090089905792,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.8451327433628318,
+      "composite_acc": 0.8141592920353983,
+      "composite_macro_f1": 0.8103558544249615
+    },
+    {
+      "epoch": 44,
+      "phase": "stage2-clf",
+      "train_loss": 0.13154277013088994,
+      "pose_acc": 0.8628318584070797,
+      "facing_acc": 0.838495575221239,
+      "composite_acc": 0.8075221238938053,
+      "composite_macro_f1": 0.811142996920102
+    },
+    {
+      "epoch": 45,
+      "phase": "stage2-clf",
+      "train_loss": 0.11291983998893475,
+      "pose_acc": 0.8650442477876106,
+      "facing_acc": 0.8429203539823009,
+      "composite_acc": 0.8119469026548672,
+      "composite_macro_f1": 0.8111583002128583
+    },
+    {
+      "epoch": 46,
+      "phase": "stage2-clf",
+      "train_loss": 0.12872031363668796,
+      "pose_acc": 0.8628318584070797,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8075221238938053,
+      "composite_macro_f1": 0.8073334814276973
+    },
+    {
+      "epoch": 47,
+      "phase": "stage2-clf",
+      "train_loss": 0.11431012930855275,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.8362831858407079,
+      "composite_acc": 0.8097345132743363,
+      "composite_macro_f1": 0.8047583051261878
+    },
+    {
+      "epoch": 48,
+      "phase": "stage2-clf",
+      "train_loss": 0.12592004527583078,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.838495575221239,
+      "composite_acc": 0.8097345132743363,
+      "composite_macro_f1": 0.8085596213084913
+    },
+    {
+      "epoch": 49,
+      "phase": "stage2-clf",
+      "train_loss": 0.10368806087322952,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.8429203539823009,
+      "composite_acc": 0.8119469026548672,
+      "composite_macro_f1": 0.8115535765896432
+    },
+    {
+      "epoch": 50,
+      "phase": "stage2-clf",
+      "train_loss": 0.11701815419393591,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.838495575221239,
+      "composite_acc": 0.8097345132743363,
+      "composite_macro_f1": 0.8103472992258688
+    },
+    {
+      "epoch": 51,
+      "phase": "stage2-clf",
+      "train_loss": 0.10965051943807164,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8097345132743363,
+      "composite_macro_f1": 0.8109857057631517
+    },
+    {
+      "epoch": 52,
+      "phase": "stage2-clf",
+      "train_loss": 0.10182680561051675,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8097345132743363,
+      "composite_macro_f1": 0.8109857057631517
+    },
+    {
+      "epoch": 53,
+      "phase": "stage2-clf",
+      "train_loss": 0.11393022951877178,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8097345132743363,
+      "composite_macro_f1": 0.8109857057631517
+    },
+    {
+      "epoch": 54,
+      "phase": "stage2-clf",
+      "train_loss": 0.08326128739822876,
+      "pose_acc": 0.8606194690265486,
+      "facing_acc": 0.8407079646017699,
+      "composite_acc": 0.8097345132743363,
+      "composite_macro_f1": 0.8109857057631517
+    }
+  ]
+}

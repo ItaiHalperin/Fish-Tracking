@@ -2,20 +2,22 @@
 .venv/
 __pycache__/
 *.pyc
+.pytest_cache/
 
-# Data and model artifacts
+# Raw data and regenerable outputs — never part of the submission
 videos/
 dataset/
 dataset.yaml
 crops/
 labels/
 labels_*/
-results/*/
-!results/INDEX.md
-
-best/
 annotation_samples/
-runs/
-ml_storage/
+out/
+results/
+results_pipeline/
+results_comparison/
 *.zip
-*.pt
+
+# Upstream pretrained weights (re-downloaded by ultralytics on demand).
+# Our own trained weights ARE tracked — see archive/README.md.
+/*.pt
