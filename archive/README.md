@@ -26,7 +26,6 @@ baselines). Grouped by approach, best of each first:
 | `ablation_aug_{on,off}_20260627_*` | augmentation ablation pair |
 | `yolo_n_default_20260627_140856` | YOLO11n-cls baseline, direction-safe augmentation |
 | `yolo_n_default_20260624_151209` | YOLO11n-cls baseline, ultralytics defaults |
-| `yolo_n_default_20260624_1{32344,50904}` | earlier YOLO attempts; config only, no checkpoint |
 
 `baselines.json` holds the majority-class and logistic-regression-on-pixels floors
 for both label spaces, from `python -m classifier.baselines`.
