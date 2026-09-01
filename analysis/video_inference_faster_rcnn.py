@@ -17,6 +17,9 @@ import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.transforms import functional as F
 
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from core.device import get_device
+
 def get_model(num_classes):
     model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=None)
     in_features = model.roi_heads.box_predictor.cls_score.in_features
@@ -32,7 +35,7 @@ def main():
     parser.add_argument("--num-classes", type=int, default=3, help="Number of classes including background (default: 3)")
     args = parser.parse_args()
 
-    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu')
+    device = torch.device(get_device())
     print(f"Using device: {device}")
 
     print(f"Loading model from {args.weights}...")

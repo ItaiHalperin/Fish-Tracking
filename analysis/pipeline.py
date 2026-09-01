@@ -39,7 +39,7 @@ from ultralytics import YOLO
 
 from core.image_utils import crop_with_padding
 from core.ml_storage import MLStorage
-from classifier import load_classifier
+from core.device import get_device
 
 # ---------------------------------------------------------------------------
 # Defaults
@@ -126,7 +126,7 @@ class FishPipeline:
     reject_class:
         Class name excluded from scored percentages (default ``"unclear"``).
     device:
-        Torch device string (default ``"mps"``).
+        Torch device string (default dynamic, cuda/mps/cpu).
     tracker:
         ByteTrack or BoTSORT config file (default ``"bytetrack.yaml"``).
     """
@@ -140,7 +140,7 @@ class FishPipeline:
         padding:       float = 0.10,
         smooth_window: int   = 5,
         reject_class:  str   = "unclear",
-        device:        str   = "mps",
+        device:        str | None = None,
         tracker:       str   = "bytetrack.yaml",
     ):
         self.storage               = storage
@@ -150,12 +150,12 @@ class FishPipeline:
         self.padding       = padding
         self.smooth_window = smooth_window
         self.reject_class  = reject_class
-        self.device        = device
+        self.device        = device or get_device()
         self.tracker       = tracker
 
         # Lazy-loaded; reused across multiple .run() calls
         self._detector:   YOLO | None = None
-        self._classifier = None  # a classifier.Classifier, resolved from storage
+        self._classifier: YOLO | None = None
 
     # ------------------------------------------------------------------
     # Weight resolution
@@ -168,37 +168,29 @@ class FishPipeline:
             self._detector = YOLO(weights)
         return self._detector
 
-    def _get_classifier(self):
+    def _get_classifier(self) -> YOLO:
         if self._classifier is None:
             weights = self.storage.classifier_models.get_weights(self.classifier_model_name)
             print(f"[Pipeline] Loading classifier from {weights}")
-            # Resolves to our Classifier (multihead / roll_cls / angle_reg) via the
-            # run's config.yaml, or a YOLO adapter for legacy weights.
-            self._classifier = load_classifier(weights, device=self.device)
+            self._classifier = YOLO(weights)
         return self._classifier
 
     # ------------------------------------------------------------------
-    # Steps 1+2: Track and extract crops (streamed)
+    # Step 1: Track
     # ------------------------------------------------------------------
 
-    def _track_and_extract(
+    def _track(
         self,
         video_path: Path,
-        crops_dir: Path,
         track_output_dir: Path | None,
         start: int,
         duration: int | None,
-    ) -> None:
-        """Track in stream mode and save each frame's crops as it arrives.
-
-        Crops are written per frame so only one Result is ever held in memory —
-        materialising every frame (``list(model.track(...))``) OOM-kills on long
-        videos because each Result keeps its full image.
-        """
+    ) -> list:
+        """Run YOLO tracking in stream mode; return list of Result objects."""
         target_video, temp_file = _prepare_video(video_path, start, duration)
         try:
             model = self._get_detector()
-            print(f"[Pipeline] Tracking {target_video.name} (streaming → {crops_dir}) …")
+            print(f"[Pipeline] Tracking {target_video.name} …")
 
             kwargs = dict(
                 source=str(target_video),
@@ -212,29 +204,40 @@ class FishPipeline:
                 kwargs["project"] = str(track_output_dir.parent)
                 kwargs["name"]    = track_output_dir.name
 
-            saved = 0
-            for frame_idx, r in enumerate(model.track(**kwargs), start=1):
-                if r.boxes is None or r.boxes.id is None:
-                    continue
-
-                img   = r.orig_img
-                boxes = r.boxes.xyxy.cpu().numpy()
-                ids   = r.boxes.id.cpu().numpy().astype(int)
-
-                for box, obj_id in zip(boxes, ids):
-                    crop = crop_with_padding(img, box, padding=self.padding)
-                    if crop.size == 0:
-                        continue
-                    fish_dir = crops_dir / f"id_{obj_id}"
-                    fish_dir.mkdir(parents=True, exist_ok=True)
-                    cv2.imwrite(str(fish_dir / f"frame_{frame_idx}.jpg"), crop)
-                    saved += 1
-
-                if frame_idx % 1000 == 0:
-                    print(f"  frame {frame_idx}: {saved} crops saved so far")
+            results = list(model.track(**kwargs))
         finally:
             if temp_file and temp_file.exists():
                 temp_file.unlink()
+
+        return results
+
+    # ------------------------------------------------------------------
+    # Step 2: Extract crops
+    # ------------------------------------------------------------------
+
+    def _extract_crops(self, results: list, crops_dir: Path) -> None:
+        """Save padded bounding-box crops from tracking results."""
+        print(f"[Pipeline] Extracting crops → {crops_dir}")
+        saved = 0
+        for frame_idx, r in enumerate(results, start=1):
+            if r.boxes is None or r.boxes.id is None:
+                continue
+
+            img    = r.orig_img
+            h_img, w_img = img.shape[:2]
+            boxes  = r.boxes.xyxy.cpu().numpy()
+            ids    = r.boxes.id.cpu().numpy().astype(int)
+
+            for box, obj_id in zip(boxes, ids):
+                crop = crop_with_padding(img, box, padding=self.padding)
+                
+                if crop.size == 0:
+                    continue
+
+                fish_dir = crops_dir / f"id_{obj_id}"
+                fish_dir.mkdir(parents=True, exist_ok=True)
+                cv2.imwrite(str(fish_dir / f"frame_{frame_idx}.jpg"), crop)
+                saved += 1
 
         print(f"[Pipeline] Saved {saved} crops.")
 
@@ -254,7 +257,7 @@ class FishPipeline:
             raise RuntimeError(f"No id_* subfolders found in {crops_dir}")
 
         model      = self._get_classifier()
-        class_names     = model.class_names
+        class_names     = list(model.names.values())
         reported_classes = [c for c in class_names if c != self.reject_class]
 
         print(f"[Pipeline] Classifying {len(fish_dirs)} fish IDs …")
@@ -268,8 +271,12 @@ class FishPipeline:
             if not crops:
                 continue
 
-            preds = model.predict([str(c) for c in crops])
-            raw_labels = [label for label, _conf in preds]
+            preds = model.predict(
+                source=[str(c) for c in crops],
+                device=self.device,
+                verbose=False,
+            )
+            raw_labels = [model.names[int(r.probs.top1)] for r in preds]
             smoothed   = _smooth(raw_labels, self.smooth_window)
 
             # Trace: one row per frame
@@ -380,8 +387,11 @@ class FishPipeline:
 
         print(f"\n[Pipeline] ── {video_path.name} ──────────────────────────")
 
-        # 1+2. Track and extract crops (streamed, memory-flat)
-        self._track_and_extract(video_path, crops_dir, track_output_dir, start, duration)
+        # 1. Track
+        results = self._track(video_path, track_output_dir, start, duration)
+
+        # 2. Extract crops
+        self._extract_crops(results, crops_dir)
 
         # 3+4. Classify and summarise
         traces_df, summary_df = self._classify_and_summarise(crops_dir)
@@ -419,8 +429,8 @@ if __name__ == "__main__":
                         help="Detection confidence threshold (default: 0.4).")
     parser.add_argument("--smooth-window", type=int, default=5,
                         help="Temporal smoothing window (default: 5).")
-    parser.add_argument("--device", type=str, default="mps",
-                        help="Torch device (default: mps).")
+    parser.add_argument("--device", type=str, default=get_device(),
+                        help="Torch device (default: dynamic, cuda/mps/cpu).")
 
     args = parser.parse_args()
 

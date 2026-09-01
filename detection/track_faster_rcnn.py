@@ -19,6 +19,9 @@ import torch
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from core.device import get_device
+
 try:
     import supervision as sv
 except ImportError:
@@ -133,7 +136,7 @@ def main():
     num_classes = 2
     class_names = data_config["names"] # {0: 'name', 1: 'name'}
     
-    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('mps') if torch.backends.mps.is_available() else torch.device('cpu')
+    device = torch.device(get_device())
     print(f"Using device: {device}")
 
     # Load Model

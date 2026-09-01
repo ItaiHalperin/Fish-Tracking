@@ -18,6 +18,7 @@ import tempfile
 from pathlib import Path
 from ultralytics import YOLO
 from core.ml_storage import MLStorage
+from core.device import get_device
 
 DEFAULT_MODEL_NAME = "goldfish_yolo"
 
@@ -126,7 +127,7 @@ def main():
         tracker=args.tracker,
         save=True,       
         conf=args.conf,  
-        device="mps",
+        device=get_device(),
         project=str(output_path.parent),
         name=output_path.name,
     )

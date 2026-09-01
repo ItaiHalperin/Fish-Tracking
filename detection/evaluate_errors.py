@@ -9,6 +9,9 @@ it exports the image with the Ground Truth drawn in GREEN and the Prediction in 
 
 import cv2
 from pathlib import Path
+import sys
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from core.device import get_device
 from ultralytics import YOLO
 
 def read_yolo_labels(label_path, img_width, img_height):
@@ -68,7 +71,7 @@ def main():
     for img_path in test_images_dir.glob("*.jpg"):
         
         # 1. Run YOLO Prediction
-        results = model.predict(source=str(img_path), conf=0.25, verbose=False, device="mps")
+        results = model.predict(source=str(img_path), conf=0.25, verbose=False, device=get_device())
         result = results[0]
         
         # 2. Load the actual image for drawing
