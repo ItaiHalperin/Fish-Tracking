@@ -26,17 +26,19 @@ baselines). Grouped by approach, best of each first:
 | `ablation_aug_{on,off}_20260627_*` | augmentation ablation pair |
 | `yolo_n_default_20260627_140856` | YOLO11n-cls baseline, direction-safe augmentation |
 | `yolo_n_default_20260624_151209` | YOLO11n-cls baseline, ultralytics defaults |
-| `yolo_n_default_20260624_1{32344,50904}` | earlier YOLO attempts; config only, weights not kept |
+| `yolo_n_default_20260624_1{32344,50904}` | earlier YOLO attempts; config only, no checkpoint |
 
 `baselines.json` holds the majority-class and logistic-regression-on-pixels floors
 for both label spaces, from `python -m classifier.baselines`.
 
 ## detector_experiments/
 
-Two YOLO11n detector trainings. `fish_tracking_model-2` is the one that matters
-(200 epochs requested, early-stopped at 192); `fish_tracking_model` is a 10-epoch
-run kept as an underfitting reference. The chosen detector is registered in
-`ml_storage/`. `detector_error_analysis/` holds its false-positive and
+Two YOLO11**n** detector trainings — a separate, weaker lineage from the served
+YOLO11s detector, not its ancestors. `fish_tracking_model-2` is the better of the
+two (200 epochs requested, early-stopped at 192; mAP@50 0.881, mAP@50-95 0.556);
+`fish_tracking_model` is a 10-epoch run kept as an underfitting reference
+(mAP@50 0.101). The served detector reaches mAP@50 0.953 — see
+[`ml_storage/README.md`](../ml_storage/README.md). `detector_error_analysis/` holds its false-positive and
 false-negative crops from `detection/evaluate_errors.py`.
 
 ## legacy_6class_classifier/
