@@ -41,19 +41,11 @@ from core.image_utils import crop_with_padding
 from core.ml_storage import MLStorage
 from core.device import get_device
 
-# ---------------------------------------------------------------------------
-# Defaults
-# ---------------------------------------------------------------------------
-
 DEFAULT_DETECTION_MODEL  = "goldfish_yolo"
 DEFAULT_CLASSIFIER_MODEL = "fish_position_classifier"
 _SUPPORTED_EXTS = {".mov", ".gif", ".m4v", ".mpeg", ".mpg", ".asf", ".ts",
                    ".avi", ".wmv", ".mp4", ".mkv", ".webm"}
 
-
-# ---------------------------------------------------------------------------
-# Small helpers (re-implemented here so the pipeline is self-contained)
-# ---------------------------------------------------------------------------
 
 def _smooth(labels: list[str], window: int) -> list[str]:
     """Majority-vote temporal smoothing over a sliding window."""
@@ -98,10 +90,6 @@ def _prepare_video(video_path: Path, start: int = 0, duration: int | None = None
     subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     return temp_file, temp_file
 
-
-# ---------------------------------------------------------------------------
-# Main class
-# ---------------------------------------------------------------------------
 
 class FishPipeline:
     """Run detection → crop extraction → classification on one video.
@@ -157,10 +145,6 @@ class FishPipeline:
         self._detector:   YOLO | None = None
         self._classifier: YOLO | None = None
 
-    # ------------------------------------------------------------------
-    # Weight resolution
-    # ------------------------------------------------------------------
-
     def _get_detector(self) -> YOLO:
         if self._detector is None:
             weights = self.storage.detection_models.get_weights(self.detection_model_name)
@@ -174,10 +158,6 @@ class FishPipeline:
             print(f"[Pipeline] Loading classifier from {weights}")
             self._classifier = YOLO(weights)
         return self._classifier
-
-    # ------------------------------------------------------------------
-    # Step 1: Track
-    # ------------------------------------------------------------------
 
     def _track(
         self,
@@ -211,10 +191,6 @@ class FishPipeline:
 
         return results
 
-    # ------------------------------------------------------------------
-    # Step 2: Extract crops
-    # ------------------------------------------------------------------
-
     def _extract_crops(self, results: list, crops_dir: Path) -> None:
         """Save padded bounding-box crops from tracking results."""
         print(f"[Pipeline] Extracting crops → {crops_dir}")
@@ -240,10 +216,6 @@ class FishPipeline:
                 saved += 1
 
         print(f"[Pipeline] Saved {saved} crops.")
-
-    # ------------------------------------------------------------------
-    # Step 3 + 4: Classify and build DataFrames
-    # ------------------------------------------------------------------
 
     def _classify_and_summarise(
         self, crops_dir: Path
@@ -279,7 +251,6 @@ class FishPipeline:
             raw_labels = [model.names[int(r.probs.top1)] for r in preds]
             smoothed   = _smooth(raw_labels, self.smooth_window)
 
-            # Trace: one row per frame
             for crop_path, raw, smo in zip(crops, raw_labels, smoothed):
                 trace_rows.append({
                     "fish_id":        fish_id,
@@ -288,7 +259,6 @@ class FishPipeline:
                     "smoothed_label": smo,
                 })
 
-            # Summary: per-fish counts → percentages
             counts = Counter(smoothed)
             scored = sum(counts.get(c, 0) for c in reported_classes)
             if scored == 0:
@@ -333,10 +303,6 @@ class FishPipeline:
             )
 
         return traces_df, summary_df
-
-    # ------------------------------------------------------------------
-    # Public entry point
-    # ------------------------------------------------------------------
 
     def run(
         self,
@@ -387,22 +353,15 @@ class FishPipeline:
 
         print(f"\n[Pipeline] ── {video_path.name} ──────────────────────────")
 
-        # 1. Track
         results = self._track(video_path, track_output_dir, start, duration)
 
-        # 2. Extract crops
         self._extract_crops(results, crops_dir)
 
-        # 3+4. Classify and summarise
         traces_df, summary_df = self._classify_and_summarise(crops_dir)
 
         print(f"[Pipeline] Done.  {len(summary_df) - 1} fish summarised.\n")
         return traces_df, summary_df
 
-
-# ---------------------------------------------------------------------------
-# CLI entry point
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     import argparse

@@ -15,7 +15,6 @@ MODEL_REGISTRY: dict[str, type[Classifier]] = {
     "multihead": MultiHeadClassifier,
     "angle_reg": AngleRegClassifier,
     "roll_cls": RollClassifier,
-    # "logreg_pixels": LogRegPixelsClassifier,  # Phase 4
 }
 
 

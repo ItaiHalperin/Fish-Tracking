@@ -189,7 +189,6 @@ def main():
         collate_fn=collate_fn
     )
 
-    # Initialize model
     print(f"Initializing Faster R-CNN with {num_classes} classes...")
     model = get_model(num_classes)
     model.to(device)
@@ -199,7 +198,6 @@ def main():
     optimizer = torch.optim.AdamW(params, lr=5e-5, weight_decay=1e-4)
     lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
 
-    # MLStorage integration
     storage = MLStorage(args.storage_root)
     project, run_name = storage.detection_models.prepare_run(args.model_name)
     run_dir = Path(project) / run_name
@@ -243,7 +241,6 @@ def main():
             scaler.update()
             
             epoch_loss += losses.item()
-            # Log individual loss components for the last batch each epoch
             if i == len(data_loader_train) - 1:
                 components = ", ".join(f"{k}: {v.item():.4f}" for k, v in loss_dict.items())
                 print(f"    Loss components: {components}")
@@ -253,7 +250,6 @@ def main():
         avg_loss = epoch_loss / len(data_loader_train)
         print(f"Epoch: {epoch+1}/{args.epochs}, Loss: {avg_loss:.4f}")
         
-        # --- Inline Evaluation Loop ---
         print("  Evaluating on validation set...")
         model.eval()
         map_metric = MeanAveragePrecision()
@@ -267,7 +263,6 @@ def main():
                 outputs = model(images_val)
                 
             for target_val, output in zip(targets_val, outputs):
-                # Ground truth
                 if len(target_val["boxes"]) > 0:
                     target_detections = sv.Detections(
                         xyxy=target_val["boxes"].numpy(),
@@ -302,10 +297,8 @@ def main():
         
         print(f"  val_mAP@50: {current_map50:.4f} | val_mAP@50-95: {map_res.map50_95:.4f} | val_Precision: {prec_res.precision_at_50:.4f} | val_Recall: {rec_res.recall_at_50:.4f}")
         
-        # Save last weights
         torch.save(model.state_dict(), weights_dir / "last.pt")
         
-        # Save best weights based on mAP@50
         if current_map50 > best_map50:
             best_map50 = current_map50
             print(f"  --> New best model! Saving best.pt (mAP@50: {best_map50:.4f})")
@@ -313,7 +306,6 @@ def main():
 
     print("Training completed successfully!")
 
-    # Finalize the run with metadata
     storage.detection_models.finalize_run(
         model_name=args.model_name,
         run_dir=run_dir,

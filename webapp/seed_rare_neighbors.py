@@ -62,7 +62,6 @@ def main():
     if not raw.is_dir() or not source.is_dir():
         raise SystemExit("Missing --raw or --source dir")
 
-    # Identify rare classes
     rare_classes = []
     for cls_dir in sorted(p for p in raw.iterdir() if p.is_dir()):
         if cls_dir.name in args.skip_class:

@@ -1,5 +1,5 @@
 """
-Orientation as regression (Option 3): one backbone, two angle heads.
+Orientation as regression: one backbone, two angle heads.
 
 Instead of classifying a composite label, the model regresses two continuous
 angles — heading (in-plane head direction) and roll (rotation about the body

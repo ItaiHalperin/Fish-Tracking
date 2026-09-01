@@ -1,5 +1,5 @@
 """
-Angle math for the orientation-regression model (Option 3).
+Angle math for the orientation-regression model.
 
 Orientation is predicted as continuous angles. To handle the 360° wrap-around
 (359° and 1° are 2° apart, not 358°), each angle is encoded as a (cos, sin)

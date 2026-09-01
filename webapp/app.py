@@ -275,14 +275,12 @@ def api_finalize():
         keep = files[:cap]
         discard = files[cap:]
 
-        # Parked overflow
         if discard:
             d = DISCARDED / cls
             d.mkdir(parents=True, exist_ok=True)
             for f in discard:
                 shutil.copy2(f, d / f.name)
 
-        # Train/val/test split
         n = len(keep)
         n_val = int(round(n * val_ratio)) if n >= 2 else 0
         n_test = int(round(n * test_ratio)) if n >= 2 else 0

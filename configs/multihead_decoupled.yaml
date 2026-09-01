@@ -1,7 +1,7 @@
 name: multihead_decoupled
 model_type: multihead
 
-# Option 2: decoupled two-stage training (cRT).
+# Decoupled two-stage training (cRT).
 #   Stage 1 (epochs)         — learn the representation on the NATURAL class
 #                              distribution with plain CE + full backbone.
 #   Stage 2 (decouple_epochs) — freeze backbone, reinit heads, retrain heads only
