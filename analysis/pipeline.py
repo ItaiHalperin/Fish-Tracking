@@ -32,6 +32,7 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 import subprocess
 import tempfile
 from collections import Counter
+from collections.abc import Iterable, Iterator
 
 import cv2
 import pandas as pd
@@ -40,6 +41,7 @@ from ultralytics import YOLO
 from core.image_utils import crop_with_padding
 from core.ml_storage import MLStorage
 from core.device import get_device
+from classifier import load_classifier
 
 DEFAULT_DETECTION_MODEL  = "goldfish_yolo"
 DEFAULT_CLASSIFIER_MODEL = "fish_position_classifier"
@@ -143,7 +145,7 @@ class FishPipeline:
 
         # Lazy-loaded; reused across multiple .run() calls
         self._detector:   YOLO | None = None
-        self._classifier: YOLO | None = None
+        self._classifier = None
 
     def _get_detector(self) -> YOLO:
         if self._detector is None:
@@ -152,11 +154,13 @@ class FishPipeline:
             self._detector = YOLO(weights)
         return self._detector
 
-    def _get_classifier(self) -> YOLO:
+    def _get_classifier(self):
         if self._classifier is None:
             weights = self.storage.classifier_models.get_weights(self.classifier_model_name)
             print(f"[Pipeline] Loading classifier from {weights}")
-            self._classifier = YOLO(weights)
+            # Resolves roll_cls / multihead / angle_reg from the run's config.yaml;
+            # a raw YOLO() cannot load these checkpoints.
+            self._classifier = load_classifier(weights, device=self.device)
         return self._classifier
 
     def _track(
@@ -165,8 +169,12 @@ class FishPipeline:
         track_output_dir: Path | None,
         start: int,
         duration: int | None,
-    ) -> list:
-        """Run YOLO tracking in stream mode; return list of Result objects."""
+    ) -> Iterator:
+        """Yield tracking Results one at a time.
+
+        A generator, not a list: every Result keeps its full frame, so
+        materialising a long video exhausts memory.
+        """
         target_video, temp_file = _prepare_video(video_path, start, duration)
         try:
             model = self._get_detector()
@@ -184,14 +192,12 @@ class FishPipeline:
                 kwargs["project"] = str(track_output_dir.parent)
                 kwargs["name"]    = track_output_dir.name
 
-            results = list(model.track(**kwargs))
+            yield from model.track(**kwargs)
         finally:
             if temp_file and temp_file.exists():
                 temp_file.unlink()
 
-        return results
-
-    def _extract_crops(self, results: list, crops_dir: Path) -> None:
+    def _extract_crops(self, results: Iterable, crops_dir: Path) -> None:
         """Save padded bounding-box crops from tracking results."""
         print(f"[Pipeline] Extracting crops → {crops_dir}")
         saved = 0
@@ -229,7 +235,7 @@ class FishPipeline:
             raise RuntimeError(f"No id_* subfolders found in {crops_dir}")
 
         model      = self._get_classifier()
-        class_names     = list(model.names.values())
+        class_names     = model.class_names
         reported_classes = [c for c in class_names if c != self.reject_class]
 
         print(f"[Pipeline] Classifying {len(fish_dirs)} fish IDs …")
@@ -243,12 +249,8 @@ class FishPipeline:
             if not crops:
                 continue
 
-            preds = model.predict(
-                source=[str(c) for c in crops],
-                device=self.device,
-                verbose=False,
-            )
-            raw_labels = [model.names[int(r.probs.top1)] for r in preds]
+            preds = model.predict([str(c) for c in crops])
+            raw_labels = [label for label, _conf in preds]
             smoothed   = _smooth(raw_labels, self.smooth_window)
 
             for crop_path, raw, smo in zip(crops, raw_labels, smoothed):
