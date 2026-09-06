@@ -7,6 +7,8 @@ three webapps. The models it serves are described in
 [ml_storage/README.md](ml_storage/README.md); superseded models are in
 [archive/README.md](archive/README.md).
 
+A sample video of the aquarium can be found in the following link: https://drive.google.com/file/d/1McPh04mV62h5c5SnCH8ucwG3Kr8fTaHk/view?usp=sharing
+
 ## Setup
 
 - Install Python deps: `pip install -r requirements.txt` (pinned to the working
