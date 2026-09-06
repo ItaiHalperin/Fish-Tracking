@@ -3,7 +3,7 @@
 Faster R-CNN Training Script for FishTracking.
 
 This script utilizes the same labeled data (YOLO format) and MLStorage 
-as the YOLOv11 training script, serving as a baseline comparison.
+as the YOLO training script, serving as a baseline comparison.
 """
 
 import sys

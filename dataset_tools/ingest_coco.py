@@ -5,7 +5,7 @@ COCO to YOLO Dataset Ingestion.
 This module provides a CocoIngestor class that reads a ZIP file containing a
 COCO dataset (with pre-existing 'train', 'valid', and 'test' folders), unzips
 it, extracts the images, converts the bounding boxes to YOLO format, and sets
-up the dataset directory structure and dataset.yaml for YOLOv11 training while
+up the dataset directory structure and dataset.yaml for YOLO training while
 preserving the original splits.
 
 Can be used as a standalone script (python ingest_coco.py ...) or imported as
@@ -14,6 +14,7 @@ a class in other modules. Optionally outputs into versioned MLStorage.
 
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import argparse
@@ -32,16 +33,20 @@ class CocoIngestor:
     """Ingests a COCO-format ZIP dataset and converts it to YOLO format."""
 
     def __init__(
-        self,
-        zip_file: str,
-        output_dir: str = "dataset",
-        storage: MLStorage | None = None,
-        version_description: str | None = None,
+            self,
+            zip_file: str,
+            output_dir: str = "dataset",
+            storage: MLStorage | None = None,
+            version_description: str | None = None,
     ):
         self.zip_path = Path(zip_file)
         self.output_dir = Path(output_dir)
         self.storage = storage
         self.version_description = version_description
+
+    # ------------------------------------------------------------------
+    # Output directory resolution
+    # ------------------------------------------------------------------
 
     def _resolve_output_dir(self) -> Path:
         """Determine the output directory, optionally creating a versioned dataset."""
@@ -51,13 +56,17 @@ class CocoIngestor:
             return version_dir
         return self.output_dir
 
+    # ------------------------------------------------------------------
+    # COCO → YOLO conversion
+    # ------------------------------------------------------------------
+
     @staticmethod
     def _convert_split(
-        split_dir: Path,
-        images_dir: Path,
-        labels_dir: Path,
-        yolo_split: str,
-        all_categories: dict,
+            split_dir: Path,
+            images_dir: Path,
+            labels_dir: Path,
+            yolo_split: str,
+            all_categories: dict,
     ) -> int:
         """Convert a single COCO split folder into YOLO images + labels.
 
@@ -65,15 +74,24 @@ class CocoIngestor:
         """
         json_file = split_dir / "_annotations.coco.json"
         if not json_file.exists():
-            print(f"Warning: Annotation file '_annotations.coco.json' not found inside '{split_dir}'. Skipping.")
+            print(
+                f"Warning: Annotation file '_annotations.coco.json' not found inside '{split_dir}'. Skipping.")
             return 0
 
         with open(json_file, 'r') as f:
             coco_data = json.load(f)
 
-        # Extract categories. Roboflow exports consistent categories across all splits.
-        for idx, cat in enumerate(coco_data.get("categories", [])):
-            all_categories[cat["id"]] = (idx, cat["name"])
+        # Extract categories. Roboflow often exports a dummy class for the dataset name (id=0, supercategory="none")
+        for cat in coco_data.get("categories", []):
+            cat_id = cat.get("id")
+            # Skip dummy class if it has no annotations
+            if cat_id == 0 and cat.get("supercategory") == "none":
+                if not any(ann.get("category_id") == cat_id for ann in
+                           coco_data.get("annotations", [])):
+                    continue
+
+            if cat_id not in all_categories:
+                all_categories[cat_id] = (len(all_categories), cat.get("name"))
 
         # Group annotations by image_id
         annotations_by_img = {}
@@ -126,10 +144,15 @@ class CocoIngestor:
                     norm_w = max(0.0, min(1.0, norm_w))
                     norm_h = max(0.0, min(1.0, norm_h))
 
-                    lf.write(f"{yolo_class_id} {x_center:.6f} {y_center:.6f} {norm_w:.6f} {norm_h:.6f}\n")
+                    lf.write(
+                        f"{yolo_class_id} {x_center:.6f} {y_center:.6f} {norm_w:.6f} {norm_h:.6f}\n")
             count += 1
 
         return count
+
+    # ------------------------------------------------------------------
+    # Main workflow
+    # ------------------------------------------------------------------
 
     def run(self) -> None:
         """Execute the full COCO → YOLO ingestion pipeline."""
@@ -161,20 +184,24 @@ class CocoIngestor:
             all_categories = {}
 
             # Iterate over the expected COCO splits inside the zip
-            for coco_split, yolo_split in [("train", "train"), ("valid", "val"), ("test", "test")]:
+            for coco_split, yolo_split in [("train", "train"), ("valid", "val"),
+                                           ("test", "test")]:
                 # Locate the split folder dynamically in case it's nested
                 split_dir = None
                 for p in temp_path.rglob(coco_split):
-                    if p.is_dir() and (p.parent == temp_path or "unzipped" in p.parent.name.lower() or p.parent.name == self.zip_path.stem):
+                    if p.is_dir() and (
+                            p.parent == temp_path or "unzipped" in p.parent.name.lower() or p.parent.name == self.zip_path.stem):
                         split_dir = p
                         break
 
                 if not split_dir:
-                    print(f"Notice: Could not find a '{coco_split}' folder inside the zip. Skipping.")
+                    print(
+                        f"Notice: Could not find a '{coco_split}' folder inside the zip. Skipping.")
                     continue
 
                 print(f"\nProcessing '{coco_split}' split...")
-                count = self._convert_split(split_dir, images_dir, labels_dir, yolo_split, all_categories)
+                count = self._convert_split(split_dir, images_dir, labels_dir,
+                                            yolo_split, all_categories)
                 print(f"  -> Converted {count} images to {yolo_split}.")
 
             if not all_categories:
@@ -202,10 +229,17 @@ class CocoIngestor:
             print("  .venv/bin/python train.py")
 
 
+# ======================================================================
+# CLI entry point
+# ======================================================================
+
 def parse_args():
-    parser = argparse.ArgumentParser(description="Ingest a pre-split COCO zip and convert to YOLOv11 dataset.")
-    parser.add_argument("--zip-file", required=True, type=str, help="Path to the .zip file containing the COCO dataset")
-    parser.add_argument("--output-dir", default="dataset", type=str, help="Output directory for the YOLO dataset (default: dataset)")
+    parser = argparse.ArgumentParser(
+        description="Ingest a pre-split COCO zip and convert to YOLO dataset.")
+    parser.add_argument("--zip-file", required=True, type=str,
+                        help="Path to the .zip file containing the COCO dataset")
+    parser.add_argument("--output-dir", default="dataset", type=str,
+                        help="Output directory for the YOLO dataset (default: dataset)")
     # ML Storage options
     parser.add_argument("--use-storage", action="store_true",
                         help="Enable versioned dataset storage via MLStorage")

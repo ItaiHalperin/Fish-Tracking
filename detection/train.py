@@ -77,10 +77,7 @@ def main():
             print("Error: No datasets found in MLStorage and --dataset not provided.", file=sys.stderr)
             sys.exit(1)
             
-    # Automatically tag the model name with the version if it's using the default
     model_name = args.model_name
-    if model_name == DEFAULT_MODEL_NAME and args.version != "11":
-        model_name = f"goldfish_yolov{args.version}"
         
     project, run_name = storage.detection_models.prepare_run(model_name)
     print(f"Training output: {project}/{run_name}/")
@@ -109,7 +106,7 @@ def main():
         mosaic=1.0,
         mixup=0.1,
         copy_paste=0.0,
-        erasing=0.3,
+        erasing=0.4,
 
         # --- Color Augmentations ---
         hsv_h=0.015,

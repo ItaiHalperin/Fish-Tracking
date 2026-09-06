@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Goldfish Tracking Script
-Runs the trained YOLOv11 model on a video to detect and track goldfish across frames.
+Runs the trained YOLO model on a video to detect and track goldfish across frames.
 
 Weights can be specified directly (--weights path) or fetched from the
 MLStorage model registry (--use-storage, with optional --run to pick a
@@ -51,7 +51,7 @@ def _resolve_weights(args) -> Path:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Track goldfish in a video using the trained YOLOv11 model.")
+    parser = argparse.ArgumentParser(description="Track goldfish in a video using the trained YOLO model.")
     parser.add_argument("--video", required=True, type=str, help="Path to the input video (.mp4, .MTS, etc.)")
     parser.add_argument("--output", required=True, type=str, help="Output directory for tracking results")
     parser.add_argument("--weights", default=None,
@@ -100,13 +100,13 @@ def main():
         temp_dir = tempfile.gettempdir()
         temp_file = Path(temp_dir) / f"trimmed_{video_path.stem}.mp4"
         
-        # We use -c copy to instantly copy the streams without re-encoding
         cmd = [
             "ffmpeg", "-y", "-ss", start_str, "-i", str(video_path),
         ]
         if args.duration:
             cmd += ["-t", str(args.duration)]
-        cmd += ["-c", "copy", str(temp_file)]
+
+        cmd += ["-c:v", "libx264", "-preset", "ultrafast", "-crf", "18", str(temp_file)]
         
         try:
             subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -116,7 +116,7 @@ def main():
             print(f"Error cropping video with FFmpeg: {e}")
             return
 
-    print(f"Loading YOLOv11 model from {weights_path}...")
+    print(f"Loading YOLO model from {weights_path}...")
     model = YOLO(weights_path)
     
     print(f"Starting tracking on {target_video.name} using {args.tracker} (conf={args.conf})...")
@@ -130,7 +130,12 @@ def main():
         device=get_device(),
         project=str(output_path.parent),
         name=output_path.name,
+        stream=True,
     )
+    
+    # Consume the generator to process the video frame-by-frame
+    for _ in results:
+        pass
     
     # Cleanup temp file if we created one
     if temp_file and temp_file.exists():
