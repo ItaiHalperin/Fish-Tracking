@@ -12,6 +12,7 @@ crops/
 labels/
 labels_*/
 annotation_samples/
+seed_queue.txt
 out/
 results/
 results_pipeline/

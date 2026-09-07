@@ -21,4 +21,4 @@ YOLO11n runs in `archive/detector_experiments/`, which are a different, weaker
 lineage.
 
 Register a new model with `python -m classifier.train --config <cfg> --register`,
-or import external weights with `python tools/import_weights.py`.
+or import external weights with `python -m core.import_weights`.
