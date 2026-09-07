@@ -9,18 +9,18 @@ Default weights are stored at:
 
 This is intentionally separate from trained runs (run_<timestamp>/).
 Use this when you have weights from an external source — downloaded, shared
-by a colleague — and want track.py / classify_video.py to pick them up
-via --use-storage without having trained locally.
+by a colleague — and want the pipeline to pick them up without having trained
+locally.
 
 Examples
 --------
 # Register a detection model
-python tools/import_weights.py \\
+python -m core.import_weights \\
     --type detection \\
     --weights /path/to/best.pt
 
 # Register a classifier
-python tools/import_weights.py \\
+python -m core.import_weights \\
     --type classifier \\
     --weights /path/to/best.pt \\
 """
