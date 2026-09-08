@@ -11,8 +11,18 @@ A sample video of the aquarium can be found in the following link: https://drive
 
 ## Setup
 
-- Install Python deps: `pip install -r requirements.txt` (pinned to the working
-  environment; see [requirements.txt](requirements.txt)).
+- **Use a virtual environment.** A plain `pip install` against a Homebrew or
+  system Python fails with `error: externally-managed-environment` (PEP 668) and
+  installs nothing:
+
+  ```bash
+  python3 -m venv .venv
+  source .venv/bin/activate          # Windows: .venv\Scripts\activate
+  pip install -r requirements.txt    # pinned; see requirements.txt
+  ```
+
+  Keep it activated, or call `.venv/bin/python` explicitly — running a bare
+  `python3` picks up the system interpreter, where the deps are absent.
 - **ffmpeg** on PATH — a system dependency, not pip (only needed to read/trim
   `.MTS` and other non-mp4 formats).
 - **Device:** examples use `mps` (Apple GPU). Use `--device cpu` if you have no
@@ -24,7 +34,25 @@ A sample video of the aquarium can be found in the following link: https://drive
 
 ---
 
-## 1. Full pipeline — `analysis/pipeline.py`
+## 1. Analysis webapp — `webapp/analyze_app.py`  ← start here
+
+Browser front-end for the full pipeline: drop in a video (or paste a path), it
+runs track → crop → classify in the background and shows the per-fish + pooled
+breakdown live. One job at a time (single GPU).
+
+| Flag | Default | Purpose |
+|---|---|---|
+| `--device` | mps | `mps` / `cpu` / `cuda` |
+| `--port` / `--host` | 5070 / 127.0.0.1 | Server address |
+
+```bash
+python webapp/analyze_app.py --device mps
+# open http://127.0.0.1:5070
+```
+
+---
+
+## 2. Full pipeline — `analysis/pipeline.py`
 
 Runs the whole thing on one video: **track → crop → classify → summarise**.
 Writes `summary.xlsx` (per-fish + AVERAGE roll/position %) and `traces.xlsx`
@@ -53,7 +81,41 @@ caffeinate -i python analysis/pipeline.py "videos/RGoldies 18_9_25.mp4" \
 
 ---
 
-## 2. Labeler webapp — `webapp/app.py`
+## 3. Making crops to label — `dataset_tools/`
+
+The labeler and the heading annotator (below) consume **crops**, so a fresh
+checkout has nothing to feed them. Sections 1 and 2 produce crops as a
+side-effect (`--crops-dir`, default `crops/<video-stem>/`), which is the easiest
+source. To make them directly:
+
+```bash
+# 1. Detect + track a video and write one folder of crops per fish ID.
+#    Uses the registered detector unless you pass --weights.
+python -m dataset_tools.extract_crops --video "videos/RGoldies 18_9_25.mp4" \
+    --duration 300 --output_dir crops
+# -> crops/RGoldies 18_9_25/id_<N>/frame_<M>.jpg
+
+# 2. Flatten into the single folder the labeler expects.
+python -m dataset_tools.flatten_crops --crops-dir "crops/RGoldies 18_9_25"
+# -> crops/RGoldies 18_9_25_flat/
+```
+
+| Command | Purpose |
+|---|---|
+| `dataset_tools.extract_crops` | Video → `crops/<video>/id_N/frame_M.jpg` (10% padding, matching training) |
+| `dataset_tools.flatten_crops` | `crops/<video>/` → flat `crops/<video>_flat/` for `--source` |
+| `dataset_tools.sample_frames` | Sample whole frames from videos, for **box** annotation |
+| `dataset_tools.ingest_coco` / `ingest_yolo` | Import annotated frames (Roboflow COCO / YOLO exports) into `dataset/` |
+| `detection.train` | Train the detector on `dataset/` (`--model s --version 26`) |
+| `detection.track` | Track only, saving an annotated video (`--use-storage`) |
+
+Both trees are worth keeping: the labeler resolves a crop's neighbouring frames
+from the unflattened `crops/<video>/id_N/` tree to show its context strip. See
+[webapp/README.md](webapp/README.md) for the labeling workflow end to end.
+
+---
+
+## 4. Labeler webapp — `webapp/app.py`
 
 Hand-label crop orientation classes. Shows a crop (with a context strip of
 neighboring frames); each label **moves** the crop into `labels_raw/<class>/`.
@@ -79,7 +141,7 @@ python webapp/app.py --source crops/all_flat --seed-queue seed_queue.txt
 
 ---
 
-## 3. Heading annotator — `webapp/angle_app.py`
+## 5. Heading annotator — `webapp/angle_app.py`
 
 Draw the head-direction line on already-labeled crops to upgrade heading from
 class-center to a **continuous angle** (roll is left untouched). Writes
@@ -96,24 +158,6 @@ class-center to a **continuous angle** (roll is left untouched). Writes
 ```bash
 python webapp/angle_app.py --raw-dir labels_raw --out labels_angles/headings.json
 # open http://127.0.0.1:5002  (click head direction, Enter to save+next)
-```
-
----
-
-## 4. Analysis webapp — `webapp/analyze_app.py`
-
-Browser front-end for the full pipeline: drop in a video (or paste a path), it
-runs track → crop → classify in the background and shows the per-fish + pooled
-breakdown live. One job at a time (single GPU).
-
-| Flag | Default | Purpose |
-|---|---|---|
-| `--device` | mps | `mps` / `cpu` / `cuda` |
-| `--port` / `--host` | 5070 / 127.0.0.1 | Server address |
-
-```bash
-python webapp/analyze_app.py --device mps
-# open http://127.0.0.1:5070
 ```
 
 ---
