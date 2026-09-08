@@ -14,6 +14,14 @@ openpyxl==3.1.5               # Excel output (summary.xlsx / traces.xlsx)
 opencv-python==4.13.0.92      # video frames + cropping
 pillow==12.2.0               # image loading in the classifiers
 pyyaml==6.0.3                # config + angle-map files
+tqdm==4.70.0                 # progress bars
+
+# Faster R-CNN detector scripts only (detection/*_faster_rcnn.py)
+supervision==0.30.2          # box annotation + mAP/precision/recall metrics
+trackers==2.6.0              # ByteTrack implementation used by track_faster_rcnn
 
 # Webapps
 flask==3.1.3
+
+# Tests
+pytest==9.1.1

@@ -19,8 +19,7 @@ from supervision.metrics import MeanAveragePrecision, Precision, Recall
 # Add parent directory to path to import core modules if needed
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-# Import dataset and model utilities from train_faster_rcnn.py
-from train_faster_rcnn import YoloToFasterRCNNDataset, get_model
+from detection.train_faster_rcnn import YoloToFasterRCNNDataset, get_model
 from core.device import get_device
 
 def get_latest_weights_path(storage_root, model_name):
