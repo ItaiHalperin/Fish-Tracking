@@ -37,6 +37,31 @@ python -m classifier.infer \
 
 ```
 
+## Beyond roll
+
+The roll classifier is the deliverable and the main
+[README](../README.md) covers it. The other label spaces live here:
+
+| Config | `model_type` | Test with |
+|---|---|---|
+| `roll_cls_angular.yaml`, `roll_cls.yaml` | `roll_cls` | `classifier.test_roll` |
+| `multihead_decoupled.yaml`, `multihead_angular.yaml`, `multihead_default.yaml`, `multihead_reg.yaml`, `ablation_aug_{on,off}.yaml` | `multihead` | `classifier.test` |
+| `angle_reg.yaml` | `angle_reg` | `classifier.test` (also reports heading error) |
+| `yolo_n_default.yaml` | `yolo_cls` | `classifier.test` |
+
+`angle_reg` additionally needs continuous heading annotations — see the heading
+annotator in [webapp/README.md](../webapp/README.md).
+
+**Active-learning miner.** `classifier.mine_candidates` ranks unlabeled crops by
+how likely they are to be a rare class, and writes a queue the labeler serves
+first via `--seed-queue`. It reads backbone embeddings and both head
+distributions, so it works **only on a `multihead` run**:
+
+```bash
+python -m classifier.mine_candidates --run archive/classifier_experiments/multihead_decoupled_20260620_175813 \
+    --top 200 --out seed_queue.txt
+```
+
 ## Adding a new config
 
 Copy an existing YAML in `configs/`, rename, change knobs, run. The `name`

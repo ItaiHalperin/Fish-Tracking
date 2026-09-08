@@ -2,8 +2,8 @@
 
 End-to-end system for measuring fish orientation from tank video: detect & track
 fish → crop each one per frame → classify orientation (roll, or the full
-pose × facing position). This README covers **how to run** the pipeline and the
-three webapps. The models it serves are described in
+pose × facing position). This README covers **how to run** the roll pipeline — the project's
+deliverable — end to end. The models it serves are described in
 [ml_storage/README.md](ml_storage/README.md); superseded models are in
 [archive/README.md](archive/README.md).
 
@@ -153,27 +153,6 @@ python webapp/app.py --source "crops/RGoldies 18_9_25_flat"
 
 ---
 
-## 5. Heading annotator — `webapp/angle_app.py`
-
-Draw the head-direction line on already-labeled crops to upgrade heading from
-class-center to a **continuous angle** (roll is left untouched). Writes
-`{crop: heading_deg}` JSON consumed by the `angle_reg` model.
-
-| Flag | Default | Purpose |
-|---|---|---|
-| `--raw-dir` | `labels_raw` | Crops to annotate (read from class folders) |
-| `--angle-map` | `configs/angle_map.yaml` | Class → (heading, roll); seeds the pre-filled arrow |
-| `--out` | `labels_angles/headings.json` | Output annotations |
-| `--skip-class` | `unclear` | Class(es) to skip (repeatable) |
-| `--port` | 5002 | Server port |
-
-```bash
-python webapp/angle_app.py --raw-dir labels_raw --out labels_angles/headings.json
-# open http://127.0.0.1:5002  (click head direction, Enter to save+next)
-```
-
----
-
 ## Classifier CLIs (training / evaluation)
 
 Secondary, but the pipeline depends on models these produce. All take
@@ -185,14 +164,16 @@ Secondary, but the pipeline depends on models these produce. All take
 | `classifier.train` | Train a model from a YAML config | `python -m classifier.train --config configs/roll_cls.yaml` |
 | `classifier.test_roll` | Test a roll run on the held-out split | `python -m classifier.test_roll --run results/roll_cls_<ts>` |
 | `classifier.baselines` | Majority + logistic-regression floors | `python -m classifier.baselines --data-dir labels_split` |
-| `classifier.mine_candidates` | Find rare-class crops to label (active learning) | `python -m classifier.mine_candidates --run archive/classifier_experiments/<run> --top 200` |
 | `classifier.infer` | Classify a pre-extracted crops folder → Excel | `python -m classifier.infer --run archive/classifier_experiments/<run> --crops-dir crops/<video>` |
 
-Configs live in `configs/` (one YAML per run): `roll_cls_angular.yaml` (roll, the
-goal — the deliverable), `multihead_decoupled.yaml` (best full-position
-classifier), `angle_reg.yaml` (continuous angles), plus their plain-loss ablation
-partners and baselines. Training writes a fresh run folder under `results/`;
-completed runs are kept in [`archive/`](archive/README.md).
+Configs live in `configs/` (one YAML per run). For roll: `roll_cls_angular.yaml`
+is the deliverable, `roll_cls.yaml` its plain-loss ablation. Training writes a
+fresh run folder under `results/`; completed runs are kept in
+[`archive/`](archive/README.md).
+
+The full-position (16-way) and angle-regression models, their configs, the
+active-learning miner and the matching test harnesses are covered in
+[classifier/README.md](classifier/README.md) — none of them are needed for roll.
 
 `classifier.test_roll` also reports **angular error** — how many degrees off the
 roll was, not just whether the class matched — into `roll_test_report.json`.

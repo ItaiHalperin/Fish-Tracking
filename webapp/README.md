@@ -132,3 +132,27 @@ labels_discarded/<class>/       # overflow from the cap, kept for review
   `labels_raw/`. If you rerun with a different `--classes` list, existing class
   folders are not deleted — they're just ignored by the UI. Delete them by hand
   if you change your taxonomy.
+
+---
+
+## Heading annotator — `angle_app.py`
+
+Draw the head-direction line on already-labeled crops to upgrade heading from
+class-center to a **continuous angle** (roll is left untouched). Writes
+`{crop: heading_deg}` JSON consumed by the `angle_reg` model.
+
+| Flag | Default | Purpose |
+|---|---|---|
+| `--raw-dir` | `labels_raw` | Crops to annotate (read from class folders) |
+| `--angle-map` | `configs/angle_map.yaml` | Class → (heading, roll); seeds the pre-filled arrow |
+| `--out` | `labels_angles/headings.json` | Output annotations |
+| `--skip-class` | `unclear` | Class(es) to skip (repeatable) |
+| `--port` | 5002 | Server port |
+
+```bash
+python webapp/angle_app.py --raw-dir labels_raw --out labels_angles/headings.json
+# open http://127.0.0.1:5002  (click head direction, Enter to save+next)
+```
+
+Only needed to train the angle-regression model; the roll deliverable does not
+use headings.
