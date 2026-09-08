@@ -22,15 +22,18 @@ results/<name>_<ts>/  one folder per run (weights, config copy, test report)
 
 ```bash
 # 1. Train. Drops everything into results/<name>_<timestamp>/.
-python -m classifier.train --config configs/yolo_n_default.yaml
+python -m classifier.train --config configs/roll_cls_angular.yaml
 
-# 2. Test on the held-out split. Writes test_report.json + optional errors/.
-python -m classifier.test --run results/roll_cls_angular_<ts> --save-errors
+# 2. Test on the held-out split. Writes a report + optional errors/.
+#    Pick the harness that matches the config's label space:
+#      roll_cls           -> classifier.test_roll  (4-way roll)
+#      multihead / angle_reg -> classifier.test    (16-way composite)
+python -m classifier.test_roll --run results/roll_cls_angular_<ts>
 
 # 3. Score a video. Writes <crops_dir>.xlsx.
 python -m classifier.infer \
     --run results/roll_cls_angular_<ts> \
-    --crops-dir "crops/RGoldies_23_10_25"
+    --crops-dir "crops/RGoldies 18_9_25"
 
 ```
 

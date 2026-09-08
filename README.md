@@ -183,8 +183,7 @@ Secondary, but the pipeline depends on models these produce. All take
 |---|---|---|
 | `classifier.data` | Build leak-free, class-aware split | `python -m classifier.data --out labels_split --skip-class unclear` |
 | `classifier.train` | Train a model from a YAML config | `python -m classifier.train --config configs/roll_cls.yaml` |
-| `classifier.test` | Test composite classification | `python -m classifier.test --run archive/classifier_experiments/<run>` |
-| `classifier.test_roll` | Test roll (4-way) | `python -m classifier.test_roll --run archive/classifier_experiments/<run>` |
+| `classifier.test_roll` | Test a roll run on the held-out split | `python -m classifier.test_roll --run results/roll_cls_<ts>` |
 | `classifier.baselines` | Majority + logistic-regression floors | `python -m classifier.baselines --data-dir labels_split` |
 | `classifier.mine_candidates` | Find rare-class crops to label (active learning) | `python -m classifier.mine_candidates --run archive/classifier_experiments/<run> --top 200` |
 | `classifier.infer` | Classify a pre-extracted crops folder → Excel | `python -m classifier.infer --run archive/classifier_experiments/<run> --crops-dir crops/<video>` |
@@ -195,11 +194,13 @@ classifier), `angle_reg.yaml` (continuous angles), plus their plain-loss ablatio
 partners and baselines. Training writes a fresh run folder under `results/`;
 completed runs are kept in [`archive/`](archive/README.md).
 
-`classifier.test` and `classifier.test_roll` also report **angular error** — how
-many degrees off the orientation was, not just whether the class matched — into
-`test_report.json` / `roll_test_report.json`. Heading truth comes from
-`labels_angles/headings.json`; pass `--headings` to point elsewhere. Re-running
-either command on an old run re-scores it with no retraining.
+`classifier.test_roll` also reports **angular error** — how many degrees off the
+roll was, not just whether the class matched — into `roll_test_report.json`.
+Re-running it on an old run re-scores it with no retraining.
+
+Composite (16-way) and angle-regression runs use a different harness,
+`classifier.test`; see [classifier/README.md](classifier/README.md) for which
+harness matches which `model_type`.
 
 Any config can charge mistakes by their angular size instead of a flat
 right/wrong by setting `angular_tau` (degrees; `0` = off, reproducing the plain

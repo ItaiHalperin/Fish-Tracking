@@ -130,7 +130,15 @@ def run(run_dir: Path, save_errors: bool = False,
 
     paths, truths = collect_test_set(test_dir, model.class_names)
     if not paths:
-        raise SystemExit(f"No usable test images under {test_dir}")
+        found = sorted(p.name for p in test_dir.iterdir() if p.is_dir())
+        hint = ("  This run predicts roll, not composite classes — score it with\n"
+                f"    python -m classifier.test_roll --run {run_dir}\n"
+                if hasattr(model, "true_roll_name") and "belly_down" in model.class_names
+                else "")
+        raise SystemExit(
+            f"No usable test images under {test_dir}.\n"
+            f"  {cfg.model_type} predicts: {model.class_names}\n"
+            f"  {test_dir} holds:  {found}\n" + hint)
     print(f"Testing {len(paths)} crops across {len(set(truths))} classes")
 
     predictions = model.predict(paths)
