@@ -23,8 +23,18 @@ A sample video of the aquarium can be found in the following link: https://drive
 
   Keep it activated, or call `.venv/bin/python` explicitly — running a bare
   `python3` picks up the system interpreter, where the deps are absent.
-- **ffmpeg** on PATH — a system dependency, not pip (only needed to read/trim
-  `.MTS` and other non-mp4 formats).
+- **ffmpeg** on PATH — a system dependency, not pip:
+
+  ```bash
+  brew install ffmpeg           # macOS
+  sudo apt install ffmpeg       # Debian / Ubuntu
+  winget install Gyan.FFmpeg    # Windows
+  ```
+
+  Verify with `ffmpeg -version`. It is used to read non-mp4 input (`.MTS`,
+  `.wmv`, …) **and** whenever `--start` or `--duration` trims a clip — including
+  from an `.mp4`, so the examples below need it. Without it you get
+  `FileNotFoundError: 'ffmpeg'`.
 - **Device:** examples use `mps` (Apple GPU). Use `--device cpu` if you have no
   GPU, or `cuda` on NVIDIA. Anything unavailable falls back to CPU automatically.
 - Run commands from the repo root. For the `classifier.*` module commands, prefix
