@@ -34,7 +34,7 @@ A sample video of the aquarium can be found in the following link: https://drive
 
 ---
 
-## 1. Analysis webapp — `webapp/analyze_app.py`  ← start here
+## 1. Analysis webapp — `webapp/analyze_app.py`
 
 Browser front-end for the full pipeline: drop in a video (or paste a path), it
 runs track → crop → classify in the background and shows the per-fish + pooled
