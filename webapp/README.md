@@ -36,14 +36,14 @@ The app expects a flat folder of crops (no subdirectories). Use the existing
 `dataset_tools/flatten_crops.py` to produce one from `dataset_tools/extract_crops.py` output:
 
 ```bash
-python -m dataset_tools.flatten_crops --crops-dir crops/RGoldies_23_10_25
-# -> crops/RGoldies_23_10_25_flat/
+python -m dataset_tools.flatten_crops --crops-dir "crops/RGoldies 18_9_25"
+# -> crops/RGoldies 18_9_25_flat/
 ```
 
 ## Run
 
 ```bash
-python webapp/app.py --source crops/all_flat
+python webapp/app.py --source "crops/RGoldies 18_9_25_flat"
 ```
 
 Classes are auto-derived from the files in `webapp/static/reference/` (one
@@ -61,8 +61,8 @@ Just flatten and copy them into the same source folder before (or during)
 labeling — the app re-scans each batch:
 
 ```bash
-python -m dataset_tools.flatten_crops --crops-dir crops/AnotherVideo
-cp crops/AnotherVideo_flat/* crops/RGoldies_23_10_25_flat/
+python -m dataset_tools.flatten_crops --crops-dir "crops/RGoldies 7_6_25"
+cp "crops/RGoldies 7_6_25_flat/"* "crops/RGoldies 18_9_25_flat/"
 ```
 
 ## Labeling shortcuts
