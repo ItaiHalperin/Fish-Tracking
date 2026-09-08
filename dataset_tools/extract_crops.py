@@ -10,16 +10,22 @@ sys.path.append(str(Path(__file__).resolve().parent.parent))
 from ultralytics import YOLO
 from core.image_utils import crop_with_padding
 from core.device import get_device
+from core.ml_storage import MLStorage
 
 def main():
     parser = argparse.ArgumentParser(description="Extract crops of tracked fish")
     parser.add_argument("--video", required=True, type=str, help="Path to input video")
-    parser.add_argument("--weights", default="runs/detect/fish_tracking_model/weights/best.pt", type=str)
+    parser.add_argument("--weights", default=None, type=str,
+                        help="Detector weights; defaults to the registered detector")
+    parser.add_argument("--storage-root", default="ml_storage", type=str)
     parser.add_argument("--padding", type=float, default=0.10, help="Padding percentage (e.g. 0.1 for 10%%)")
     parser.add_argument("--output_dir", type=str, default="crops", help="Base output directory")
     parser.add_argument("--duration", type=int, default=None, help="Only process the first N seconds of the video")
     args = parser.parse_args()
-    
+
+    if args.weights is None:
+        args.weights = MLStorage(args.storage_root).detection_models.get_weights("goldfish_yolo")
+
     video_path = Path(args.video)
     video_name = video_path.stem
     output_base = Path(args.output_dir) / video_name
