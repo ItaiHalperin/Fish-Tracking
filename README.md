@@ -136,16 +136,18 @@ The `/finish` page caps per-class counts and splits into `labels/train|val`.
 
 | Flag | Default | Purpose |
 |---|---|---|
-| `--source` | required | Flat folder of crops to label (e.g. `crops/all_flat`) |
+| `--source` | required | Flat folder of crops to label — the `_flat` folder from §3 |
 | `--raw-dir` | `labels_raw` | Where labeled crops are moved, per class |
-| `--seed-queue` | none | Text file of filenames to serve first (e.g. from the miner) |
+| `--seed-queue` | none | Text file of filenames to serve first (from `classifier.mine_candidates`) |
 | `--rare-threshold` | 30 | Classes below this count are treated as rare |
 | `--neighborhood-size` | 10 | Context-strip neighbor count |
 | `--reject-class` | unclear | Bucket for "can't tell" |
 | `--port` / `--host` | 5050 / 127.0.0.1 | Server address |
 
+Continuing the example from §3:
+
 ```bash
-python webapp/app.py --source crops/all_flat --seed-queue seed_queue.txt
+python webapp/app.py --source "crops/RGoldies 18_9_25_flat"
 # open http://127.0.0.1:5050
 ```
 
