@@ -91,7 +91,67 @@ caffeinate -i python analysis/pipeline.py "videos/RGoldies 18_9_25.mp4" \
 
 ---
 
-## 3. Making crops to label — `dataset_tools/`
+## 3. Annotated video — `analysis/annotated_video.py`
+
+Renders a **fused detection + classification** video: runs the YOLO
+detector / ByteTrack tracker and the fish-position classifier simultaneously,
+frame-by-frame, and writes an `.mp4` where each bounding box is annotated with:
+
+```
+#<id>  <det_conf>  |  <cls_label> <cls_conf>
+```
+
+Temporal smoothing (majority-vote sliding window) is applied per-track ID, so
+the displayed class is stable rather than flickering. Weights can be supplied as
+direct paths or resolved from the MLStorage model registry.
+
+| Flag | Default | Purpose |
+|---|---|---|
+| `--video` | required | Input video path (any format FFmpeg / OpenCV can read) |
+| `--output` | required | Output `.mp4` path |
+| `--start` | 0 | Start offset in seconds |
+| `--duration` | full video | Clip length in seconds |
+| `--device` | dynamic | `mps` / `cpu` / `cuda` |
+| `--conf` | 0.4 | Detection confidence threshold |
+| `--tracker` | `bytetrack.yaml` | Tracking algorithm (`bytetrack.yaml` or `botsort.yaml`) |
+| `--smooth-window` | 5 | Temporal majority-vote smoothing window |
+| `--padding` | 0.10 | Fractional padding around each box before classifying (must match crop extraction) |
+| `--det-weights` | none | Direct path to detector `best.pt` (overrides storage) |
+| `--cls-weights` | none | Direct path to classifier `best.pt` (overrides storage) |
+| `--storage-root` | `ml_storage` | MLStorage root directory |
+| `--det-model-name` | `goldfish_yolo` | Detector model name in the registry |
+| `--cls-model-name` | `fish_position_classifier` | Classifier model name in the registry |
+| `--det-run` | latest | 1-indexed detector run |
+| `--cls-run` | latest | 1-indexed classifier run |
+
+```bash
+# Using ML Storage (default — resolves latest weights automatically)
+python -m analysis.annotated_video \
+  --video "videos/RGoldies 18_9_25.mp4" \
+  --output runs/annotated/RGoldies_18_9_25.mp4 \
+  --duration 300 --device mps
+
+# Using explicit weight paths
+python -m analysis.annotated_video \
+  --video "videos/RGoldies 18_9_25.mp4" \
+  --output runs/annotated/RGoldies_18_9_25.mp4 \
+  --det-weights ml_storage/detection/goldfish_yolo/run_1/best.pt \
+  --cls-weights ml_storage/classification/fish_position_classifier/run_1/best.pt
+```
+
+The module can also be used as a library:
+
+```python
+from analysis.annotated_video import AnnotatedVideoRenderer
+from core.ml_storage import MLStorage
+
+renderer = AnnotatedVideoRenderer(storage=MLStorage("ml_storage"))
+renderer.render("videos/tank_A.MTS", output_path="runs/annotated/tank_A.mp4")
+```
+
+---
+
+## 4. Making crops to label — `dataset_tools/`
 
 The labeler and the heading annotator (below) consume **crops**, so a fresh
 checkout has nothing to feed them. Sections 1 and 2 produce crops as a
@@ -125,7 +185,7 @@ from the unflattened `crops/<video>/id_N/` tree to show its context strip. See
 
 ---
 
-## 4. Labeler webapp — `webapp/app.py`
+## 5. Labeler webapp — `webapp/app.py`
 
 Hand-label crop orientation classes. Shows a crop (with a context strip of
 neighboring frames); each label **moves** the crop into `labels_raw/<class>/`.
@@ -136,7 +196,7 @@ The `/finish` page caps per-class counts and splits into `labels/train|val`.
 
 | Flag | Default | Purpose |
 |---|---|---|
-| `--source` | required | Flat folder of crops to label — the `_flat` folder from §3 |
+| `--source` | required | Flat folder of crops to label — the `_flat` folder from §4 |
 | `--raw-dir` | `labels_raw` | Where labeled crops are moved, per class |
 | `--seed-queue` | none | Text file of filenames to serve first (from `classifier.mine_candidates`) |
 | `--rare-threshold` | 30 | Classes below this count are treated as rare |
@@ -144,7 +204,7 @@ The `/finish` page caps per-class counts and splits into `labels/train|val`.
 | `--reject-class` | unclear | Bucket for "can't tell" |
 | `--port` / `--host` | 5050 / 127.0.0.1 | Server address |
 
-Continuing the example from §3:
+Continuing the example from §4:
 
 ```bash
 python webapp/app.py --source "crops/RGoldies 18_9_25_flat"

@@ -48,6 +48,7 @@ import numpy as np
 from ultralytics import YOLO
 
 from core.image_utils import crop_with_padding
+from classifier import load_classifier
 from core.ml_storage import MLStorage
 from core.device import get_device
 
@@ -197,8 +198,6 @@ class AnnotatedVideoRenderer:
         by ``extract_crops.py`` when the training data was generated.
     smooth_window:
         Sliding-window size for temporal classification smoothing (default: ``5``).
-    reject_class:
-        Class whose frames are counted as "rejected" in the label (default: ``"unclear"``).
     device:
         Torch device string (default: dynamic, cuda/mps/cpu).
     """
@@ -215,7 +214,6 @@ class AnnotatedVideoRenderer:
         tracker:       str   = "bytetrack.yaml",
         padding:       float = 0.10,
         smooth_window: int   = 5,
-        reject_class:  str   = "unclear",
         device:        str | None = None,
     ):
         self.storage                = storage
@@ -227,7 +225,6 @@ class AnnotatedVideoRenderer:
         self.tracker       = tracker
         self._pad          = padding   # matches extract_crops.py default of 0.10
         self.smooth_window = smooth_window
-        self.reject_class  = reject_class
         self.device        = device or get_device()
 
         self._detector:   YOLO | None = None
@@ -245,7 +242,7 @@ class AnnotatedVideoRenderer:
             self._detector = YOLO(path)
         return self._detector
 
-    def _get_classifier(self) -> YOLO:
+    def _get_classifier(self):
         if self._classifier is None:
             if self._cls_weights_override:
                 path = self._cls_weights_override
@@ -254,7 +251,7 @@ class AnnotatedVideoRenderer:
             else:
                 raise ValueError("No classifier weights: pass classifier_weights= or a storage=.")
             print(f"[AnnotatedVideoRenderer] Loading classifier → {path}")
-            self._classifier = YOLO(path)
+            self._classifier = load_classifier(path, device=self.device)
         return self._classifier
 
     def render(
@@ -351,17 +348,11 @@ class AnnotatedVideoRenderer:
                     crop = crop_with_padding(frame, box, padding=self._pad, min_size=(32, 32))
                     crops.append(crop)
 
-                cls_results = classifier.predict(
-                    source=crops,
-                    device=self.device,
-                    verbose=False,
-                )
+                cls_preds = classifier.predict(crops)
 
                 cls_labels: list[str]        = []
                 cls_confs:  list[float | None] = []
-                for tid, res in zip(track_ids, cls_results):
-                    raw_label = classifier.names[int(res.probs.top1)]
-                    raw_conf  = float(res.probs.top1conf)
+                for tid, (raw_label, raw_conf) in zip(track_ids, cls_preds):
 
                     buf = label_buffers.setdefault(
                         tid, deque(maxlen=self.smooth_window)
@@ -415,8 +406,6 @@ def main() -> None:
     # Classifier
     parser.add_argument("--smooth-window", type=int, default=5,
                         help="Temporal smoothing window for classification")
-    parser.add_argument("--reject-class",  default="unclear",
-                        help="Class name excluded from scored predictions")
     parser.add_argument("--padding", type=float, default=0.10,
                         help="Fractional padding around each box before classifying "
                              "(default 0.10 — must match the value used during crop extraction)")
@@ -428,8 +417,6 @@ def main() -> None:
                         help="Direct path to classifier best.pt")
 
     # Weight resolution — ML Storage
-    parser.add_argument("--use-storage", action="store_true",
-                        help="Resolve weights from MLStorage registry")
     parser.add_argument("--storage-root",  default="ml_storage",
                         help="MLStorage root directory")
     parser.add_argument("--det-model-name", default=DEFAULT_DETECTION_MODEL,
@@ -457,7 +444,7 @@ def main() -> None:
         if not cls_weights.exists():
             parser.error(f"--cls-weights not found: {cls_weights}")
 
-    if args.use_storage or (det_weights is None or cls_weights is None):
+    if det_weights is None or cls_weights is None:
         storage = MLStorage(args.storage_root)
         if det_weights is None:
             det_weights = storage.detection_models.get_weights(
@@ -478,7 +465,6 @@ def main() -> None:
         tracker=args.tracker,
         padding=args.padding,
         smooth_window=args.smooth_window,
-        reject_class=args.reject_class,
         device=args.device,
     )
 
