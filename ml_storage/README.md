@@ -15,7 +15,7 @@ pipeline serves — the reported percentages are sensitive to this, so fix one
 version for a whole study and re-run everything if it changes.
 
 The detector's metrics above are read from the checkpoint's own `train_metrics`
-(200 epochs, 640px, batch 16, patience 50). It was imported rather than trained
+(200 epochs, 640px, batch 64, patience 50). It was imported rather than trained
 in-repo, so run folder has been imported — and it is **not** a descendant of the
 YOLO11n runs in `archive/detector_experiments/`, which are a different, weaker
 lineage.
