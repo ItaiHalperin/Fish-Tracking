@@ -16,7 +16,7 @@ version for a whole study and re-run everything if it changes.
 
 The detector's metrics above are read from the checkpoint's own `train_metrics`
 (200 epochs, 640px, batch 16, patience 50). It was imported rather than trained
-in-repo, so it has no run folder here — and it is **not** a descendant of the
+in-repo, so run folder has been imported — and it is **not** a descendant of the
 YOLO11n runs in `archive/detector_experiments/`, which are a different, weaker
 lineage.
 
